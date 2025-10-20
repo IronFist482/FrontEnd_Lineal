@@ -1,18 +1,17 @@
-# React + Vite
+# FrontEnd_Lineal
+Vamos a hacer un proyecto que va a usar Vite y busca resolver matrices por método de Gauss Jordan.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Las versiones que se están usando de npm es 11.6.2
 
-Currently, two official plugins are available:
+Es importante que si vas a correr por primera vez npm, le des permisos desde la consola de PowerShell siendo ejecutada como
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Commits
+La estructura para llevar un mínimo orden va a ser APELLIDOPA APELLIDOMA NOMBRE(S) / Pequeña descripción como título
+Igualmente, véase el primer commit que se hizo para ver el ejemplo
 
-## React Compiler
+# Ramas (brench)
+Cada usuario va a tener que trabajar en su rama, por lo que desde Git o Github Desktop tienen que crear su rama y asegurarse que están en ella para que no se borren las cosas que los demás suban. Solo se subirán los cambios a la rama main cuando se revisen los cambios.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+De igual manera, cada vez que empieces a trabajar debes de hacer un pull request para no sobreescribir las cosas a la hora de hacer la mezcla de las ramas
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Aquí se escribirán los pasos para hacer las ramas y los comandos que se pueden usar. De igual manera se recomienda usar mejor Github Desktop si es que nunca han usado Git ni han trabajado en un proyecto de código de manera colaborativa.
