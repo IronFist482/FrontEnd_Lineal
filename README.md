@@ -34,13 +34,10 @@ Si usarás el uso de la terminal de Git, la manera de hacerlo es la siguiente:
 
 3. Ahora crea la rama y cámbiate a ella<br>
 `git checkout -b Cerna`
-
-git checkout -b: Crea una nueva rama (opción -b) y automáticamente te posiciona en ella.
-
-Cerna: El nombre de tu nueva rama.
+*git checkout -b: Crea una nueva rama (opción -b) y automáticamente te posiciona en ella.
+Cerna: El nombre de tu nueva rama.*
 
 4. Sube la nueva rama al repositorio remoto (GitHub)<br>
 `git push -u origin Cerna`
-git push: Sube tus commits al repositorio remoto.
-
--u origin Cerna: Establece la rama remota (origin/Cerna) como rama de seguimiento (upstream), lo que simplifica futuros comandos git push y git pull.
+*git push: Sube tus commits al repositorio remoto.
+-u origin Cerna: Establece la rama remota (origin/Cerna) como rama de seguimiento (upstream), lo que simplifica futuros comandos git push y git pull.*
