@@ -18,20 +18,20 @@ Aquí se escribirán los pasos para hacer las ramas y los comandos que se pueden
 
 Si usarás el uso de la terminal de Git, la manera de hacerlo es la siguiente:
 
-1. Cambia a la rama principal (si aún no lo has hecho)
+1. Cambia a la rama principal (si aún no lo has hecho)<br>
 `git checkout main`
 
-2. Sincroniza (Pull) para obtener los últimos cambios del repositorio remoto
+2. Sincroniza (Pull) para obtener los últimos cambios del repositorio remoto<br>
 `git pull`
 
-3. Ahora crea la rama y cámbiate a ella
+3. Ahora crea la rama y cámbiate a ella<br>
 `git checkout -b Cerna`
 
 git checkout -b: Crea una nueva rama (opción -b) y automáticamente te posiciona en ella.
 
 Cerna: El nombre de tu nueva rama.
 
-4. Sube la nueva rama al repositorio remoto (GitHub)
+4. Sube la nueva rama al repositorio remoto (GitHub)<br>
 `git push -u origin Cerna`
 git push: Sube tus commits al repositorio remoto.
 
