@@ -1,8 +1,6 @@
-
 <!doctype html>
 <html lang="en">
   
-<!doctype html><html lang="es">
   <head>
     
     <meta charset="UTF-8" />
@@ -10,89 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend-lineal</title>
     
-    <style>
-      /* MLA EJEMPLO ESPACIO ARRASTRAR Y SOLTAR ARCHIVOS TXT */ 
-      #drop-zone {
-        border: 3px dashed #6b6b6b;
-        border-radius: 9px;
-        padding: 28px;
-        text-align: center;
-        color: #333;
-        cursor: pointer;
-        user-select: none;
-        background: #fafafa;
-        transition: background-color .15s, border-color .15s;
-      }
-      #drop-zone.dragover {
-        background: #eef7ff;
-        border-color: #3b82f6;
-        color: #0b3d91;
-      }
-      #file-list { margin-top: 12px; list-style: none; padding: 0; }
-      #file-list li { margin-bottom: 14px; border: 1px solid #eee; padding: 8px; border-radius: 6px; background: #fff; }
-      #file-list pre { white-space: pre-wrap; word-wrap: break-word; margin: 6px 0 0 0; max-height: 280px; overflow: auto; background: #f7f7f7; padding: 8px; border-radius: 4px; }
-    </style>
   </head>
 
   
   <body>
-    <div id="root">
-      <div id="drop-zone" tabindex="0">[ Por favor arrastra y suelta archivos de tipo <strong>.txt</strong> aquí<br>o haz clic para seleccionar ]</div>
-      <input id="file-input" type="file" accept=".txt" style="display:none" multiple>
-      <ul id="file-list"></ul>
-    </div>
-
-    <script>
-      const drop = document.getElementById('drop-zone');
-      const input = document.getElementById('file-input');
-      const list = document.getElementById('file-list');
-
-      function handleFiles(files) {
-        list.innerHTML = '';
-        Array.from(files).forEach(file => {
-          if (!file.name.toLowerCase().endsWith('.txt')) {
-            const li = document.createElement('li');
-            li.textContent = file.name + ' — formato no soportado (solo .txt)';
-            list.appendChild(li);
-            return;
-          }
-          const reader = new FileReader();
-          reader.onload = () => {
-            const li = document.createElement('li');
-            const title = document.createElement('div');
-            title.textContent = file.name;
-            const pre = document.createElement('pre');
-            pre.textContent = reader.result;
-            li.appendChild(title);
-            li.appendChild(pre);
-            list.appendChild(li);
-          };
-          reader.readAsText(file, 'UTF-8');
-        });
-      }
-
-      drop.addEventListener('click', () => input.click());
-      drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
-      drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
-      drop.addEventListener('drop', e => {
-        e.preventDefault();
-        drop.classList.remove('dragover');
-        const dt = e.dataTransfer;
-        if (dt && dt.files && dt.files.length) handleFiles(dt.files);
-      });
-
-      input.addEventListener('change', () => {
-        if (input.files && input.files.length) handleFiles(input.files);
-      });
-
-      // Soporta abrir fichero con teclado (Enter/Espacio)
-      drop.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
-      });
-    </script>
-
-    <script type="module" src="/src/main.jsx"></script>
-
     
     <div id="root"> </div>
     
