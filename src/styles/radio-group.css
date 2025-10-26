@@ -1,0 +1,59 @@
+.radio-group {
+  display: grid;
+  gap: 0.75rem; /* gap-3 */
+}
+
+.radio-group-item {
+  border-color: var(--input);
+  color: var(--primary);
+  aspect-ratio: 1 / 1;
+  width: 1rem; /* size-4 */
+  height: 1rem; /* size-4 */
+  flex-shrink: 0;
+  border-radius: 9999px; /* rounded-full */
+  border-width: 1px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-xs */
+  transition-property: color, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  outline: none;
+}
+.radio-group-item:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.5);
+}
+.radio-group-item[aria-invalid="true"] {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.2);
+}
+.radio-group-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .radio-group-item {
+    background-color: hsl(var(--input) / 0.3);
+  }
+  .radio-group-item[aria-invalid="true"] {
+    box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.4);
+  }
+}
+
+.radio-group-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.radio-group-indicator-icon {
+  fill: var(--primary);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.5rem; /* size-2 */
+  height: 0.5rem; /* size-2 */
+  transform: translate(-50%, -50%);
+}

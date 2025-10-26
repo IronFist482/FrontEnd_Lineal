@@ -1,0 +1,19 @@
+.progress-root {
+  position: relative;
+  height: 0.5rem; /* h-2 */
+  width: 100%; /* w-full */
+  overflow: hidden;
+  border-radius: 9999px; /* rounded-full */
+  background-color: hsl(var(--primary) / 0.2); /* bg-primary/20 */
+}
+
+.progress-indicator {
+  height: 100%; /* h-full */
+  width: 100%; /* w-full */
+  flex: 1 1 0%; /* flex-1 */
+  background-color: var(--primary);
+  /* El 'transition-all' de Tailwind anima la transformación */
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
