@@ -1,0 +1,106 @@
+/* Tooltip.css */
+.tooltip-content {
+  background-color: #3b82f6;
+  color: #ffffff;
+  z-index: 50;
+  width: fit-content;
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+  border-radius: 0.375rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-wrap: balance;
+  animation: tooltipFadeIn 0.2s ease-in;
+}
+
+.tooltip-content[data-state="closed"] {
+  animation: tooltipFadeOut 0.2s ease-out;
+}
+
+.tooltip-content[data-side="bottom"] {
+  animation: tooltipSlideInFromTop 0.2s ease-in;
+}
+
+.tooltip-content[data-side="left"] {
+  animation: tooltipSlideInFromRight 0.2s ease-in;
+}
+
+.tooltip-content[data-side="right"] {
+  animation: tooltipSlideInFromLeft 0.2s ease-in;
+}
+
+.tooltip-content[data-side="top"] {
+  animation: tooltipSlideInFromBottom 0.2s ease-in;
+}
+
+.tooltip-arrow {
+  background-color: #3b82f6;
+  fill: #3b82f6;
+  z-index: 50;
+  width: 0.625rem;
+  height: 0.625rem;
+  transform: translateY(calc(-50% - 2px)) rotate(45deg);
+  border-radius: 2px;
+}
+
+/* Animaciones */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tooltipFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes tooltipSlideInFromTop {
+  from {
+    transform: translateY(-0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes tooltipSlideInFromRight {
+  from {
+    transform: translateX(0.5rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes tooltipSlideInFromLeft {
+  from {
+    transform: translateX(-0.5rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes tooltipSlideInFromBottom {
+  from {
+    transform: translateY(0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
