@@ -1,0 +1,43 @@
+/* ToggleGroup.css */
+.toggle-group {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  border-radius: 0.375rem;
+}
+
+.toggle-group[data-variant="outline"] {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.toggle-group-item {
+  min-width: 0;
+  flex: 1;
+  flex-shrink: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: center;
+}
+
+.toggle-group-item:first-child {
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+
+.toggle-group-item:last-child {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
+.toggle-group-item:focus,
+.toggle-group-item:focus-visible {
+  z-index: 10;
+}
+
+.toggle-group-item[data-variant="outline"] {
+  border-left: none;
+}
+
+.toggle-group-item[data-variant="outline"]:first-child {
+  border-left: 1px solid #d1d5db;
+}

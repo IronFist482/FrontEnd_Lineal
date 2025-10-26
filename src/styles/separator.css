@@ -1,0 +1,15 @@
+/* Separator.css */
+.separator {
+  background-color: #e5e7eb; /* bg-border */
+  flex-shrink: 0;
+}
+
+.separator-horizontal {
+  height: 1px;
+  width: 100%;
+}
+
+.separator-vertical {
+  height: 100%;
+  width: 1px;
+}
