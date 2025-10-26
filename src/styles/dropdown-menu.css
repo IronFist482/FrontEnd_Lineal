@@ -1,0 +1,319 @@
+.dropdown-menu-content {
+  z-index: 50;
+  min-width: 8rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  padding: 0.25rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.dropdown-menu-item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.125rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+.dropdown-menu-item:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.dropdown-menu-item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.dropdown-menu-item[data-inset="true"] {
+  padding-left: 2rem;
+}
+.dropdown-menu-item svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.dropdown-menu-item svg:not([class*="size-"]) {
+  width: 1rem;
+  height: 1rem;
+}
+.dropdown-menu-item svg:not([class*="text-"]) {
+  color: var(--muted-foreground);
+}
+.dropdown-menu-item[data-variant="destructive"] {
+  color: var(--destructive);
+}
+.dropdown-menu-item[data-variant="destructive"] svg {
+  color: var(--destructive) !important;
+}
+.dropdown-menu-item[data-variant="destructive"]:focus {
+  color: var(--destructive);
+  background-color: hsl(var(--destructive) / 0.1);
+}
+@media (prefers-color-scheme: dark) {
+  .dropdown-menu-item[data-variant="destructive"]:focus {
+    background-color: hsl(var(--destructive) / 0.2);
+  }
+}
+
+.dropdown-menu-checkbox-item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.125rem;
+  padding: 0.375rem 0.5rem 0.375rem 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+.dropdown-menu-checkbox-item:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.dropdown-menu-checkbox-item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.dropdown-menu-checkbox-item svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.dropdown-menu-checkbox-item svg:not([class*="size-"]) {
+  width: 1rem;
+  height: 1rem;
+}
+.dropdown-menu-checkbox-indicator-wrapper {
+  pointer-events: none;
+  position: absolute;
+  left: 0.5rem;
+  display: flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  align-items: center;
+  justify-content: center;
+}
+.dropdown-menu-check-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dropdown-menu-radio-item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.125rem;
+  padding: 0.375rem 0.5rem 0.375rem 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+.dropdown-menu-radio-item:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.dropdown-menu-radio-item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.dropdown-menu-radio-item svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.dropdown-menu-radio-item svg:not([class*="size-"]) {
+  width: 1rem;
+  height: 1rem;
+}
+.dropdown-menu-radio-indicator-wrapper {
+  pointer-events: none;
+  position: absolute;
+  left: 0.5rem;
+  display: flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  align-items: center;
+  justify-content: center;
+}
+.dropdown-menu-radio-icon {
+  width: 0.5rem;
+  height: 0.5rem;
+  fill: currentColor;
+}
+
+.dropdown-menu-label {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+.dropdown-menu-label[data-inset="true"] {
+  padding-left: 2rem;
+}
+
+.dropdown-menu-separator {
+  height: 1px;
+  margin: 0.25rem -0.25rem;
+  background-color: var(--border);
+}
+
+.dropdown-menu-shortcut {
+  margin-left: auto;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+
+.dropdown-menu-sub-trigger {
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: 0.125rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+.dropdown-menu-sub-trigger:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.dropdown-menu-sub-trigger[data-state="open"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.dropdown-menu-sub-trigger[data-inset="true"] {
+  padding-left: 2rem;
+}
+.dropdown-menu-chevron {
+  margin-left: auto;
+  width: 1rem;
+  height: 1rem;
+}
+
+.dropdown-menu-sub-content {
+  z-index: 50;
+  min-width: 8rem;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  padding: 0.25rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+}
+
+/* --- Definiciones de Animación --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes zoomIn95 {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes zoomOut95 {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+@keyframes slideInFromTop {
+  from { opacity: 0; transform: translateY(-0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInFromBottom {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(0.5rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(-0.5rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideOutToTop {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-0.5rem); }
+}
+@keyframes slideOutToBottom {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(0.5rem); }
+}
+@keyframes slideOutToLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(0.5rem); }
+}
+@keyframes slideOutToRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-0.5rem); }
+}
+
+/* --- Aplicación de Animaciones --- */
+.dropdown-menu-sub-content,
+.dropdown-menu-content {
+  --animation-duration: 150ms;
+  will-change: transform, opacity;
+}
+.dropdown-menu-sub-content[data-state="open"],
+.dropdown-menu-content[data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out;
+}
+.dropdown-menu-sub-content[data-side="top"][data-state="open"],
+.dropdown-menu-content[data-side="top"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromBottom var(--animation-duration) ease-out;
+}
+.dropdown-menu-sub-content[data-side="bottom"][data-state="open"],
+.dropdown-menu-content[data-side="bottom"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromTop var(--animation-duration) ease-out;
+}
+.dropdown-menu-sub-content[data-side="left"][data-state="open"],
+.dropdown-menu-content[data-side="left"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromRight var(--animation-duration) ease-out;
+}
+.dropdown-menu-sub-content[data-side="right"][data-state="open"],
+.dropdown-menu-content[data-side="right"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromLeft var(--animation-duration) ease-out;
+}
+.dropdown-menu-sub-content[data-state="closed"],
+.dropdown-menu-content[data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in;
+}
+.dropdown-menu-sub-content[data-side="top"][data-state="closed"],
+.dropdown-menu-content[data-side="top"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToBottom var(--animation-duration) ease-in;
+}
+.dropdown-menu-sub-content[data-side="bottom"][data-state="closed"],
+.dropdown-menu-content[data-side="bottom"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToTop var(--animation-duration) ease-in;
+}
+.dropdown-menu-sub-content[data-side="left"][data-state="closed"],
+.dropdown-menu-content[data-side="left"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToRight var(--animation-duration) ease-in;
+}
+.dropdown-menu-sub-content[data-side="right"][data-state="closed"],
+.dropdown-menu-content[data-side="right"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToLeft var(--animation-duration) ease-in;
+}

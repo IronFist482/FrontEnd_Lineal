@@ -1,0 +1,96 @@
+.input-otp-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+}
+.input-otp-container:has(:disabled) {
+  opacity: 0.5;
+}
+
+.input-otp:disabled {
+  cursor: not-allowed;
+}
+
+.input-otp-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* gap-1 */
+}
+
+.input-otp-slot {
+  position: relative;
+  display: flex;
+  height: 2.25rem; /* h-9 */
+  width: 2.25rem; /* w-9 */
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--input);
+  border-bottom: 1px solid var(--input);
+  border-right: 1px solid var(--input);
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+  background-color: var(--input-background);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  outline: none;
+}
+.input-otp-slot:first-child {
+  border-top-left-radius: 0.375rem; /* rounded-l-md */
+  border-bottom-left-radius: 0.375rem; /* rounded-l-md */
+  border-left: 1px solid var(--input);
+}
+.input-otp-slot:last-child {
+  border-top-right-radius: 0.375rem; /* rounded-r-md */
+  border-bottom-right-radius: 0.375rem; /* rounded-r-md */
+}
+
+@media (prefers-color-scheme: dark) {
+  .input-otp-slot {
+    background-color: hsl(var(--input) / 0.3);
+  }
+}
+
+.input-otp-slot[data-active="true"] {
+  z-index: 10;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.5);
+}
+
+.input-otp-slot[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+.input-otp-slot[data-active="true"][aria-invalid="true"] {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.2);
+}
+@media (prefers-color-scheme: dark) {
+  .input-otp-slot[data-active="true"][aria-invalid="true"] {
+    box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.4);
+  }
+}
+
+.input-otp-caret-wrapper {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input-otp-caret {
+  background-color: var(--foreground);
+  height: 1rem; /* h-4 */
+  width: 1px; /* w-px */
+  animation: caret-blink 1s infinite;
+}
+
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

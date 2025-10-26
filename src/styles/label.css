@@ -1,0 +1,18 @@
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1; /* leading-none */
+  font-weight: 500; /* font-medium */
+  user-select: none; /* select-none */
+}
+
+/* Traduce 'group-data-[disabled=true]:...' y 'peer-disabled:...'
+  asumiendo que LabelPrimitive.Root recibe data-disabled
+*/
+.label[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}

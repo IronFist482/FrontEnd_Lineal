@@ -1,0 +1,99 @@
+.hover-card-content {
+  z-index: 50;
+  width: 16rem; /* w-64 */
+  border-radius: 0.375rem; /* rounded-md */
+  border: 1px solid var(--border);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  padding: 1rem; /* p-4 */
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+  outline: none; /* outline-hidden */
+  transform-origin: var(--radix-hover-card-content-transform-origin);
+}
+
+/* --- Definiciones de Animación --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes zoomIn95 {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes zoomOut95 {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+@keyframes slideInFromTop {
+  from { opacity: 0; transform: translateY(-0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInFromBottom {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(0.5rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(-0.5rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideOutToTop {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-0.5rem); }
+}
+@keyframes slideOutToBottom {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(0.5rem); }
+}
+@keyframes slideOutToLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(0.5rem); }
+}
+@keyframes slideOutToRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-0.5rem); }
+}
+
+/* --- Aplicación de Animaciones --- */
+.hover-card-content {
+  --animation-duration: 150ms;
+  will-change: transform, opacity;
+}
+.hover-card-content[data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out;
+}
+.hover-card-content[data-side="top"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromBottom var(--animation-duration) ease-out;
+}
+.hover-card-content[data-side="bottom"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromTop var(--animation-duration) ease-out;
+}
+.hover-card-content[data-side="left"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromRight var(--animation-duration) ease-out;
+}
+.hover-card-content[data-side="right"][data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out, zoomIn95 var(--animation-duration) ease-out, slideInFromLeft var(--animation-duration) ease-out;
+}
+.hover-card-content[data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in;
+}
+.hover-card-content[data-side="top"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToBottom var(--animation-duration) ease-in;
+}
+.hover-card-content[data-side="bottom"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToTop var(--animation-duration) ease-in;
+}
+.hover-card-content[data-side="left"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToRight var(--animation-duration) ease-in;
+}
+.hover-card-content[data-side="right"][data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in, zoomOut95 var(--animation-duration) ease-in, slideOutToLeft var(--animation-duration) ease-in;
+}

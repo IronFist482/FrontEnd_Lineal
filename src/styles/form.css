@@ -1,0 +1,20 @@
+.form-item {
+  display: grid;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.form-label[data-error="true"] {
+  color: var(--destructive);
+}
+
+.form-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+}
+
+.form-message {
+  color: var(--destructive);
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+}

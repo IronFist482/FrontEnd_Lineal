@@ -1,0 +1,150 @@
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.5); /* bg-black/50 */
+  will-change: opacity;
+  --animation-duration: 150ms;
+}
+.dialog-overlay[data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out;
+}
+.dialog-overlay[data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in;
+}
+
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  display: grid;
+  width: 100%;
+  max-width: calc(100% - 2rem);
+  transform: translate(-50%, -50%);
+  gap: 1rem; /* gap-4 */
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 1.5rem; /* p-6 */
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
+  transition-duration: 200ms;
+  will-change: transform, opacity;
+  --animation-duration: 150ms;
+}
+@media (min-width: 640px) {
+  .dialog-content {
+    max-width: 32rem; /* sm:max-w-lg */
+  }
+}
+.dialog-content[data-state="open"] {
+  animation: fadeIn var(--animation-duration) ease-out,
+    zoomIn95 var(--animation-duration) ease-out;
+}
+.dialog-content[data-state="closed"] {
+  animation: fadeOut var(--animation-duration) ease-in,
+    zoomOut95 var(--animation-duration) ease-in;
+}
+
+.dialog-close-button {
+  position: absolute;
+  top: 1rem; /* top-4 */
+  right: 1rem; /* right-4 */
+  border-radius: 0.125rem; /* rounded-xs */
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  outline: none;
+  offset-width: 2px;
+}
+.dialog-close-button:hover {
+  opacity: 1;
+}
+.dialog-close-button:focus {
+  outline-style: solid;
+  outline-width: 2px;
+  outline-color: var(--ring);
+  outline-offset: 2px;
+  outline-offset: var(--ring-offset-width, 2px);
+}
+.dialog-close-button[data-state="open"] {
+  background-color: var(--accent);
+  color: var(--muted-foreground);
+}
+.dialog-close-button:disabled {
+  pointer-events: none;
+}
+.dialog-close-button svg {
+  pointer-events: none;
+  flex-shrink: 0;
+  width: 1rem; /* size-4 */
+  height: 1rem; /* size-4 */
+}
+
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* gap-2 */
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .dialog-header {
+    text-align: left; /* sm:text-left */
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem; /* gap-2 */
+}
+@media (min-width: 640px) {
+  .dialog-footer {
+    flex-direction: row; /* sm:flex-row */
+    justify-content: flex-end; /* sm:justify-end */
+  }
+}
+
+.dialog-title {
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1; /* leading-none */
+  font-weight: 600; /* font-semibold */
+}
+
+.dialog-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+}
+
+.dialog-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* --- Definiciones de Animación (Reutilizadas) --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes zoomIn95 {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes zoomOut95 {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+}
