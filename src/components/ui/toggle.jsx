@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as TogglePrimitive from "@radix-ui/react-toggle@1.1.2";
 import { cva } from "class-variance-authority@0.7.1";
-import './Toggle.css';
+import '../../styles/toggle.css';
 
 import { cn } from "./utils";
 

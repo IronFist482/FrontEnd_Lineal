@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import "./input.css";
+import '../../styles/input.css';
 
 function Input({ className, type, ...props }) {
   return (

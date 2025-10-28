@@ -1,0 +1,15 @@
+.aspect-ratio[data-slot="aspect-ratio"] {
+  /* * Radix UI AspectRatio utiliza un truco de relleno (padding-top) 
+   * basado en la relación (ratio) que se pasa como prop. 
+   * La principal variable CSS interna es --radix-aspect-ratio-padding-bottom.
+   */
+  position: relative;
+  width: 100%;
+}
+
+.aspect-ratio[data-slot="aspect-ratio"]::before {
+  content: "";
+  display: block;
+  /* Esta variable es crucial y la establece Radix según la prop `ratio` */
+  padding-bottom: var(--radix-aspect-ratio-padding-bottom); 
+}

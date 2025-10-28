@@ -1,0 +1,280 @@
+:root {
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+  --accent: #f3f4f6;
+  --accent-foreground: #09090b;
+  --muted-foreground: #71717a;
+  --background: #ffffff;
+  --border: #e4e4e7;
+  --foreground: #09090b;
+}
+
+/* * BUTTON VARIANTS (Reutilizadas del componente Button) */
+.btn-outline {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.btn-ghost {
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid transparent;
+}
+.btn-ghost:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.btn-icon-size {
+  width: 1.75rem; /* size-7 */
+  height: 1.75rem; /* size-7 */
+  border-radius: 0.375rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 150ms ease-in-out;
+  outline: none;
+}
+
+/* * CALENDAR ROOT
+ * Clases: p-3
+ */
+.calendar-root {
+  padding: 0.75rem;
+}
+
+/* * MONTHS
+ * Clases: flex flex-col sm:flex-row gap-2
+ */
+.calendar-months {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+@media (min-width: 640px) {
+  .calendar-months {
+    flex-direction: row;
+  }
+}
+
+/* * MONTH
+ * Clases: flex flex-col gap-4
+ */
+.calendar-month {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* * CAPTION
+ * Clases: flex justify-center pt-1 relative items-center w-full
+ */
+.calendar-caption {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.25rem;
+  position: relative;
+  align-items: center;
+  width: 100%;
+}
+
+/* * CAPTION LABEL
+ * Clases: text-sm font-medium
+ */
+.calendar-caption-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* * NAV
+ * Clases: flex items-center gap-1
+ */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* * NAV BUTTON
+ * Clases: size-7 bg-transparent p-0 opacity-50 hover:opacity-100 (combinado con buttonVariants)
+ */
+.calendar-nav-button {
+  background-color: transparent !important;
+  opacity: 0.5;
+  border: 1px solid var(--border);
+}
+.calendar-nav-button:hover {
+  opacity: 1;
+}
+
+/* * NAV BUTTON POSITION */
+.calendar-nav-button-previous {
+  position: absolute;
+  left: 0.25rem;
+}
+.calendar-nav-button-next {
+  position: absolute;
+  right: 0.25rem;
+}
+
+/* * TABLE
+ * Clases: w-full border-collapse space-x-1
+ */
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0.25rem;
+}
+
+/* * HEAD ROW
+ * Clases: flex
+ */
+.calendar-head-row {
+  display: flex;
+}
+
+/* * HEAD CELL
+ * Clases: text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]
+ */
+.calendar-head-cell {
+  color: var(--muted-foreground);
+  border-radius: 0.375rem;
+  width: 2rem;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+/* * ROW
+ * Clases: flex w-full mt-2
+ */
+.calendar-row {
+  display: flex;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* * CELL
+ * Clases base: relative p-0 text-center text-sm focus-within:relative focus-within:z-20 
+ * [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md
+ */
+.calendar-cell-base {
+  position: relative;
+  padding: 0;
+  text-align: center;
+  font-size: 0.875rem;
+}
+.calendar-cell-base:focus-within {
+  position: relative;
+  z-index: 20;
+  outline: none;
+}
+
+/* Resaltado del rango y selección */
+.calendar-cell-base:has([aria-selected]) {
+  background-color: var(--accent);
+}
+.calendar-cell-base:has([aria-selected].day-range-end) {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
+/* MODO RANGO (Range Mode) */
+/* [&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md */
+.calendar-cell-range-mode:has(> .day-range-end) {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+.calendar-cell-range-mode:has(> .day-range-start) {
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+/* first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md */
+.calendar-cell-range-mode:first-child:has([aria-selected]) {
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+.calendar-cell-range-mode:last-child:has([aria-selected]) {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
+/* MODO ÚNICO (Single Mode) */
+/* [&:has([aria-selected])]:rounded-md */
+.calendar-cell-single-mode:has([aria-selected]) {
+  border-radius: 0.375rem;
+}
+
+/* * DAY
+ * Clases: size-8 p-0 font-normal aria-selected:opacity-100 (combinado con buttonVariants:ghost)
+ */
+.calendar-day {
+  width: 2rem; /* size-8 */
+  height: 2rem; /* size-8 */
+  padding: 0;
+  font-weight: 400;
+  margin: 0.05rem; /* Pequeño margen para la separación */
+}
+.calendar-day[aria-selected="true"] {
+  opacity: 1;
+}
+
+/* * DÍAS DE RANGO Y SELECCIÓN */
+
+/* day_range_start/end */
+.day-range-start-selected,
+.day-range-end-selected,
+.day-selected-style {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.day-selected-style:hover,
+.day-selected-style:focus {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* day_today */
+.day-today-style {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* day_outside */
+.day-outside {
+  color: var(--muted-foreground);
+}
+.day-outside-selected[aria-selected="true"] {
+  color: var(--muted-foreground) !important;
+}
+
+/* day_disabled */
+.day-disabled-style {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* day_range_middle */
+.day-range-middle-style[aria-selected="true"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* day_hidden */
+.day-hidden-style {
+  visibility: hidden;
+}
+
+/* * ICONOS */
+.size-4 {
+  width: 1rem;
+  height: 1rem;
+}

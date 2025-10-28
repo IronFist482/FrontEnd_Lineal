@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import './Table.css';
+import '../../styles/table.css';
 
 import { cn } from "./utils";
 

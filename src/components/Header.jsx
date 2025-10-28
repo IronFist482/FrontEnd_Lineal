@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/Header.css'
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Button } from './ui/button';
 import { Card } from './ui/card';

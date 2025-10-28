@@ -1,0 +1,163 @@
+:root {
+  /* Color de fondo: bg-[#8ED6E8] (celeste claro IPN) */
+  --ipn-light-blue: #8ed6e8;
+  --white: #ffffff;
+}
+
+/* * HOME ROOT
+ * Clases: min-h-screen bg-[#8ED6E8] p-4 md:p-6 lg:p-8
+ */
+.home-root {
+  min-height: 100vh;
+  background-color: var(--ipn-light-blue);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .home-root {
+    padding: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .home-root {
+    padding: 2rem;
+  }
+}
+
+/* * HOME CONTAINER
+ * Clases: max-w-7xl mx-auto
+ */
+.home-container {
+  max-width: 80rem; /* max-w-7xl */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* * HOME CONTENT AREA
+ * Clases: space-y-4 md:space-y-6 lg:space-y-8
+ */
+.home-content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+@media (min-width: 768px) {
+  .home-content-area {
+    gap: 1.5rem; /* md:space-y-6 */
+  }
+}
+@media (min-width: 1024px) {
+  .home-content-area {
+    gap: 2rem; /* lg:space-y-8 */
+  }
+}
+
+/* * RESULTS ANIMATION WRAPPER
+ * Clases: animate-in fade-in slide-in-from-bottom-4 duration-500
+ */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(1rem); } /* bottom-4 (16px) */
+  to { transform: translateY(0); }
+}
+
+.results-animation-wrapper {
+  animation: fade-in 500ms ease-out, slide-in-from-bottom 500ms ease-out;
+}
+
+
+/* * FLOW INDICATOR WRAPPER
+ * Clases: mt-8 md:mt-12 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-4 text-white
+ */
+.flow-indicator-wrapper {
+  margin-top: 2rem; /* mt-8 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* gap-4 */
+  color: var(--white);
+}
+
+@media (min-width: 768px) {
+  .flow-indicator-wrapper {
+    margin-top: 3rem; /* md:mt-12 */
+    flex-direction: row;
+    gap: 1rem; /* md:gap-4 */
+  }
+}
+
+/* * FLOW STEP (Contiene número y texto)
+ * Clases: flex items-center gap-2
+ */
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* * FLOW STEP NUMBER BOX
+ * Clases: w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm
+ */
+.flow-step-number-box {
+  width: 2rem; /* w-8 */
+  height: 2rem; /* h-8 */
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* backdrop-blur-sm (simulación CSS) */
+  backdrop-filter: blur(4px); 
+}
+
+@media (min-width: 768px) {
+  .flow-step-number-box {
+    width: 2.5rem; /* md:w-10 */
+    height: 2.5rem; /* md:h-10 */
+  }
+}
+
+/* Número dentro del box */
+.flow-step-number {
+  font-size: 0.875rem; /* text-sm */
+}
+
+@media (min-width: 768px) {
+  .flow-step-number {
+    font-size: 1rem; /* md:text-base */
+  }
+}
+
+/* Texto del paso */
+.flow-step-text {
+  font-size: 0.75rem; /* text-xs */
+}
+
+@media (min-width: 768px) {
+  .flow-step-text {
+    font-size: 0.875rem; /* md:text-sm */
+  }
+}
+
+/* * FLOW SEPARATOR
+ * Clases: w-0.5 h-8 md:w-8 md:h-0.5 bg-white/40
+ */
+.flow-separator {
+  background-color: rgba(255, 255, 255, 0.4);
+  width: 0.125rem; /* w-0.5 */
+  height: 2rem; /* h-8 */
+}
+
+@media (min-width: 768px) {
+  .flow-separator {
+    width: 2rem; /* md:w-8 */
+    height: 0.125rem; /* md:h-0.5 */
+  }
+}

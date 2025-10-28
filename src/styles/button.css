@@ -1,0 +1,211 @@
+:root {
+  /* Colores base */
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e7eb;
+  --secondary-foreground: #1f2937;
+  --destructive: #ef4444;
+  --background: #ffffff;
+  --foreground: #09090b;
+  --accent: #f3f4f6;
+  --accent-foreground: #09090b;
+  --ring: #3b82f6;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+}
+
+/* * CLASES BASE (Base de cva)
+ * Clases: inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md 
+ * text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 
+ * [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 
+ * [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 
+ * focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 
+ * aria-invalid:border-destructive
+ */
+.btn-base {
+  /* Layout y Tipografía */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* gap-2 */
+  white-space: nowrap;
+  border-radius: 0.375rem; /* rounded-md */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  
+  /* Transición y Deshabilitado */
+  transition: all 150ms ease-in-out;
+  border: 1px solid transparent; /* Base para variantes */
+  cursor: pointer;
+}
+
+.btn-base:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Foco (focus-visible) */
+.btn-base:focus-visible {
+  outline: none;
+  border-color: var(--ring); /* focus-visible:border-ring */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring), transparent 50%); /* focus-visible:ring-[3px] focus-visible:ring-ring/50 */
+}
+
+/* Estado aria-invalid (Errores de formulario) */
+.btn-base[aria-invalid="true"] {
+  border-color: var(--destructive); /* aria-invalid:border-destructive */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 80%); /* aria-invalid:ring-destructive/20 */
+}
+
+/* Iconos */
+.btn-base svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Selectores complejos de Iconos: [&_svg:not([class*='size-'])]:size-4 shrink-0 */
+.btn-base svg:not([class*="size-"]) {
+  width: 1rem;
+  height: 1rem;
+}
+
+
+/* * VARIANTES DE TAMAÑO */
+
+/* size: default (h-9 px-4 py-2 has-[>svg]:px-3) */
+.btn-default-size {
+  height: 2.25rem; /* h-9 */
+  padding-left: 1rem; /* px-4 */
+  padding-right: 1rem; /* px-4 */
+  padding-top: 0.5rem; /* py-2 */
+  padding-bottom: 0.5rem; /* py-2 */
+}
+
+/* Lógica has: ajusta padding si hay un ícono (solo si se usa 'button' en lugar de 'Slot') */
+.btn-default-size:has(> svg) {
+  padding-left: 0.75rem; /* has-[>svg]:px-3 */
+  padding-right: 0.75rem; /* has-[>svg]:px-3 */
+}
+
+/* size: sm (h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5) */
+.btn-sm {
+  height: 2rem; /* h-8 */
+  border-radius: 0.375rem; /* rounded-md */
+  gap: 0.375rem; /* gap-1.5 */
+  padding-left: 0.75rem; /* px-3 */
+  padding-right: 0.75rem; /* px-3 */
+}
+
+.btn-sm:has(> svg) {
+  padding-left: 0.625rem; /* has-[>svg]:px-2.5 */
+  padding-right: 0.625rem; /* has-[>svg]:px-2.5 */
+}
+
+/* size: lg (h-10 rounded-md px-6 has-[>svg]:px-4) */
+.btn-lg {
+  height: 2.5rem; /* h-10 */
+  border-radius: 0.375rem; /* rounded-md */
+  padding-left: 1.5rem; /* px-6 */
+  padding-right: 1.5rem; /* px-6 */
+}
+
+.btn-lg:has(> svg) {
+  padding-left: 1rem; /* has-[>svg]:px-4 */
+  padding-right: 1rem; /* has-[>svg]:px-4 */
+}
+
+/* size: icon (size-9 rounded-md) */
+.btn-icon {
+  width: 2.25rem; /* size-9 */
+  height: 2.25rem; /* size-9 */
+  border-radius: 0.375rem; /* rounded-md */
+  padding: 0; /* Anulamos el padding de la base */
+}
+
+
+/* * VARIANTES DE ESTILO */
+
+/* variant: default (bg-primary text-primary-foreground hover:bg-primary/90) */
+.btn-default {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+.btn-default:hover {
+  background-color: color-mix(in srgb, var(--primary), black 10%);
+}
+
+/* variant: destructive (bg-destructive text-white hover:bg-destructive/90) */
+.btn-destructive {
+  background-color: var(--destructive);
+  color: #ffffff;
+  border-color: var(--destructive);
+}
+.btn-destructive:hover {
+  background-color: color-mix(in srgb, var(--destructive), black 10%);
+}
+.btn-destructive:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 80%);
+}
+
+/* variant: outline (border bg-background text-foreground hover:bg-accent hover:text-accent-foreground) */
+.btn-outline {
+  background-color: var(--background);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.btn-outline:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+/* Dark mode simulación */
+/* .btn-outline.dark-mode-simulated {
+  background-color: color-mix(in srgb, var(--input), transparent 70%);
+  border-color: var(--input);
+}
+.btn-outline.dark-mode-simulated:hover {
+  background-color: color-mix(in srgb, var(--input), transparent 50%);
+} */
+
+
+/* variant: secondary (bg-secondary text-secondary-foreground hover:bg-secondary/80) */
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  border-color: var(--secondary);
+}
+.btn-secondary:hover {
+  background-color: color-mix(in srgb, var(--secondary), black 20%);
+}
+
+/* variant: ghost (hover:bg-accent hover:text-accent-foreground) */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--foreground);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+/* Dark mode simulación */
+/* .btn-ghost.dark-mode-simulated:hover {
+  background-color: color-mix(in srgb, var(--accent), transparent 50%);
+} */
+
+
+/* variant: link (text-primary underline-offset-4 hover:underline) */
+.btn-link {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 0;
+  height: auto;
+  line-height: normal;
+}
+.btn-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

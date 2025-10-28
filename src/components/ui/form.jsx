@@ -11,7 +11,7 @@ import {
 } from "react-hook-form@7.55.0";
 
 import { Label } from "./label";
-import "./form.css";
+import '../../styles/form.css';
 
 const Form = FormProvider;
 

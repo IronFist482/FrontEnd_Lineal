@@ -5,7 +5,7 @@ import {
   MoreHorizontalIcon,
 } from "lucide-react@0.487.0";
 
-import "./pagination.css";
+import '../../styles/pagination.css';
 
 function Pagination({ className, ...props }) {
   return (

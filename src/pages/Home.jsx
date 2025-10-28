@@ -1,22 +1,21 @@
 import { useState } from 'react';
-import { Header } from './components/Header';
-import { FileUploadArea } from './components/FileUploadArea';
-import { ResultsSection } from './components/ResultsSection';
+import { Header } from '../components/Header';
+import { FileUploadArea } from '../components/FileUploadArea';
+import { ResultsSection } from '../components/ResultsSection';
+import '../styles/Home.css';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [showResults, setShowResults] = useState(false);
 
   const handleFileSelect = (file) => {
     setUploadedFile(file);
-    // Simular procesamiento y mostrar resultados
     setTimeout(() => {
       setShowResults(true);
     }, 500);
   };
 
-  // Datos de ejemplo para los resultados
   const mockResults = {
     Determinante: {
       result: 'det(A) = 42',
@@ -52,20 +51,20 @@ export default function Home() {
   const currentResult = mockResults[selectedOperation];
 
   return (
-    <div className="min-h-screen bg-[#8ED6E8] p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="home-root">
+      <div className="home-container">
         <Header
           selectedOperation={selectedOperation}
           onOperationChange={setSelectedOperation}
         />
 
-        <div className="space-y-4 md:space-y-6 lg:space-y-8">
+        <div className="home-content-area">
           {/* Área de trabajo */}
           <FileUploadArea onFileSelect={handleFileSelect} />
 
           {/* Sección de resultados */}
           {showResults && uploadedFile && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="results-animation-wrapper">
               <ResultsSection
                 result={currentResult.result}
                 explanation={currentResult.explanation}
@@ -74,28 +73,28 @@ export default function Home() {
           )}
         </div>
 
-        {/* Indicador de flujo visual - Oculto en móvil, visible desde tablet */}
+        {/* Indicador de flujo visual */}
         {!showResults && (
-          <div className="mt-8 md:mt-12 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-4 text-white">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <span className="text-sm md:text-base">1</span>
+          <div className="flow-indicator-wrapper">
+            <div className="flow-step">
+              <div className="flow-step-number-box">
+                <span className="flow-step-number">1</span>
               </div>
-              <span className="text-xs md:text-sm">Seleccionar operación</span>
+              <span className="flow-step-text">Seleccionar operación</span>
             </div>
-            <div className="w-0.5 h-8 md:w-8 md:h-0.5 bg-white/40"></div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <span className="text-sm md:text-base">2</span>
+            <div className="flow-separator"></div>
+            <div className="flow-step">
+              <div className="flow-step-number-box">
+                <span className="flow-step-number">2</span>
               </div>
-              <span className="text-xs md:text-sm">Subir archivo .txt</span>
+              <span className="flow-step-text">Subir archivo .txt</span>
             </div>
-            <div className="w-0.5 h-8 md:w-8 md:h-0.5 bg-white/40"></div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <span className="text-sm md:text-base">3</span>
+            <div className="flow-separator"></div>
+            <div className="flow-step">
+              <div className="flow-step-number-box">
+                <span className="flow-step-number">3</span>
               </div>
-              <span className="text-xs md:text-sm">Ver resultado</span>
+              <span className="flow-step-text">Ver resultado</span>
             </div>
           </div>
         )}

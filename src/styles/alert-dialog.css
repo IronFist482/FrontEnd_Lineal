@@ -1,0 +1,143 @@
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --ring: #3b82f6;
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes zoom-in-95 { from { transform: translate(-50%, -50%) scale(0.95); } to { transform: translate(-50%, -50%) scale(1); } }
+@keyframes zoom-out-95 { from { transform: translate(-50%, -50%) scale(1); } to { transform: translate(-50%, -50%) scale(0.95); } }
+
+.alert-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.5);
+  
+  opacity: 0;
+}
+
+.alert-overlay[data-state="open"] {
+  animation: fade-in 150ms ease-out;
+  opacity: 1;
+}
+
+.alert-overlay[data-state="closed"] {
+  animation: fade-out 150ms ease-in;
+}
+
+.alert-content {
+  background-color: var(--background);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  
+  transform: translate(-50%, -50%) scale(0.95);
+  
+  display: grid;
+  width: 100%;
+  max-width: calc(100% - 2rem);
+  gap: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: transform 200ms ease-in-out, opacity 200ms ease-in-out;
+}
+
+@media (min-width: 640px) {
+  .alert-content {
+    max-width: 32rem;
+  }
+}
+
+.alert-content[data-state="open"] {
+  animation: fade-in 150ms ease-out, zoom-in-95 150ms ease-out; 
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.alert-content[data-state="closed"] {
+  animation: fade-out 150ms ease-in, zoom-out-95 150ms ease-in; 
+}
+
+.alert-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .alert-header {
+    text-align: left;
+  }
+}
+
+.alert-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .alert-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.alert-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.alert-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  height: 2.5rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.button-base:focus-visible {
+  outline-color: var(--ring);
+}
+
+.button-default {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+}
+
+.button-default:hover {
+  background-color: color-mix(in srgb, var(--primary), black 10%); 
+}
+
+.button-outline {
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.button-outline:hover {
+  background-color: var(--border);
+}
