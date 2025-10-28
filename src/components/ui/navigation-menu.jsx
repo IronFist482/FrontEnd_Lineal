@@ -2,7 +2,7 @@ import * as React from "react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu@1.2.5";
 import { ChevronDownIcon } from "lucide-react@0.487.0";
 
-import "./navigation-menu.css";
+import '../../styles/navigation-menu.css';
 
 function NavigationMenu({
   className,

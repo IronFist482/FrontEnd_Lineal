@@ -1,0 +1,233 @@
+:root {
+  /* Colores base */
+  --gray-700: #374151;
+  --gray-300: #d1d5db;
+  --gray-50: #f9fafb;
+  --indigo-500: #6366f1;
+  --indigo-300: #a5b4fc;
+  --indigo-50: #eef2ff;
+  --indigo-100: #e0e7ff;
+  --indigo-200: #c7d2fe;
+  --indigo-25: #f4f6ff; /* Asumido para hover:bg-indigo-25 */
+  --indigo-200-border: #a5b4fc; /* Asumido para border-indigo-200 */
+  --indigo-400-hover: #818cf8; /* Asumido para hover:border-indigo-400 */
+  --green-600: #16a34a;
+  --white: #ffffff;
+}
+
+/* * CARD ROOT
+ * Clases: rounded-2xl shadow-lg border-0 bg-white p-4 md:p-6 lg:p-8 (Clases de Card base)
+ */
+.file-upload-card-root {
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  border: 0;
+  background-color: var(--white);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .file-upload-card-root {
+    padding: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .file-upload-card-root {
+    padding: 2rem;
+  }
+}
+
+
+/* * FILE TYPE INDICATOR
+ * Clases: mb-4 md:mb-6 flex items-center gap-2 text-gray-700
+ */
+.file-type-indicator {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-700);
+}
+
+@media (min-width: 768px) {
+  .file-type-indicator {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Icono dentro del indicador */
+.file-type-icon {
+  width: 1rem;
+  height: 1rem;
+}
+@media (min-width: 768px) {
+  .file-type-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* * FILE DROP AREA
+ * Clases base: border-2 border-dashed rounded-2xl p-6 md:p-10 lg:p-12 
+ * flex flex-col items-center justify-center gap-4 md:gap-6
+ * transition-all duration-200 cursor-pointer min-h-[200px] md:min-h-[250px]
+ */
+.file-drop-area {
+  border-width: 2px;
+  border-style: dashed;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  
+  transition: all 200ms ease-in-out;
+  cursor: pointer;
+  min-height: 200px;
+}
+
+@media (min-width: 768px) {
+  .file-drop-area {
+    padding: 2.5rem;
+    gap: 1.5rem;
+    min-height: 250px;
+  }
+}
+@media (min-width: 1024px) {
+  .file-drop-area {
+    padding: 3rem;
+  }
+}
+
+/* * ESTADOS DE DRAGGING */
+.file-drop-area-idle {
+  border-color: var(--gray-300);
+  background-color: var(--gray-50);
+}
+.file-drop-area-idle:hover {
+  border-color: var(--indigo-300);
+  background-color: var(--indigo-25);
+}
+
+.file-drop-area-dragging {
+  border-color: var(--indigo-500);
+  background-color: var(--indigo-50);
+}
+
+/* * UPLOAD ICON WRAPPER
+ * Clases base: w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center
+ * transition-all duration-200
+ */
+.upload-icon-wrapper {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .upload-icon-wrapper {
+    width: 5rem;
+    height: 5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .upload-icon-wrapper {
+    width: 6rem;
+    height: 6rem;
+  }
+}
+
+/* Icon Wrapper ESTADOS */
+.upload-icon-wrapper-idle {
+  background-color: var(--white);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+.upload-icon-wrapper-dragging {
+  background-color: var(--indigo-100);
+}
+
+/* Icono Plus */
+.upload-icon-plus {
+  width: 2rem;
+  height: 2rem;
+  color: var(--indigo-500);
+}
+@media (min-width: 768px) {
+  .upload-icon-plus {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .upload-icon-plus {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* * TEXTO DE INFORMACIÓN */
+.file-info-text-wrapper {
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Texto principal */
+.file-info-main-text {
+  color: var(--gray-700);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+@media (min-width: 768px) {
+  .file-info-main-text {
+    font-size: 1rem;
+  }
+}
+
+/* Texto de éxito */
+.file-info-success-text {
+  font-size: 0.875rem;
+  color: var(--green-600);
+}
+
+/* * BOTÓN DE SUBIDA
+ * Clases: rounded-xl bg-white hover:bg-indigo-50 border-indigo-200 hover:border-indigo-400 text-sm md:text-base
+ */
+.upload-button-custom-style {
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  border: 1px solid var(--indigo-200-border);
+  font-size: 0.875rem;
+  
+  transition: background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+}
+
+.upload-button-custom-style:hover {
+  background-color: var(--indigo-50);
+  border-color: var(--indigo-400-hover);
+}
+
+@media (min-width: 768px) {
+  .upload-button-custom-style {
+    font-size: 1rem;
+  }
+}
+
+/* Icono dentro del botón */
+.upload-button-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* * INPUT OCULTO */
+.hidden {
+  display: none !important;
+}

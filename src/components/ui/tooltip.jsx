@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip@1.1.8";
-import './Tooltip.css';
+import '../../styles/tooltip.css';
 
 import { cn } from "./utils";
 

@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card@1.1.6";
 
-import "./hover-card.css";
+import '../../styles/hover-card.css';
 
 function HoverCard({ ...props }) {
   return <HoverCardPrimitive.Root data-slot="hover-card" {...props} />;

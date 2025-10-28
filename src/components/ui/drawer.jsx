@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul@1.1.2";
 
-import "./drawer.css";
+import '../../styles/drawer.css';
 
 function Drawer({ ...props }) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />;

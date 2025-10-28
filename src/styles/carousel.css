@@ -1,0 +1,106 @@
+:root {
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+}
+
+/* * CARD ROOT
+ * Clases: bg-card text-card-foreground flex flex-col gap-6 rounded-xl border
+ */
+.card-root {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* gap-6 */
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid var(--border);
+}
+
+/* * CARD HEADER
+ * Clases: @container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 pt-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6
+ */
+.card-header {
+  /* Layout y espaciado */
+  display: grid;
+  grid-template-rows: auto auto; /* grid-rows-[auto_auto] auto-rows-min */
+  grid-template-columns: 1fr; /* Default: columna única */
+  align-items: flex-start;
+  gap: 0.375rem; /* gap-1.5 */
+  padding-left: 1.5rem; /* px-6 */
+  padding-right: 1.5rem; /* px-6 */
+  padding-top: 1.5rem; /* pt-6 */
+}
+
+/* Selector has-data-[slot=card-action]:grid-cols-[1fr_auto] */
+.card-header:has(>[data-slot="card-action"]) {
+  grid-template-columns: 1fr auto;
+}
+
+/* Selector [.border-b]:pb-6 (Aplica padding-bottom si el header tiene una clase de borde inferior, no aplicable directamente en CSS puro sin un nombre de clase específica, se asume .border-b-class) */
+.card-header.border-b-class {
+  padding-bottom: 1.5rem; /* pb-6 */
+}
+
+/* * CARD TITLE
+ * Clases: leading-none
+ */
+.card-title {
+  line-height: 1; /* leading-none */
+}
+
+/* * CARD DESCRIPTION
+ * Clases: text-muted-foreground
+ */
+.card-description {
+  color: var(--muted-foreground);
+}
+
+/* * CARD ACTION
+ * Clases: col-start-2 row-span-2 row-start-1 self-start justify-self-end
+ */
+.card-action {
+  grid-column-start: 2;
+  grid-row: 1 / span 2; /* row-span-2, row-start-1 */
+  align-self: flex-start;
+  justify-self: flex-end;
+}
+
+/* * CARD CONTENT
+ * Clases: px-6 [&:last-child]:pb-6
+ */
+.card-content {
+  padding-left: 1.5rem; /* px-6 */
+  padding-right: 1.5rem; /* px-6 */
+  padding-top: 0; /* Por defecto, el gap del root lo maneja */
+  padding-bottom: 0;
+}
+
+.card-content:last-child {
+  padding-bottom: 1.5rem; /* [&:last-child]:pb-6 */
+}
+
+/* * CARD FOOTER
+ * Clases: flex items-center px-6 pb-6 [.border-t]:pt-6
+ */
+.card-footer {
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem; /* px-6 */
+  padding-right: 1.5rem; /* px-6 */
+  padding-bottom: 1.5rem; /* pb-6 */
+  padding-top: 0;
+}
+
+/* Selector [.border-t]:pt-6 (Aplica padding-top si el footer tiene una clase de borde superior, se asume .border-t-class) */
+.card-footer.border-t-class {
+  padding-top: 1.5rem; /* pt-6 */
+}
+
+/* * Container Query Simulation */
+/* Aunque @container no se traduce directamente a CSS estándar sin soporte, 
+ * puedes simular un comportamiento responsive basado en el ancho del componente 
+ * con media queries si el contenedor tiene un tamaño fijo o es conocido. 
+ * Sin embargo, la directiva no tiene un equivalente directo y funcional aquí.
+ */

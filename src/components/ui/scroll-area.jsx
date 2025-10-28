@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area@1.2.3";
-import './ScrollArea.css';
+import '../../styles/scroll-area.css';
 
 import { cn } from "./utils";
 

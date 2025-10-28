@@ -7,7 +7,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "lucide-react@0.487.0";
-import './Select.css';
+import '../../styles/select.css';
 
 import { cn } from "./utils";
 

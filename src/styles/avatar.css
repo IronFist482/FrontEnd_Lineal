@@ -1,0 +1,41 @@
+:root {
+  --muted: #f4f4f5; /* Ejemplo de color muted (zinc-100) */
+  --foreground: #09090b;
+}
+
+/* * AVATAR ROOT
+ * Clases: relative flex size-10 shrink-0 overflow-hidden rounded-full
+ */
+.avatar-root {
+  position: relative;
+  display: flex;
+  width: 2.5rem; /* size-10 (40px) */
+  height: 2.5rem; /* size-10 (40px) */
+  flex-shrink: 0; /* shrink-0 */
+  overflow: hidden;
+  border-radius: 9999px; /* rounded-full */
+}
+
+/* * AVATAR IMAGE
+ * Clases: aspect-square size-full
+ */
+.avatar-image {
+  aspect-ratio: 1 / 1; /* aspect-square */
+  width: 100%; /* size-full */
+  height: 100%; /* size-full */
+  object-fit: cover; /* Asegura que la imagen cubra el área */
+}
+
+/* * AVATAR FALLBACK
+ * Clases: bg-muted flex size-full items-center justify-center rounded-full
+ */
+.avatar-fallback {
+  background-color: var(--muted);
+  color: var(--foreground); /* Opcional: para el texto del fallback */
+  display: flex;
+  width: 100%; /* size-full */
+  height: 100%; /* size-full */
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px; /* rounded-full */
+}

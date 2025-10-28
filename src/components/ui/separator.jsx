@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as SeparatorPrimitive from "@radix-ui/react-separator@1.1.2";
-import './Separator.css';
+import '../../styles/separator.css';
 
 import { cn } from "./utils";
 

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group@1.1.2";
-import './ToggleGroup.css';
+import '../../styles/toggle-group.css';
 
 import { cn } from "./utils";
 

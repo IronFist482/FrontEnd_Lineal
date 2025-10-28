@@ -1,0 +1,79 @@
+:root {
+  --border: #e4e4e7;
+  --ring: #3b82f6;
+  --background: #ffffff;
+}
+
+.resizable-panel-group {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.resizable-panel-group[data-panel-group-direction="vertical"] {
+  flex-direction: column;
+}
+
+.resizable-handle {
+  background-color: var(--border);
+  position: relative;
+  display: flex;
+  width: 1px;
+  align-items: center;
+  justify-content: center;
+
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color 0.2s;
+}
+
+.resizable-handle:focus-visible {
+  outline-color: var(--ring);
+  outline-width: 1px;
+  outline-offset: 1px;
+}
+
+.resizable-handle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%);
+}
+
+.resizable-handle[data-panel-group-direction="vertical"] {
+  height: 1px;
+  width: 100%;
+}
+
+.resizable-handle[data-panel-group-direction="vertical"]::after {
+  top: 50%;
+  bottom: auto;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  transform: translateY(-50%) translateX(0);
+}
+
+.resizable-handle[data-panel-group-direction="vertical"] > .resizable-handle-grip {
+  transform: rotate(90deg);
+}
+
+.resizable-handle-grip {
+  background-color: var(--background);
+  z-index: 10;
+  display: flex;
+  height: 1rem;
+  width: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.resizable-handle-icon {
+  width: 0.625rem;
+  height: 0.625rem;
+}

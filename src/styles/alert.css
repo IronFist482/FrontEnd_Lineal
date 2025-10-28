@@ -1,0 +1,90 @@
+:root {
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --destructive: #ef4444;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --spacing: 0.25rem;
+}
+
+.alert-base {
+  position: relative;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  
+  display: grid;
+  grid-template-columns: 0 1fr;
+  gap-y: 0.125rem;
+  align-items: flex-start;
+}
+
+/* Base: Selectores de ícono */
+.alert-base > svg {
+  width: 1rem;
+  height: 1rem;
+  transform: translateY(2px);
+  color: currentColor;
+}
+
+/* Lógica has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 */
+.alert-base:has(> svg) {
+  grid-template-columns: calc(var(--spacing) * 4) 1fr;
+  column-gap: 0.75rem;
+}
+
+
+/* * VARIANTES */
+
+/* variant: default (bg-card text-card-foreground) */
+.alert-default {
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+
+/* variant: destructive (text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90) */
+.alert-destructive {
+  color: var(--destructive);
+  background-color: var(--card);
+  border-color: var(--destructive); /* Agregado para mejor distinción visual */
+}
+
+.alert-destructive > svg {
+  color: currentColor;
+}
+
+/* Selector avanzado para la descripción en el contexto destructivo */
+.alert-destructive .alert-description {
+  color: color-mix(in srgb, var(--destructive), white 10%); /* text-destructive/90 */
+}
+
+/* * ELEMENTOS INTERNOS */
+
+/* AlertTitle (col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight) */
+.alert-title {
+  grid-column-start: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  min-height: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+/* AlertDescription (text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed) */
+.alert-description {
+  color: var(--muted-foreground);
+  grid-column-start: 2;
+  display: grid;
+  justify-items: flex-start;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.alert-description p {
+  line-height: 1.625; /* leading-relaxed (aprox) */
+}

@@ -1,0 +1,92 @@
+:root {
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+  --ring: #3b82f6;
+  --destructive: #ef4444;
+  --border: #e4e4e7;
+  --input-background: #ffffff;
+  --input: #e4e4e7;
+}
+
+/* * CHECKBOX ROOT
+ * Clases: peer border bg-input-background dark:bg-input/30 data-[state=checked]:bg-primary 
+ * data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary 
+ * data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 
+ * aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive 
+ * size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none 
+ * focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50
+ */
+.checkbox-root {
+  /* Layout y Apariencia Base */
+  display: inline-flex;
+  width: 1rem; /* size-4 */
+  height: 1rem; /* size-4 */
+  flex-shrink: 0;
+  border-radius: 4px; /* rounded-[4px] */
+  border: 1px solid var(--border);
+  background-color: var(--input-background);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-xs */
+  transition: box-shadow 150ms ease-in-out;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Estado Deshabilitado */
+.checkbox-root:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Foco (focus-visible) */
+.checkbox-root:focus-visible {
+  border-color: var(--ring); /* focus-visible:border-ring */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring), transparent 50%); /* focus-visible:ring-[3px] focus-visible:ring-ring/50 */
+}
+
+/* Estado Verificado (data-[state=checked]) */
+.checkbox-root[data-state="checked"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* Estado Aria-Invalid (Error) */
+.checkbox-root[aria-invalid="true"] {
+  border-color: var(--destructive);
+  /* ring-destructive/20 */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 80%);
+}
+
+/* Simulación Dark Mode para Background del Input (bg-input/30) */
+/* .dark .checkbox-root {
+  background-color: color-mix(in srgb, var(--input), transparent 70%);
+}
+.dark .checkbox-root[data-state="checked"] {
+  background-color: var(--primary);
+  border-color: var(--primary);
+} */
+/* .dark .checkbox-root[aria-invalid="true"] {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 60%); 
+} */
+
+
+/* * CHECKBOX INDICATOR
+ * Clases: flex items-center justify-center text-current transition-none
+ */
+.checkbox-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  transition: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* * CHECK ICON
+ * Clases: size-3.5
+ */
+.checkbox-icon {
+  width: 0.875rem; /* size-3.5 */
+  height: 0.875rem; /* size-3.5 */
+}

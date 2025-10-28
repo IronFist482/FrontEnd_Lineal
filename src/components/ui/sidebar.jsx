@@ -4,7 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot@1.1.2";
 import { cva } from "class-variance-authority@0.7.1";
 import { PanelLeftIcon } from "lucide-react@0.487.0";
-import './Sidebar.css';
+import '../../styles/sidebar.css';
 
 import { useIsMobile } from "./use-mobile";
 import { cn } from "./utils";
