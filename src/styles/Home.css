@@ -155,6 +155,28 @@
   height: 2rem; /* h-8 */
 }
 
+
+/* * btn all steps
+ */
+.show-all-btn {
+  display: block;
+  margin: 2rem auto 1rem auto; 
+  background-color: #2563eb; 
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.show-all-btn:hover {
+  background-color: #2563eb;
+}
+
+
 @media (min-width: 768px) {
   .flow-separator {
     width: 2rem; /* md:w-8 */

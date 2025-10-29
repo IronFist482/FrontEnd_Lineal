@@ -1,0 +1,123 @@
+.step-card {
+  background-color: #ffffff;
+  border: 2px solid #d1d5db;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin: 1rem auto;
+  width: 80%;  
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+.step-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.step-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.operation-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin: 0;
+}
+
+.operation-detail {
+  background-color: #f9fafb;
+  border-left: 4px solid #3b82f6;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.operation-detail span {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.operation-detail code {
+  background-color: #e5e7eb;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.3rem;
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #111827;
+  word-break: break-all;
+}
+
+.matrix-container {
+  overflow-x: auto;  
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.matrix {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.matrix td {
+  border: 1px solid #e5e7eb;
+  padding: 0.4rem 0.8rem;
+  text-align: center;
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+
+@media (max-width: 640px) {
+
+  .step-card {
+    width: 95%;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-header {
+    flex-direction: column;  
+    align-items: flex-start;  
+    gap: 0.25rem;  
+  }
+
+  .step-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .operation-name {
+    font-size: 0.9rem;
+  }
+
+  .operation-detail {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .operation-detail code {
+    font-size: 0.9rem;
+  }
+
+  .matrix td {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}
