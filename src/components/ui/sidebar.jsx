@@ -26,12 +26,8 @@ import {
   TooltipTrigger,
 } from "./tooltip";
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state";
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
-const SIDEBAR_WIDTH_ICON = "3rem";
-const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+// NUEVO: Importar configuración
+import { SIDEBAR_CONFIG } from "../config/sidebar.config";
 
 const SidebarContext = React.createContext(null);
 
@@ -67,9 +63,10 @@ function SidebarProvider({
         _setOpen(openState);
       }
 
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+      // USO: cookieName y cookieMaxAge
+      document.cookie = `${SIDEBAR_CONFIG.cookieName}=${openState}; path=/; max-age=${SIDEBAR_CONFIG.cookieMaxAge}`;
     },
-    [setOpenProp, open],
+    [setOpenProp],
   );
 
   const toggleSidebar = React.useCallback(() => {
@@ -79,7 +76,7 @@ function SidebarProvider({
   React.useEffect(() => {
     const handleKeyDown = (event) => {
       if (
-        event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
+        event.key === SIDEBAR_CONFIG.shortcut && // USO: shortcut
         (event.metaKey || event.ctrlKey)
       ) {
         event.preventDefault();
@@ -112,8 +109,8 @@ function SidebarProvider({
         <div
           data-slot="sidebar-wrapper"
           style={{
-            "--sidebar-width": SIDEBAR_WIDTH,
-            "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+            "--sidebar-width": SIDEBAR_CONFIG.width,           // USO: width
+            "--sidebar-width-icon": SIDEBAR_CONFIG.widthIcon, // USO: widthIcon
             ...style,
           }}
           className={cn("sidebar-wrapper", className)}
@@ -157,7 +154,7 @@ function Sidebar({
           data-mobile="true"
           className="sidebar-mobile"
           style={{
-            "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+            "--sidebar-width": SIDEBAR_CONFIG.widthMobile, // USO: widthMobile
           }}
           side={side}
         >
@@ -379,13 +376,13 @@ function SidebarMenu({ className, ...props }) {
   );
 }
 
-function SidebarMenuItem({ className, ...props }) {
+function SidebarMenuItem({ className, ...Hunt }) {
   return (
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
       className={cn("sidebar-menu-item", className)}
-      {...props}
+      {...Hunt}
     />
   );
 }
