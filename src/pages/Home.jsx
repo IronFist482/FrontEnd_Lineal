@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Header } from '../components/Header';
 import { FileUploadArea } from '../components/FileUploadArea';
 import { ResultsSection } from '../components/ResultsSection';
+import { procesarMatriz } from '../api/api';
 import '../styles/Home.css';
 
 export default function Home() {
@@ -9,46 +10,44 @@ export default function Home() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [showResults, setShowResults] = useState(false);
 
-  const handleFileSelect = (file) => {
+  const [apiResult, setApiResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleFileSelect = async (file) => {
     setUploadedFile(file);
-    setTimeout(() => {
+    setIsLoading(true);    
+    setError(null);         
+    setShowResults(false); 
+    setApiResult(null);     
+
+    try {
+      const operationToSend = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
+
+      const data = await procesarMatriz(operationToSend, file);
+
+      setApiResult(data);
       setShowResults(true);
-    }, 500);
+
+    } catch (err) {
+      console.error("Error al procesar la matriz:", err);
+      setError(err.message || 'Ocurrió un error al procesar el archivo.');
+      setShowResults(false); 
+    } finally {
+      setIsLoading(false); 
+    }
   };
 
-  const mockResults = {
-    Determinante: {
-      result: 'det(A) = 42',
-      explanation: [
-        'Se identifica la matriz A de dimensión n×n desde el archivo proporcionado.',
-        'Se aplica el método de expansión por cofactores para calcular el determinante.',
-        'Se realizan las operaciones algebraicas necesarias paso a paso.',
-        'El resultado final del determinante es 42.',
-      ],
-    },
-    'S.E.L.': {
-      result: 'x₁ = 2, x₂ = -1, x₃ = 3',
-      explanation: [
-        'Se identifica el sistema de ecuaciones lineales desde el archivo.',
-        'Se construye la matriz aumentada [A|b].',
-        'Se aplica el método de eliminación gaussiana para reducir la matriz.',
-        'Se obtienen las soluciones mediante sustitución hacia atrás.',
-        'El sistema tiene solución única: x₁ = 2, x₂ = -1, x₃ = 3.',
-      ],
-    },
-    Inversa: {
-      result: 'A⁻¹ = [matriz 3×3]',
-      explanation: [
-        'Se verifica que la matriz A sea cuadrada e invertible (det(A) ≠ 0).',
-        'Se construye la matriz aumentada [A|I] donde I es la identidad.',
-        'Se aplica el método de Gauss-Jordan para transformar A en I.',
-        'La matriz resultante del lado derecho es A⁻¹.',
-        'Se obtiene la matriz inversa exitosamente.',
-      ],
-    },
-  };
+ 
+  const formatExplanation = (pasos) => {
+    if (!pasos || !Array.isArray(pasos) || pasos.length === 0) {
+      return ['Cálculo directo, no se requieren pasos intermedios.'];
+    }
 
-  const currentResult = mockResults[selectedOperation];
+    return pasos.map((paso, index) =>
+      `Paso ${index + 1}: ${JSON.stringify(paso)}`
+    );
+  };
 
   return (
     <div className="home-root">
@@ -59,22 +58,32 @@ export default function Home() {
         />
 
         <div className="home-content-area">
-          {/* Área de trabajo */}
           <FileUploadArea onFileSelect={handleFileSelect} />
 
-          {/* Sección de resultados */}
-          {showResults && uploadedFile && (
+
+          {isLoading && (
+            <div className="loading-indicator">
+              Procesando matriz...
+            </div>
+          )}
+
+          {error && (
+            <div className="error-message">
+              <strong>Error:</strong> {error}
+            </div>
+          )}
+
+          {showResults && apiResult && (
             <div className="results-animation-wrapper">
               <ResultsSection
-                result={currentResult.result}
-                explanation={currentResult.explanation}
+                result={apiResult.comentario}
+                explanation={formatExplanation(apiResult.matrices_pasos)}
               />
             </div>
           )}
         </div>
 
-        {/* Indicador de flujo visual */}
-        {!showResults && (
+        {!showResults && !isLoading && !error && (
           <div className="flow-indicator-wrapper">
             <div className="flow-step">
               <div className="flow-step-number-box">
