@@ -1,13 +1,41 @@
 import * as React from "react";
+import { cva } from "class-variance-authority";
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
-function Card({ className, ...props }) {
+const cardVariants = cva(
+  "card-root",
+  {
+    variants: {
+      variant: {
+        default: "card-default",
+        outline: "card-outline",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+);
+
+const cardHeaderVariants = cva("card-header");
+
+const cardTitleVariants = cva("card-title");
+
+const cardDescriptionVariants = cva("card-description");
+
+const cardActionVariants = cva("card-action");
+
+const cardContentVariants = cva("card-content");
+
+const cardFooterVariants = cva("card-footer");
+
+function Card({ className, variant, ...props }) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "card-root",
+        cardVariants({ variant }),
         className,
       )}
       {...props}
@@ -20,7 +48,7 @@ function CardHeader({ className, ...props }) {
     <div
       data-slot="card-header"
       className={cn(
-        "card-header",
+        cardHeaderVariants(),
         className,
       )}
       {...props}
@@ -32,7 +60,7 @@ function CardTitle({ className, ...props }) {
   return (
     <h4
       data-slot="card-title"
-      className={cn("card-title", className)}
+      className={cn(cardTitleVariants(), className)}
       {...props}
     />
   );
@@ -42,7 +70,7 @@ function CardDescription({ className, ...props }) {
   return (
     <p
       data-slot="card-description"
-      className={cn("card-description", className)}
+      className={cn(cardDescriptionVariants(), className)}
       {...props}
     />
   );
@@ -53,7 +81,7 @@ function CardAction({ className, ...props }) {
     <div
       data-slot="card-action"
       className={cn(
-        "card-action",
+        cardActionVariants(),
         className,
       )}
       {...props}
@@ -65,7 +93,7 @@ function CardContent({ className, ...props }) {
   return (
     <div
       data-slot="card-content"
-      className={cn("card-content", className)}
+      className={cn(cardContentVariants(), className)}
       {...props}
     />
   );
@@ -75,7 +103,7 @@ function CardFooter({ className, ...props }) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("card-footer", className)}
+      className={cn(cardFooterVariants(), className)}
       {...props}
     />
   );
