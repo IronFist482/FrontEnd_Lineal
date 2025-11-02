@@ -1,24 +1,24 @@
 "use client";
-
 import * as React from "react";
+import { cva } from "class-variance-authority";
 import '../../styles/alert.css';
-
-// Simulamos 'cn' y 'cva' para que el JSX sea funcional sin estas librerías.
+// Simulamos 'cn' para que el JSX sea funcional sin estas librerías.
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
-// Lógica simulada de cva. En el CSS puro se definirán estas clases.
-const getAlertClasses = (variant) => {
-  const baseClasses = "alert-base";
-  let variantClass = "";
-
-  if (variant === "destructive") {
-    variantClass = "alert-destructive";
-  } else {
-    variantClass = "alert-default";
+const alertVariants = cva(
+  "alert-base",
+  {
+    variants: {
+      variant: {
+        default: "alert-default",
+        destructive: "alert-destructive",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
   }
-
-  return `${baseClasses} ${variantClass}`;
-};
+);
 
 function Alert({
   className,
@@ -29,12 +29,11 @@ function Alert({
     <div
       data-slot="alert"
       role="alert"
-      className={cn(getAlertClasses(variant), className)}
+      className={cn(alertVariants({ variant }), className)}
       {...props}
     />
   );
 }
-
 function AlertTitle({ className, ...props }) {
   return (
     <div
@@ -47,7 +46,6 @@ function AlertTitle({ className, ...props }) {
     />
   );
 }
-
 function AlertDescription({
   className,
   ...props
@@ -63,5 +61,4 @@ function AlertDescription({
     />
   );
 }
-
 export { Alert, AlertTitle, AlertDescription };
