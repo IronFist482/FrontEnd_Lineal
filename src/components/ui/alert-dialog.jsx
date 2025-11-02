@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 
@@ -55,17 +54,14 @@ function AlertDialogContent({
   ...props
 }) {
   return (
-    <AlertDialogPortal>
-      <AlertDialogOverlay />
-      <AlertDialogPrimitive.Content
-        data-slot="alert-dialog-content"
-        className={cn(
-          "alert-content",
-          className,
-        )}
-        {...props}
-      />
-    </AlertDialogPortal>
+    <AlertDialogPrimitive.Content
+      data-slot="alert-dialog-content"
+      className={cn(
+        "alert-content",
+        className,
+      )}
+      {...props}
+    />
   );
 }
 
