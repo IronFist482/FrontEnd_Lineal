@@ -15,11 +15,14 @@ export default function Home() {
   const [error, setError] = useState(null);
 
   const handleFileSelect = async (file) => {
+    console.log("Archivo seleccionado:", file);
+    return;
     setUploadedFile(file);
     setIsLoading(true);    
     setError(null);         
     setShowResults(false); 
-    setApiResult(null);     
+    setApiResult(null); 
+    console.log("Archivo seleccionado:", file);    
 
     try {
       const operationToSend = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
