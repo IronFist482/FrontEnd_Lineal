@@ -1,8 +1,8 @@
 "use client";
-
 import * as React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { cva } from "class-variance-authority";
 import '../../styles/carousel.css';
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
@@ -11,25 +11,36 @@ const CarouselContext = React.createContext(null);
 
 function useCarousel() {
   const context = React.useContext(CarouselContext);
-
   if (!context) {
     throw new Error("useCarousel must be used within a <Carousel />");
   }
-
   return context;
 }
 
+const buttonVariants = cva(
+  "btn-base",
+  {
+    variants: {
+      variant: {
+        default: "btn-default",
+        outline: "btn-outline",
+      },
+      size: {
+        default: "btn-default-size",
+        icon: "btn-icon",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
 function Button({ className, variant, size, children, disabled, onClick, ...props }) {
-  const classes = cn(
-    "btn-base",
-    variant === "outline" ? "btn-outline" : "btn-default",
-    size === "icon" ? "btn-icon" : "btn-default-size",
-    className
-  );
-  
   return (
     <button
-      className={classes}
+      className={cn(buttonVariants({ variant, size }), className)}
       disabled={disabled}
       onClick={onClick}
       {...props}
@@ -38,6 +49,66 @@ function Button({ className, variant, size, children, disabled, onClick, ...prop
     </button>
   );
 }
+
+const carouselContentVariants = cva(
+  "flex",
+  {
+    variants: {
+      orientation: {
+        horizontal: "carousel-content-horizontal",
+        vertical: "carousel-content-vertical",
+      },
+    },
+    defaultVariants: {
+      orientation: "horizontal",
+    },
+  }
+);
+
+const carouselItemVariants = cva(
+  "carousel-item-base",
+  {
+    variants: {
+      orientation: {
+        horizontal: "carousel-item-horizontal",
+        vertical: "carousel-item-vertical",
+      },
+    },
+    defaultVariants: {
+      orientation: "horizontal",
+    },
+  }
+);
+
+const carouselPreviousVariants = cva(
+  "carousel-nav-button",
+  {
+    variants: {
+      orientation: {
+        horizontal: "carousel-prev-horizontal",
+        vertical: "carousel-prev-vertical",
+      },
+    },
+    defaultVariants: {
+      orientation: "horizontal",
+    },
+  }
+);
+
+const carouselNextVariants = cva(
+  "carousel-nav-button",
+  {
+    variants: {
+      orientation: {
+        horizontal: "carousel-next-horizontal",
+        vertical: "carousel-next-vertical",
+      },
+    },
+    defaultVariants: {
+      orientation: "horizontal",
+    },
+  }
+);
 
 function Carousel({
   orientation = "horizontal",
@@ -57,21 +128,17 @@ function Carousel({
   );
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
-
   const onSelect = React.useCallback((api) => {
     if (!api) return;
     setCanScrollPrev(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
   }, []);
-
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev();
   }, [api]);
-
   const scrollNext = React.useCallback(() => {
     api?.scrollNext();
   }, [api]);
-
   const handleKeyDown = React.useCallback(
     (event) => {
       if (event.key === "ArrowLeft") {
@@ -84,23 +151,19 @@ function Carousel({
     },
     [scrollPrev, scrollNext],
   );
-
   React.useEffect(() => {
     if (!api || !setApi) return;
     setApi(api);
   }, [api, setApi]);
-
   React.useEffect(() => {
     if (!api) return;
     onSelect(api);
     api.on("reInit", onSelect);
     api.on("select", onSelect);
-
     return () => {
       api?.off("select", onSelect);
     };
   }, [api, onSelect]);
-
   return (
     <CarouselContext.Provider
       value={{
@@ -131,7 +194,6 @@ function Carousel({
 
 function CarouselContent({ className, ...props }) {
   const { carouselRef, orientation } = useCarousel();
-
   return (
     <div
       ref={carouselRef}
@@ -140,8 +202,7 @@ function CarouselContent({ className, ...props }) {
     >
       <div
         className={cn(
-          "flex",
-          orientation === "horizontal" ? "carousel-content-horizontal" : "carousel-content-vertical",
+          carouselContentVariants({ orientation }),
           className,
         )}
         {...props}
@@ -152,15 +213,13 @@ function CarouselContent({ className, ...props }) {
 
 function CarouselItem({ className, ...props }) {
   const { orientation } = useCarousel();
-
   return (
     <div
       role="group"
       aria-roledescription="slide"
       data-slot="carousel-item"
       className={cn(
-        "carousel-item-base",
-        orientation === "horizontal" ? "carousel-item-horizontal" : "carousel-item-vertical",
+        carouselItemVariants({ orientation }),
         className,
       )}
       {...props}
@@ -175,17 +234,13 @@ function CarouselPrevious({
   ...props
 }) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
-
   return (
     <Button
       data-slot="carousel-previous"
       variant={variant}
       size={size}
       className={cn(
-        "carousel-nav-button",
-        orientation === "horizontal"
-          ? "carousel-prev-horizontal"
-          : "carousel-prev-vertical",
+        carouselPreviousVariants({ orientation }),
         className,
       )}
       disabled={!canScrollPrev}
@@ -205,17 +260,13 @@ function CarouselNext({
   ...props
 }) {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
-
   return (
     <Button
       data-slot="carousel-next"
       variant={variant}
       size={size}
       className={cn(
-        "carousel-nav-button",
-        orientation === "horizontal"
-          ? "carousel-next-horizontal"
-          : "carousel-next-vertical",
+        carouselNextVariants({ orientation }),
         className,
       )}
       disabled={!canScrollNext}
