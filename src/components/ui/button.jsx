@@ -1,55 +1,35 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import { cva } from "class-variance-authority";
 import '../../styles/button.css';
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
-// Lógica simulada de cva. En el CSS puro se definen todas estas clases.
-const getButtonClasses = (variant, size) => {
-  const baseClasses = "btn-base";
-  let variantClass = "";
-  let sizeClass = "";
-
-  switch (variant) {
-    case "destructive":
-      variantClass = "btn-destructive";
-      break;
-    case "outline":
-      variantClass = "btn-outline";
-      break;
-    case "secondary":
-      variantClass = "btn-secondary";
-      break;
-    case "ghost":
-      variantClass = "btn-ghost";
-      break;
-    case "link":
-      variantClass = "btn-link";
-      break;
-    case "default":
-    default:
-      variantClass = "btn-default";
-      break;
+const buttonVariants = cva(
+  "btn-base",
+  {
+    variants: {
+      variant: {
+        default: "btn-default",
+        destructive: "btn-destructive",
+        outline: "btn-outline",
+        secondary: "btn-secondary",
+        ghost: "btn-ghost",
+        link: "btn-link",
+      },
+      size: {
+        default: "btn-default-size",
+        sm: "btn-sm",
+        lg: "btn-lg",
+        icon: "btn-icon",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
   }
-
-  switch (size) {
-    case "sm":
-      sizeClass = "btn-sm";
-      break;
-    case "lg":
-      sizeClass = "btn-lg";
-      break;
-    case "icon":
-      sizeClass = "btn-icon";
-      break;
-    case "default":
-    default:
-      sizeClass = "btn-default-size";
-      break;
-  }
-
-  return `${baseClasses} ${variantClass} ${sizeClass}`;
-};
+);
 
 function Button({
   className,
@@ -59,14 +39,13 @@ function Button({
   ...props
 }) {
   const Comp = asChild ? Slot : "button";
-
   return (
     <Comp
       data-slot="button"
-      className={cn(getButtonClasses(variant, size), className)}
+      className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     />
   );
 }
 
-export { Button, getButtonClasses as buttonVariants };
+export { Button, buttonVariants };
