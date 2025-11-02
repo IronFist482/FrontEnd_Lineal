@@ -1,10 +1,11 @@
 "use client";
-
 import * as React from "react";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu@2.2.6";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react@0.487.0";
-
+import { cva } from "class-variance-authority";
 import '../../styles/context-menu.css';
+
+const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 function ContextMenu({ ...props }) {
   return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
@@ -41,12 +42,25 @@ function ContextMenuRadioGroup({ ...props }) {
   );
 }
 
+const contextMenuSubTriggerVariants = cva(
+  "context-menu-sub-trigger",
+  {
+    variants: {
+      inset: {
+        true: "pl-8",
+      },
+    },
+    defaultVariants: {
+      inset: false,
+    },
+  }
+);
+
 function ContextMenuSubTrigger({ className, inset, children, ...props }) {
   return (
     <ContextMenuPrimitive.SubTrigger
       data-slot="context-menu-sub-trigger"
-      data-inset={inset}
-      className={`context-menu-sub-trigger ${className || ""}`.trim()}
+      className={cn(contextMenuSubTriggerVariants({ inset }), className)}
       {...props}
     >
       {children}
@@ -55,27 +69,50 @@ function ContextMenuSubTrigger({ className, inset, children, ...props }) {
   );
 }
 
+const contextMenuSubContentVariants = cva("context-menu-sub-content");
+
 function ContextMenuSubContent({ className, ...props }) {
   return (
     <ContextMenuPrimitive.SubContent
       data-slot="context-menu-sub-content"
-      className={`context-menu-sub-content ${className || ""}`.trim()}
+      className={cn(contextMenuSubContentVariants(), className)}
       {...props}
     />
   );
 }
+
+const contextMenuContentVariants = cva("context-menu-content");
 
 function ContextMenuContent({ className, ...props }) {
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuPrimitive.Content
         data-slot="context-menu-content"
-        className={`context-menu-content ${className || ""}`.trim()}
+        className={cn(contextMenuContentVariants(), className)}
         {...props}
       />
     </ContextMenuPrimitive.Portal>
   );
 }
+
+const contextMenuItemVariants = cva(
+  "context-menu-item",
+  {
+    variants: {
+      variant: {
+        default: "context-menu-item-default",
+        destructive: "context-menu-item-destructive",
+      },
+      inset: {
+        true: "pl-8",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      inset: false,
+    },
+  }
+);
 
 function ContextMenuItem({
   className,
@@ -86,25 +123,29 @@ function ContextMenuItem({
   return (
     <ContextMenuPrimitive.Item
       data-slot="context-menu-item"
-      data-inset={inset}
-      data-variant={variant}
-      className={`context-menu-item ${className || ""}`.trim()}
+      className={cn(contextMenuItemVariants({ variant, inset }), className)}
       {...props}
     />
   );
 }
 
+const contextMenuCheckboxItemVariants = cva("context-menu-checkbox-item");
+
+const contextMenuCheckboxIndicatorWrapperVariants = cva("context-menu-checkbox-indicator-wrapper");
+
+const contextMenuCheckIconVariants = cva("context-menu-check-icon");
+
 function ContextMenuCheckboxItem({ className, children, checked, ...props }) {
   return (
     <ContextMenuPrimitive.CheckboxItem
       data-slot="context-menu-checkbox-item"
-      className={`context-menu-checkbox-item ${className || ""}`.trim()}
+      className={cn(contextMenuCheckboxItemVariants(), className)}
       checked={checked}
       {...props}
     >
-      <span className="context-menu-checkbox-indicator-wrapper">
+      <span className={cn(contextMenuCheckboxIndicatorWrapperVariants())}>
         <ContextMenuPrimitive.ItemIndicator>
-          <CheckIcon className="context-menu-check-icon" />
+          <CheckIcon className={cn(contextMenuCheckIconVariants())} />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -112,16 +153,22 @@ function ContextMenuCheckboxItem({ className, children, checked, ...props }) {
   );
 }
 
+const contextMenuRadioItemVariants = cva("context-menu-radio-item");
+
+const contextMenuRadioIndicatorWrapperVariants = cva("context-menu-radio-indicator-wrapper");
+
+const contextMenuRadioIconVariants = cva("context-menu-radio-icon");
+
 function ContextMenuRadioItem({ className, children, ...props }) {
   return (
     <ContextMenuPrimitive.RadioItem
       data-slot="context-menu-radio-item"
-      className={`context-menu-radio-item ${className || ""}`.trim()}
+      className={cn(contextMenuRadioItemVariants(), className)}
       {...props}
     >
-      <span className="context-menu-radio-indicator-wrapper">
+      <span className={cn(contextMenuRadioIndicatorWrapperVariants())}>
         <ContextMenuPrimitive.ItemIndicator>
-          <CircleIcon className="context-menu-radio-icon" />
+          <CircleIcon className={cn(contextMenuRadioIconVariants())} />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -129,32 +176,49 @@ function ContextMenuRadioItem({ className, children, ...props }) {
   );
 }
 
+const contextMenuLabelVariants = cva(
+  "context-menu-label",
+  {
+    variants: {
+      inset: {
+        true: "pl-8",
+      },
+    },
+    defaultVariants: {
+      inset: false,
+    },
+  }
+);
+
 function ContextMenuLabel({ className, inset, ...props }) {
   return (
     <ContextMenuPrimitive.Label
       data-slot="context-menu-label"
-      data-inset={inset}
-      className={`context-menu-label ${className || ""}`.trim()}
+      className={cn(contextMenuLabelVariants({ inset }), className)}
       {...props}
     />
   );
 }
+
+const contextMenuSeparatorVariants = cva("context-menu-separator");
 
 function ContextMenuSeparator({ className, ...props }) {
   return (
     <ContextMenuPrimitive.Separator
       data-slot="context-menu-separator"
-      className={`context-menu-separator ${className || ""}`.trim()}
+      className={cn(contextMenuSeparatorVariants(), className)}
       {...props}
     />
   );
 }
 
+const contextMenuShortcutVariants = cva("context-menu-shortcut");
+
 function ContextMenuShortcut({ className, ...props }) {
   return (
     <span
       data-slot="context-menu-shortcut"
-      className={`context-menu-shortcut ${className || ""}`.trim()}
+      className={cn(contextMenuShortcutVariants(), className)}
       {...props}
     />
   );
