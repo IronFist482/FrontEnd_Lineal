@@ -7,63 +7,67 @@ import '../styles/Home.css';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [showResults, setShowResults] = useState(false);
-  const [apiResult, setApiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [showAllSteps, setShowAllSteps] = useState(false);
+
+  const [operationCache, setOperationCache] = useState({
+    Determinante: { file: null, result: null, error: null },
+    Inversa: { file: null, result: null, error: null },
+    SEL: { file: null, result: null, error: null },
+  });
+
+  const opKey = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
+  const currentData = operationCache[opKey];
+  const currentResult = currentData.result;
+  const currentError = currentData.error;
 
   const runOperation = useCallback(async (operation, file) => {
     setIsLoading(true);
-    setError(null);
-    setShowResults(false);
-    setApiResult(null);
+    const operationKey = operation === 'S.E.L.' ? 'SEL' : operation;
 
     try {
-      const operationToSend =
-        operation === 'S.E.L.' ? 'SEL' : operation;
-
+      const operationToSend = operationKey;
       const data = await procesarMatriz(operationToSend, file);
-      setApiResult(data);
-      setShowResults(true);
+
+      setOperationCache((prevCache) => ({
+        ...prevCache,
+        [operationKey]: { file: file, result: data, error: null },
+      }));
     } catch (err) {
+      const errorMessage = err.message || 'Ocurrió un error al procesar el archivo.';
       console.error('Error al procesar la matriz:', err);
-      setError(err.message || 'Ocurrió un error al procesar el archivo.');
-      setShowResults(false);
+
+      setOperationCache((prevCache) => ({
+        ...prevCache,
+        [operationKey]: { file: file, result: null, error: errorMessage },
+      }));
     } finally {
       setIsLoading(false);
     }
-  }, []); 
-
-  useEffect(() => {
-    if (uploadedFile) {
-      runOperation(selectedOperation, uploadedFile);
-    } else {
-      setUploadedFile(null);
-      setShowResults(false);
-      setApiResult(null);
-      setError(null);
-    }
-  }, [selectedOperation, uploadedFile, runOperation]);
+  }, []);
 
   const getOperacionDescripcion = (op) => {
-    switch (op[0]) {
+    if (!op || op.length === 0) return 'Operación desconocida';
+
+    const tipo = op[0];
+    switch (tipo) {
       case 1:
-        return `Intercambio de filas F${op[1]} ↔ F${op[2]}`;
+        if (op.length >= 3) return `Intercambio de filas F${op[1]} ↔ F${op[2]}`;
+        return 'Intercambio de filas';
       case 2:
-        return `Se dividió la fila pivote entre ${op[1]}`;
+        if (op.length >= 2) return `La fila pivote se multiplicó por ${op[1]}`;
+        return 'Escalamiento de fila';
       case 3:
-        return `Se hicieron ceros debajo del pivote`;
+        return 'Se hicieron ceros debajo del pivote';
       case 4:
-        return `Se hicieron ceros arriba del pivote`;
+        return 'Se hicieron ceros arriba del pivote';
       default:
-        return `Operación desconocida`;
+        return 'Operación desconocida';
     }
   };
 
   const handleFileSelect = (file) => {
-    setUploadedFile(file);
+    runOperation(selectedOperation, file);
   };
 
   const renderMatrix = (mat) => (
@@ -80,17 +84,34 @@ export default function Home() {
     </table>
   );
 
+  const formatComentario = (comentario) => {
+    if (typeof comentario === 'string') return comentario;
+
+    if (typeof comentario === 'object' && comentario !== null) {
+      return Object.entries(comentario)
+        .map(([key, value]) => {
+          if (typeof value === 'string' && value.includes('ℝ')) {
+            return `${key} ${value}`;
+          }
+          return `${key} = ${value}`;
+        })
+        .join(', ');
+    }
+
+    return 'Respuesta no válida.';
+  };
+
   const renderSteps = () => {
-    if (!apiResult?.matrices_pasos || apiResult.matrices_pasos.length === 0) {
+    if (!currentResult?.matrices_pasos?.length) {
       return <p>No hay pasos para mostrar.</p>;
     }
 
-    const pasos = apiResult.matrices_pasos;
-    const operaciones = apiResult.matrices_pasos_id || [];
+    const pasos = currentResult.matrices_pasos;
+    const operaciones = currentResult.matrices_pasos_id || [];
 
     const combined = pasos.map((matriz, index) => ({
       stepNumber: index + 1,
-      operationName: apiResult.operacion || 'Operación',
+      operationName: currentResult.operacion || 'Operación',
       operationDetail: getOperacionDescripcion(operaciones[index] || []),
       matrix: matriz,
     }));
@@ -122,8 +143,12 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    setUploadedFile(null);
-    setShowAllSteps(false); 
+    const operationKey = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
+    setOperationCache((prevCache) => ({
+      ...prevCache,
+      [operationKey]: { file: null, result: null, error: null },
+    }));
+    setShowAllSteps(false);
   };
 
   return (
@@ -132,10 +157,11 @@ export default function Home() {
         <Header
           selectedOperation={selectedOperation}
           onOperationChange={setSelectedOperation}
+          onResetClick={handleReset}
         />
 
         <div className="home-content-area">
-          {!isLoading && !error && !showResults && (
+          {!isLoading && !currentError && !currentResult && (
             <FileUploadArea onFileSelect={handleFileSelect} />
           )}
 
@@ -143,41 +169,39 @@ export default function Home() {
             <div className="loading-indicator">Procesando matriz...</div>
           )}
 
-          {error && (
+          {currentError && (
             <div className="error-message">
-              <strong>Error:</strong> {error}
+              <strong>Error:</strong> {currentError}
               <button onClick={handleReset} className="reset-btn-error">
                 Intentar de nuevo
               </button>
             </div>
           )}
 
-          {showResults && apiResult && (
+          {currentResult && (
             <>
               <div className="matriz-inicial-display">
                 <span className="resultado-titulo">Matriz Original:</span>
                 <div className="matrix-container">
-                  {renderMatrix(apiResult.matriz_inicial)}
+                  {renderMatrix(currentResult.matriz_inicial)}
                 </div>
               </div>
 
               <div className="results-animation-wrapper">
-                <div className="resultado-final">
+                <div className="resultado-final math-result">
                   <span className="resultado-titulo">Resultado:</span>
-                  <p className="resultado-texto">{apiResult.comentario}</p>
+                  <p className="resultado-texto">
+                    {formatComentario(currentResult.comentario)}
+                  </p>
                 </div>
 
                 <div className="steps-wrapper">{renderSteps()}</div>
               </div>
-
-              <button onClick={handleReset} className="reset-btn">
-                Procesar otra matriz
-              </button>
             </>
           )}
         </div>
 
-        {!showResults && !isLoading && !error && (
+        {!isLoading && !currentError && !currentResult && (
           <div className="flow-indicator-wrapper">
             <div className="flow-step">
               <div className="flow-step-number-box">
