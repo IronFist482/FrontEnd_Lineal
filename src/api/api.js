@@ -1,12 +1,13 @@
 
-const API_URL = 'https://proyectoalgebralineal-production.up.railway.app';
-//const API_URL = 'http://127.0.0.1:8000';
+//const API_URL = 'https://proyectoalgebralineal-production.up.railway.app';
+const API_URL = 'http://127.0.0.1:8000';
 
 
 export const procesarMatriz = async (operacion, archivo) => {
   const formData = new FormData();
   formData.append('operacion', operacion);
   formData.append('archivo', archivo);
+
 
   try {
     const response = await fetch(`${API_URL}/matrices/procesar`, {
@@ -18,6 +19,7 @@ export const procesarMatriz = async (operacion, archivo) => {
       const errorData = await response.json();
       throw new Error(errorData.detail || `Error HTTP: ${response.status}`);
     }
+    console.log(response) ;
 
     return await response.json();
 

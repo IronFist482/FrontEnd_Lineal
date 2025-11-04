@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Header } from '../components/Header';
 import { FileUploadArea } from '../components/FileUploadArea';
-import { ResultsSection } from '../components/ResultsSection';
+import StepCard from '../components/StepCard';
 import { procesarMatriz } from '../api/api';
 import '../styles/Home.css';
 
@@ -9,47 +9,121 @@ export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
   const [uploadedFile, setUploadedFile] = useState(null);
   const [showResults, setShowResults] = useState(false);
-
   const [apiResult, setApiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showAllSteps, setShowAllSteps] = useState(false);
 
-  const handleFileSelect = async (file) => {
-    console.log("Archivo seleccionado:", file);
-    return;
-    setUploadedFile(file);
-    setIsLoading(true);    
-    setError(null);         
-    setShowResults(false); 
-    setApiResult(null); 
-    console.log("Archivo seleccionado:", file);    
+  const runOperation = useCallback(async (operation, file) => {
+    setIsLoading(true);
+    setError(null);
+    setShowResults(false);
+    setApiResult(null);
 
     try {
-      const operationToSend = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
+      const operationToSend =
+        operation === 'S.E.L.' ? 'SEL' : operation;
 
       const data = await procesarMatriz(operationToSend, file);
-
       setApiResult(data);
       setShowResults(true);
-
     } catch (err) {
-      console.error("Error al procesar la matriz:", err);
+      console.error('Error al procesar la matriz:', err);
       setError(err.message || 'Ocurrió un error al procesar el archivo.');
-      setShowResults(false); 
+      setShowResults(false);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
+    }
+  }, []); 
+
+  useEffect(() => {
+    if (uploadedFile) {
+      runOperation(selectedOperation, uploadedFile);
+    } else {
+      setUploadedFile(null);
+      setShowResults(false);
+      setApiResult(null);
+      setError(null);
+    }
+  }, [selectedOperation, uploadedFile, runOperation]);
+
+  const getOperacionDescripcion = (op) => {
+    switch (op[0]) {
+      case 1:
+        return `Intercambio de filas F${op[1]} ↔ F${op[2]}`;
+      case 2:
+        return `Se dividió la fila pivote entre ${op[1]}`;
+      case 3:
+        return `Se hicieron ceros debajo del pivote`;
+      case 4:
+        return `Se hicieron ceros arriba del pivote`;
+      default:
+        return `Operación desconocida`;
     }
   };
 
- 
-  const formatExplanation = (pasos) => {
-    if (!pasos || !Array.isArray(pasos) || pasos.length === 0) {
-      return ['Cálculo directo, no se requieren pasos intermedios.'];
+  const handleFileSelect = (file) => {
+    setUploadedFile(file);
+  };
+
+  const renderMatrix = (mat) => (
+    <table className="matrix">
+      <tbody>
+        {mat.map((row, i) => (
+          <tr key={i}>
+            {row.map((value, j) => (
+              <td key={j}>{value}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const renderSteps = () => {
+    if (!apiResult?.matrices_pasos || apiResult.matrices_pasos.length === 0) {
+      return <p>No hay pasos para mostrar.</p>;
     }
 
-    return pasos.map((paso, index) =>
-      `Paso ${index + 1}: ${JSON.stringify(paso)}`
+    const pasos = apiResult.matrices_pasos;
+    const operaciones = apiResult.matrices_pasos_id || [];
+
+    const combined = pasos.map((matriz, index) => ({
+      stepNumber: index + 1,
+      operationName: apiResult.operacion || 'Operación',
+      operationDetail: getOperacionDescripcion(operaciones[index] || []),
+      matrix: matriz,
+    }));
+
+    const stepsToDisplay = showAllSteps ? combined : combined.slice(0, 1);
+
+    return (
+      <>
+        {stepsToDisplay.map((s) => (
+          <StepCard
+            key={s.stepNumber}
+            stepNumber={s.stepNumber}
+            operationName={s.operationName}
+            operationDetail={s.operationDetail}
+            matrix={s.matrix}
+          />
+        ))}
+
+        {combined.length > 1 && (
+          <button
+            onClick={() => setShowAllSteps(!showAllSteps)}
+            className="show-all-btn"
+          >
+            {showAllSteps ? 'Ocultar pasos' : 'Ver pasos completos'}
+          </button>
+        )}
+      </>
     );
+  };
+
+  const handleReset = () => {
+    setUploadedFile(null);
+    setShowAllSteps(false); 
   };
 
   return (
@@ -61,28 +135,45 @@ export default function Home() {
         />
 
         <div className="home-content-area">
-          <FileUploadArea onFileSelect={handleFileSelect} />
-
+          {!isLoading && !error && !showResults && (
+            <FileUploadArea onFileSelect={handleFileSelect} />
+          )}
 
           {isLoading && (
-            <div className="loading-indicator">
-              Procesando matriz...
-            </div>
+            <div className="loading-indicator">Procesando matriz...</div>
           )}
 
           {error && (
             <div className="error-message">
               <strong>Error:</strong> {error}
+              <button onClick={handleReset} className="reset-btn-error">
+                Intentar de nuevo
+              </button>
             </div>
           )}
 
           {showResults && apiResult && (
-            <div className="results-animation-wrapper">
-              <ResultsSection
-                result={apiResult.comentario}
-                explanation={formatExplanation(apiResult.matrices_pasos)}
-              />
-            </div>
+            <>
+              <div className="matriz-inicial-display">
+                <span className="resultado-titulo">Matriz Original:</span>
+                <div className="matrix-container">
+                  {renderMatrix(apiResult.matriz_inicial)}
+                </div>
+              </div>
+
+              <div className="results-animation-wrapper">
+                <div className="resultado-final">
+                  <span className="resultado-titulo">Resultado:</span>
+                  <p className="resultado-texto">{apiResult.comentario}</p>
+                </div>
+
+                <div className="steps-wrapper">{renderSteps()}</div>
+              </div>
+
+              <button onClick={handleReset} className="reset-btn">
+                Procesar otra matriz
+              </button>
+            </>
           )}
         </div>
 
