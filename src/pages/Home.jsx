@@ -205,8 +205,15 @@ export default function Home() {
                   </p>
                 </div>
 
+                <div className="reset-button-wrapper">
+                  <button onClick={handleReset} className="reset-btn">
+                    Realizar otra operación
+                  </button>
+                </div>
+
                 <div className="steps-wrapper">{renderSteps()}</div>
               </div>
+              
             </>
           )}
         </div>

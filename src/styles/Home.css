@@ -70,6 +70,24 @@
   animation: fade-in 500ms ease-out, slide-in-from-bottom 500ms ease-out;
 }
 
+.reset-button-wrapper {
+  text-align: center;
+  margin: 2rem;
+  margin-bottom: 3rem;
+}
+
+.reset-btn{
+  background-color: #2563eb; 
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
 
 /* * FLOW INDICATOR WRAPPER
  * Clases: mt-8 md:mt-12 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-4 text-white
