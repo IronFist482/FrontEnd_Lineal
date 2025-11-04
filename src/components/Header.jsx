@@ -33,10 +33,11 @@ export function Header(props) {
             />
           </div>
         </div>
+
+        
       </div>
 
       {/* Título - Centro */}
-      {/* Se reemplazó <Card> por <div> estándar */}
       <div className="w-full lg:flex-1 rounded-2xl shadow-lg border-0 bg-white px-6 py-4 lg:px-8 lg:py-6 flex items-center justify-center">
         <h1 className="text-gray-800">Gauss Jordan</h1>
       </div>
@@ -64,4 +65,3 @@ export function Header(props) {
     </header>
   );
 }
-
