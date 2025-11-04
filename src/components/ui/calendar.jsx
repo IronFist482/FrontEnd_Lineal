@@ -1,20 +1,41 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
+import { cva } from "class-variance-authority";
 import '../../styles/calendar.css';
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
-// Simulación de buttonVariants, asumiendo que 'outline' y 'ghost' son las variantes usadas.
-const buttonVariants = ({ variant }) => {
-  if (variant === "outline") {
-    return "btn-outline btn-icon-size";
+const buttonVariants = cva(
+  "",
+  {
+    variants: {
+      variant: {
+        default: "btn-base",
+        outline: "btn-outline btn-icon-size",
+        ghost: "btn-ghost btn-icon-size",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
   }
-  if (variant === "ghost") {
-    return "btn-ghost btn-icon-size";
+);
+
+const calendarCellVariants = cva(
+  "calendar-cell-base",
+  {
+    variants: {
+      mode: {
+        single: "calendar-cell-single-mode",
+        range: "calendar-cell-range-mode",
+      },
+    },
+    defaultVariants: {
+      mode: "single",
+    },
   }
-  return "btn-base";
-};
+);
 
 function Calendar({
   className,
@@ -42,12 +63,7 @@ function Calendar({
         head_row: "calendar-head-row",
         head_cell: "calendar-head-cell",
         row: "calendar-row",
-        cell: cn(
-          "calendar-cell-base",
-          props.mode === "range"
-            ? "calendar-cell-range-mode"
-            : "calendar-cell-single-mode",
-        ),
+        cell: calendarCellVariants({ mode: props.mode }),
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "calendar-day",
@@ -79,5 +95,4 @@ function Calendar({
     />
   );
 }
-
 export { Calendar };

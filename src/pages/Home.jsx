@@ -3,10 +3,16 @@ import { Header } from '../components/Header';
 import { FileUploadArea } from '../components/FileUploadArea';
 import StepCard from '../components/StepCard';
 import { procesarMatriz } from '../api/api';
+import Modal from '../components/ui/modal';
 import '../styles/Home.css';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [showResults, setShowResults] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [apiResult, setApiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showAllSteps, setShowAllSteps] = useState(false);
 
@@ -43,6 +49,7 @@ export default function Home() {
       }));
     } finally {
       setIsLoading(false);
+      setModalOpen(true);
     }
   }, []);
 
@@ -200,6 +207,7 @@ export default function Home() {
             </>
           )}
         </div>
+        <Modal open={modalOpen} onChange={modalOpen}/>
 
         {!isLoading && !currentError && !currentResult && (
           <div className="flow-indicator-wrapper">
@@ -225,7 +233,9 @@ export default function Home() {
             </div>
           </div>
         )}
+        
       </div>
+      
     </div>
   );
 }
