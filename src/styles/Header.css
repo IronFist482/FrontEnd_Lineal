@@ -1,200 +1,162 @@
-:root {
-  /* Colores base */
-  
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --white: #ffffff;
-  --indigo-600: #4f46e5;
-  --indigo-700: #4338ca;
-  --indigo-50: #eef2ff;
-  --border: #e4e4e7; /* Asumido para Card/Button border */
-  --indigo-300: #a5b4fc;
-}
-
-/* * HEADER ROOT
- * Clases: flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4 lg:gap-6 mb-6 lg:mb-8
- */
 .header-root {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem; /* gap-4 */
-  margin-bottom: 1.5rem; /* mb-6 */
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
   .header-root {
     flex-direction: row;
     align-items: flex-start;
-    gap: 1.5rem; /* lg:gap-6 */
-    margin-bottom: 2rem; /* lg:mb-8 */
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
   }
 }
 
-/* * LOGOS WRAPPER
- * Clases: flex flex-col gap-3 lg:gap-4
- */
-.header-logos-wrapper {
+.logo-section {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* gap-3 */
+  gap: 0.75rem;
 }
 
 @media (min-width: 1024px) {
-  .header-logos-wrapper {
-    gap: 1rem; /* lg:gap-4 */
+  .logo-section {
+    gap: 1rem;
   }
 }
 
-/* * LOGOS CONTAINER
- * Clases: flex items-center gap-3 lg:gap-4
- */
-.header-logos-container {
+.logo-container {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* gap-3 */
+  gap: 0.75rem;
 }
 
 @media (min-width: 1024px) {
-  .header-logos-container {
-    gap: 1rem; /* lg:gap-4 */
+  .logo-container {
+    gap: 1rem;
   }
 }
 
-/* * LOGO BOX
- * Clases: w-16 h-16 lg:w-20 lg:h-20 bg-white rounded-2xl shadow-md flex items-center justify-center p-2
- */
-.logo-box {
+.logo-item {
   width: 4rem;
   height: 4rem;
-  background-color: var(--white);
-  border-radius: 1rem; /* rounded-2xl */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 @media (min-width: 1024px) {
-  .logo-box {
+  .logo-item {
     width: 5rem;
     height: 5rem;
+    padding: 0.5rem;
   }
 }
 
-/* * LOGO IMAGE
- * Clases: w-full h-full object-contain
- */
-.logo-image {
+.logo-item:hover {
+  transform: scale(1.05);
+}
+
+.logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* * SUBTEXT (2BM2)
- * Clases: text-gray-700 ml-2
- */
-.header-subtext {
-  color: var(--gray-700);
-  margin-left: 0.5rem; /* ml-2 */
+.section-info {
+  color: #4b5563;
+  margin-left: 0.5rem;
 }
 
-/* * TITLE CARD
- * Clases: w-full lg:flex-1 rounded-2xl shadow-lg border-0 bg-white px-6 py-4 lg:px-8 lg:py-6 flex items-center justify-center
- */
-.header-title-card {
+.title-section {
   width: 100%;
-  border-radius: 1rem; /* rounded-2xl */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   border: 0;
-  background-color: var(--white);
-  padding-left: 1.5rem; /* px-6 */
-  padding-right: 1.5rem; /* px-6 */
-  padding-top: 1rem; /* py-4 */
-  padding-bottom: 1rem; /* py-4 */
+  padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 @media (min-width: 1024px) {
-  .header-title-card {
-    flex: 1 1 0%; /* lg:flex-1 */
-    padding-left: 2rem; /* lg:px-8 */
-    padding-right: 2rem; /* lg:px-8 */
-    padding-top: 1.5rem; /* lg:py-6 */
-    padding-bottom: 1.5rem; /* lg:py-6 */
+  .title-section {
+    flex: 1 1 0%;
+    padding: 1.5rem 2rem;
   }
 }
 
-/* * HEADER TITLE (H1)
- * Clases: text-gray-800
- */
-.header-title {
-  color: var(--gray-800);
-  font-size: 1.5rem; /* Ajuste por defecto */
+.title-text {
+  color: #1f2937;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
-/* * BUTTONS WRAPPER
- * Clases: flex flex-row lg:flex-col gap-3 w-full lg:w-auto justify-between lg:justify-start
- */
-.header-buttons-wrapper {
+.operations-list {
   display: flex;
   flex-direction: row;
-  gap: 0.75rem; /* gap-3 */
+  gap: 0.75rem;
   width: 100%;
   justify-content: space-between;
 }
 
 @media (min-width: 1024px) {
-  .header-buttons-wrapper {
+  .operations-list {
     flex-direction: column;
-    width: auto; /* lg:w-auto */
+    gap: 0.75rem;
+    width: auto;
     justify-content: flex-start;
   }
 }
 
-/* * OPERATION BUTTON
- * Clases base: flex-1 lg:flex-none lg:min-w-[140px] rounded-xl shadow-md transition-all duration-200
- */
-.header-operation-button {
-  flex: 1 1 0%; /* flex-1 */
-  border-radius: 0.75rem; /* rounded-xl */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-  transition: all 200ms ease-in-out;
+.operation-button {
+  flex: 1 1 0%;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-width: 1px;
 }
 
 @media (min-width: 1024px) {
-  .header-operation-button {
-    flex: none; /* lg:flex-none */
+  .operation-button {
+    flex: none;
     min-width: 140px;
   }
 }
 
-/* * OPERATION BUTTON (SELECTED)
- * Clases: bg-indigo-600 hover:bg-indigo-700 text-white
- */
-.header-operation-button-selected {
-  background-color: var(--indigo-600);
-  color: var(--white);
-  border: 1px solid var(--indigo-600); /* Ajuste de borde para la variante 'default' */
-}
-.header-operation-button-selected:hover {
-  background-color: var(--indigo-700);
-  border-color: var(--indigo-700);
+.button-active {
+  background-color: #4f46e5;
+  color: #ffffff;
+  border-color: #4f46e5;
 }
 
-/* * OPERATION BUTTON (IDLE/OUTLINE)
- * Clases: bg-white hover:bg-indigo-50 hover:border-indigo-300 text-gray-700
- */
-.header-operation-button-idle {
-  background-color: var(--white);
-  color: var(--gray-700);
-  border: 1px solid var(--border); /* Ajuste de borde para la variante 'outline' */
+.button-active:hover {
+  background-color: #4338ca;
 }
-.header-operation-button-idle:hover {
-  background-color: var(--indigo-50);
-  border-color: var(--indigo-300);
+
+.button-inactive {
+  background-color: #ffffff;
+  color: #4b5563;
+  border-color: #d1d5db;
+}
+
+.button-inactive:hover {
+  background-color: #f3f4f6;
+  border-color: #6ee7b7;
 }
