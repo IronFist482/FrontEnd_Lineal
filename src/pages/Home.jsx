@@ -3,12 +3,14 @@ import { Header } from '../components/Header';
 import { FileUploadArea } from '../components/FileUploadArea';
 import { ResultsSection } from '../components/ResultsSection';
 import { procesarMatriz } from '../api/api';
+import Modal from '../components/ui/modal';
 import '../styles/Home.css';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
   const [uploadedFile, setUploadedFile] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [apiResult, setApiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,15 +29,17 @@ export default function Home() {
 
       const data = await procesarMatriz(operationToSend, file);
 
+      
       setApiResult(data);
       setShowResults(true);
 
     } catch (err) {
       console.error("Error al procesar la matriz:", err);
       setError(err.message || 'Ocurrió un error al procesar el archivo.');
-      setShowResults(false); 
+      setShowResults(false);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
+      setModalOpen(true);
     }
   };
 
@@ -83,6 +87,7 @@ export default function Home() {
             </div>
           )}
         </div>
+        <Modal open={modalOpen} onChange={modalOpen}/>
 
         {!showResults && !isLoading && !error && (
           <div className="flow-indicator-wrapper">
@@ -108,7 +113,9 @@ export default function Home() {
             </div>
           </div>
         )}
+        
       </div>
+      
     </div>
   );
 }

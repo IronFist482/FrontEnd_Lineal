@@ -1,0 +1,79 @@
+.dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialog-content {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 450px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+.dialog-content:focus {
+  outline: none;
+}
+
+.dialog-content h1 {
+  color: #646cff;
+  font-size: 1.8em;
+  margin-bottom: 10px;
+}
+
+.dialog-content p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1em;
+  margin-bottom: 25px;
+}
+
+.close-button {
+  all: unset;
+  border-radius: 6px;
+  border: 1px solid #646cff;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.25s;
+  color: #646cff;
+}
+
+.close-button:hover {
+  background-color: #646cff;
+  color: #1a1a1a;
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

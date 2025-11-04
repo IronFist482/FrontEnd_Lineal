@@ -18,8 +18,7 @@ export const procesarMatriz = async (operacion, archivo) => {
       const errorData = await response.json();
       throw new Error(errorData.detail || `Error HTTP: ${response.status}`);
     }
-    console.log("Respuesta de la API recibida.");
-    console.log(response);
+
     return await response.json();
 
   } catch (error) {
