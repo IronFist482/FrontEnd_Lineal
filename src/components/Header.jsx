@@ -33,7 +33,6 @@ export function Header(props) {
             />
           </div>
         </div>
-        <div className="text-gray-700 ml-2">2BM2</div>
       </div>
 
       {/* Título - Centro */}

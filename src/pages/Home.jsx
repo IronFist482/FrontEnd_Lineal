@@ -8,9 +8,8 @@ import '../styles/Home.css';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [showResults, setShowResults] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [contador, setContador] = useState(0);
 
   const [apiResult, setApiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +48,7 @@ export default function Home() {
       }));
     } finally {
       setIsLoading(false);
-      setModalOpen(true);
+      
     }
   }, []);
 
@@ -156,6 +155,10 @@ export default function Home() {
       [operationKey]: { file: null, result: null, error: null },
     }));
     setShowAllSteps(false);
+    setContador(contador + 1);
+    if (contador % 3 === 2) {
+      setModalOpen(true);
+    }
   };
 
   return (
@@ -207,7 +210,7 @@ export default function Home() {
             </>
           )}
         </div>
-        <Modal open={modalOpen} onChange={modalOpen}/>
+        <Modal open={modalOpen} onOpenChange={setModalOpen}/>
 
         {!isLoading && !currentError && !currentResult && (
           <div className="flow-indicator-wrapper">
@@ -233,9 +236,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        
       </div>
-      
     </div>
   );
 }

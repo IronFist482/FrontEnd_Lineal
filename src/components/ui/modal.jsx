@@ -1,29 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import '../../styles/modal.css';
 
 function Modal({ open, onOpenChange }) {
-  const initialSeconds = 30;
+  const initialSeconds = 5;
   const [seconds, setSeconds] = useState(initialSeconds);
   const [isTimerFinished, setIsTimerFinished] = useState(false);
 
   useEffect(() => {
-    let interval = null;
-    
     if (open) {
       setSeconds(initialSeconds);
       setIsTimerFinished(false);
     }
-    
-    if (seconds > 0) {
+  }, [open]);
+
+  useEffect(() => {
+    let interval = null;
+
+    if (open && seconds > 0) {
       interval = setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds - 1);
       }, 1000);
-    } else if (seconds === 0 && !isTimerFinished) {
-      setIsTimerFinished(true);
+    } 
+    if (open && seconds === 0 && !isTimerFinished) {
+      setIsTimerFinished(true); 
     }
 
     return () => clearInterval(interval);
-  }, [open]);
+    
+  }, [open, seconds, isTimerFinished]);
+
+  const handleClose = () => {
+    onOpenChange(false);
+  };
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -32,17 +41,20 @@ function Modal({ open, onOpenChange }) {
         <Dialog.Content className="dialog-content">
           <Dialog.Title>¡Tómate un Respiro!</Dialog.Title>
           <Dialog.Description>
-            Inhala contando hasta 4. Exhala contando hasta 6.
-          </Dialog.Description>
-          
-          <div className="timer-display">
-            <span>{seconds}</span>
-          </div>
+            Inhala contando hasta 4.
+            Exhala contando hasta 6.
+            <br/><br/>
+            {seconds > 0 ? <span>{seconds}</span> : '¡Listo!'
 
+            }
+            
+          </Dialog.Description>
           <Dialog.Close asChild>
             <button 
               className="close-button" 
-              disabled={!isTimerFinished} 
+              disabled={!isTimerFinished}
+              onClick={handleClose}
+              
             >
               {isTimerFinished ? 'Continuar Navegando' : 'Esperando...'}
             </button>
