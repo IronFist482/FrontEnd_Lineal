@@ -1,4 +1,3 @@
-
 const API_URL = 'https://proyectoalgebralineal-production.up.railway.app';
 //const API_URL = 'http://127.0.0.1:8000';
 

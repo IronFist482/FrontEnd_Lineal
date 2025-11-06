@@ -1,33 +1,105 @@
+import { useState } from 'react';
 import { Card } from './ui/card';
+import StepCard from './StepCard';
 import '../styles/ResultsSection.css';
+import { BlockMath } from 'react-katex'; 
 
-export function ResultsSection({ result, explanation }) {
+function MatrixRenderer({ data, operationType }) {
+  if (!data || data.length === 0) {
+    return <span>Matriz no disponible</span>;
+  }
+
+  const rows = data.map(row => row.join(' & ')).join(' \\\\ ');
+  let latex;
+  const numCols = data[0].length;
+  const isAugmented = numCols > data.length; 
+
+  switch (operationType) {
+    case 'Determinante':
+      latex = `\\begin{vmatrix} ${rows} \\end{vmatrix}`;
+      break;
+
+    case 'SEL':
+      const arrayColsSEL = 'c '.repeat(numCols - 1) + '| c';
+      latex = `\\left[\\begin{array}{${arrayColsSEL}} ${rows} \\end{array}\\right]`;
+      break;
+      
+    case 'Inversa':
+      if (isAugmented) {
+          const halfCols = numCols / 2;
+          const arrayColsInv = 'c '.repeat(halfCols) + '| ' + 'c '.repeat(halfCols - 1) + 'c';
+          latex = `\\left[\\begin{array}{${arrayColsInv}} ${rows} \\end{array}\\right]`;
+      } else {
+          latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
+      }
+      break;
+      
+    default:
+      latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
+  }
+
+  return (
+    <div className="matrix-display-latex">
+      <BlockMath math={latex} />
+    </div>
+  );
+}
+
+export function ResultsSection({ result, explanation, originalMatrix, lastMatrix, fullSteps, operationType }) {
+  const [showSteps, setShowSteps] = useState(false);
+const finalMatrixTitle = operationType === 'Determinante' ? 'Matriz Triangular' : 'Matriz Final';
   return (
     <Card className="results-section-root">
-      {/* Resultado */}
-      <div className="results-section-result-wrapper">
-        <h3 className="results-section-title">Resultado</h3>
-        <div className="results-section-result-box">
-          <p className="results-section-result-text">{result}</p>
-        </div>
-      </div>
+      
+      {(originalMatrix || lastMatrix) && (
+        <>
+          <div className="results-section-matrices-container">
+            {originalMatrix && (
+              <div className="results-section-matrix-box">
+                <h4 className="matrix-subtitle">Original</h4>
+                <MatrixRenderer data={originalMatrix} operationType={operationType} />
+              </div>
+            )}
+      
+            <div className="results-section-result-wrapper">
+              <h3 className="results-section-title">Resultado</h3>
+              <div className="results-section-result-box">
+                <p className="results-section-result-text">{result}</p>
+              </div>
+            </div>
 
-      {/* Explicación paso a paso */}
-      <div>
-        <h3 className="results-section-title">Explicación paso a paso</h3>
-        <div className="results-section-explanation-box">
-          <ol className="results-section-explanation-list">
-            {explanation.map((step, index) => (
-              <li key={index} className="results-section-step-item">
-                <span className="results-section-step-number">
-                  {index + 1}
-                </span>
-                <p className="results-section-step-text">{step}</p>
-              </li>
-            ))}
-          </ol>
+            {lastMatrix && (
+              <div className="results-section-matrix-box">
+                <h4 className="matrix-subtitle">{finalMatrixTitle}</h4> 
+                <MatrixRenderer data={lastMatrix} operationType={operationType} />
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      <button
+        className="ver-pasos-btn"
+        onClick={() => setShowSteps(!showSteps)}
+      >
+        {showSteps ? "Ocultar pasos completos" : "Ver pasos completos"}
+      </button>
+
+      {showSteps && (
+        <div className="full-steps-list">
+          {fullSteps.map((step, index) => (
+            <StepCard
+              key={index}
+              stepNumber={index + 1}
+              operationName={step.operationName}
+              operationDetail={step.operationDetail}
+              matrix={step.matrix} 
+              operationType={operationType} 
+            />
+          ))}
         </div>
-      </div>
+      )}
+
     </Card>
   );
 }

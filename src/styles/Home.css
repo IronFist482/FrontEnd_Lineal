@@ -2,6 +2,7 @@
   /* Color de fondo: bg-[#8ED6E8] (celeste claro IPN) */
   --ipn-light-blue: #8ed6e8;
   --white: #ffffff;
+  
 }
 
 /* * HOME ROOT
@@ -75,13 +76,13 @@
  * Clases: mt-8 md:mt-12 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-4 text-white
  */
 .flow-indicator-wrapper {
-  margin-top: 2rem; /* mt-8 */
+  margin-top: 0rem; /* mt-8 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem; /* gap-4 */
-  color: var(--white);
+  color: #1f2937;
 }
 
 @media (min-width: 768px) {
@@ -99,6 +100,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
 }
 
 /* * FLOW STEP NUMBER BOX
@@ -107,7 +109,7 @@
 .flow-step-number-box {
   width: 2rem; /* w-8 */
   height: 2rem; /* h-8 */
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: white;
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -150,9 +152,9 @@
  * Clases: w-0.5 h-8 md:w-8 md:h-0.5 bg-white/40
  */
 .flow-separator {
-  background-color: rgba(255, 255, 255, 0.4);
-  width: 0.125rem; /* w-0.5 */
-  height: 2rem; /* h-8 */
+  background-color: black;  
+  width: 0.125  rem; /* w-0.5 */
+  height: 1rem; /* h-8 */
 }
 
 
@@ -208,27 +210,30 @@
   font-size: 1rem;
 }
 
-/* * Matriz */
-.matriz-inicial-display {
-  background-color: #ffffff; 
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  width: 100%;
-  box-sizing: border-box;
-  animation: fadeIn 0.5s ease-out; 
+
+.ver-pasos-btn {
+    display: block;
+    width: 20%;
+    padding: 10px;
+    margin-top: 50px;
+    margin: 50px auto 0;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
-.matriz-texto {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  color: #333;
-  background-color: #fff;
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  overflow-x: auto; 
-  text-align: left;
+.ver-pasos-btn:hover {
+    background-color: #0056b3;
+}
+
+.ver-pasos-btn:active {
+    transform: translateY(1px);
 }
 
 

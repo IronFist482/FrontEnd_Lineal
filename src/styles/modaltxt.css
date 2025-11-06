@@ -1,0 +1,126 @@
+.txt-modal-content {
+    padding: 25px;
+    max-width: 850px; 
+    width: 95vw; 
+}
+
+.txt-title {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #ffff;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.txt-description {
+    line-height: 1.5;
+    color: #333;
+    font-size: 0.95em;
+    margin-bottom: 15px; 
+}
+
+
+.txt-horizontal-layout {
+    display: flex;
+    flex-direction: column; /* Por defecto, apilado en móvil */
+    gap: 30px;
+    margin-top: 15px;
+}
+
+/* Aplicar horizontalidad en pantallas medianas y grandes */
+@media (min-width: 768px) {
+    .txt-horizontal-layout {
+        flex-direction: row; /* Horizontal en desktop */
+        justify-content: space-between;
+    }
+}
+
+.txt-rules-section,
+.txt-example-section {
+    /* Las secciones ocupan el mismo espacio en desktop */
+    flex: 1; 
+}
+
+/* --- Subtítulos y Reglas --- */
+
+.txt-subtitle {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #007bff;
+    margin-top: 0; /* Reiniciar márgenes */
+    margin-bottom: 10px;
+}
+
+.txt-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.txt-list li {
+    position: relative;
+    margin-bottom: 10px;
+    padding-left: 25px; /* Más espacio para la viñeta */
+    font-size: 0.95em;
+}
+
+.txt-list li::before {
+    content: '→'; /* Viñeta más estilizada */
+    color: #28a745; 
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1.5em; /* Posicionar la viñeta fuera del texto */
+}
+
+/* --- Ejemplo de Formato (Pre) --- */
+
+.txt-format-example {
+    background-color: #f0f8ff; /* Fondo más claro y profesional */
+    border: 1px dashed #007bff; /* Borde más distintivo */
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    font-family: monospace;
+    white-space: pre; /* Mantener formato sin envoltura si es muy ancho */
+    overflow-x: auto;
+    color: #1a1a1a;
+    font-size: 0.95em;
+    line-height: 1.3;
+}
+
+.txt-example-note {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 10px;
+    font-style: italic;
+    border-top: 1px solid #eee;
+    padding-top: 5px;
+}
+
+/* --- Botón de Cierre (Centrado y Destacado) --- */
+
+.txt-close-button {
+    display: block;
+    width: 100%;
+    max-width: 300px; /* Ancho máximo para el botón */
+    height: 45px;
+    margin: 30px auto 0; /* Centrado horizontal y margen superior */
+    border-radius: 25px; /* Botón más redondeado */
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    border: none;
+}
+
+.txt-close-button.txt-primary-action {
+    background-color: #007bff;
+    color: white;
+}
+
+.txt-close-button.txt-primary-action:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
