@@ -33,11 +33,13 @@ export default function Home() {
     try {
       const operationToSend = operationKey;
       const data = await procesarMatriz(operationToSend, file);
+      
 
       setOperationCache((prevCache) => ({
         ...prevCache,
         [operationKey]: { file: file, result: data, error: null },
       }));
+      
     } catch (err) {
       const errorMessage = err.message || 'Ocurrió un error al procesar el archivo.';
       console.error('Error al procesar la matriz:', err);
@@ -111,8 +113,11 @@ export default function Home() {
     if (!currentResult?.matrices_pasos?.length) {
       return <p>No hay pasos para mostrar.</p>;
     }
+    
 
     const pasos = currentResult.matrices_pasos;
+    console.log("Api devuelve:", currentResult);
+    console.log("Matriz:", currentResult.matrices_pasos_id);
     const operaciones = currentResult.matrices_pasos_id || [];
 
     const combined = pasos.map((matriz, index) => ({
@@ -120,6 +125,7 @@ export default function Home() {
       operationName: currentResult.operacion || 'Operación',
       operationDetail: getOperacionDescripcion(operaciones[index] || []),
       matrix: matriz,
+
     }));
 
     const stepsToDisplay = showAllSteps ? combined : combined.slice(0, 1);
