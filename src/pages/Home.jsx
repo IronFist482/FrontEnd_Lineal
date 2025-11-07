@@ -1,19 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
 import { FileUploadArea } from '../components/FileUploadArea';
-import StepCard from '../components/StepCard';
+import { ResultsSection } from '../components/ResultsSection';
 import { procesarMatriz } from '../api/api';
+import { toFrac, matrixToFraction } from "../utils/formatFraction";
+import { InlineMath } from 'react-katex';
 import Modal from '../components/ui/modal';
+import InstructionsModal from '../components/ui/InstructionsModal';
 import '../styles/Home.css';
+import 'katex/dist/katex.min.css';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
-  const [modalOpen, setModalOpen] = useState(false);
+  const [restModalOpen, setRestModalOpen] = useState(false);
+  const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
   const [contador, setContador] = useState(0);
-
-  const [apiResult, setApiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showAllSteps, setShowAllSteps] = useState(false);
 
   const [operationCache, setOperationCache] = useState({
     Determinante: { file: null, result: null, error: null },
@@ -21,228 +23,159 @@ export default function Home() {
     SEL: { file: null, result: null, error: null },
   });
 
-  const opKey = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
-  const currentData = operationCache[opKey];
+  const operationMap = {
+    Determinante: 'Determinante',
+    Inversa: 'Inversa',
+    'S.E.L.': 'SEL',
+  };
+
+  const opKey = operationMap[selectedOperation] || selectedOperation;
+  const currentData = operationCache[opKey] || { file: null, result: null, error: null };
   const currentResult = currentData.result;
   const currentError = currentData.error;
 
   const runOperation = useCallback(async (operation, file) => {
     setIsLoading(true);
-    const operationKey = operation === 'S.E.L.' ? 'SEL' : operation;
-
+    const operationKey = operationMap[operation] || operation;
     try {
-      const operationToSend = operationKey;
-      const data = await procesarMatriz(operationToSend, file);
-
-      setOperationCache((prevCache) => ({
-        ...prevCache,
-        [operationKey]: { file: file, result: data, error: null },
+      const data = await procesarMatriz(operationKey, file);
+      setOperationCache(prev => ({
+        ...prev,
+        [operationKey]: { file, result: data, error: null },
       }));
     } catch (err) {
-      const errorMessage = err.message || 'Ocurrió un error al procesar el archivo.';
-      console.error('Error al procesar la matriz:', err);
-
-      setOperationCache((prevCache) => ({
-        ...prevCache,
-        [operationKey]: { file: file, result: null, error: errorMessage },
+      const message = err?.message || 'Ocurrió un error al procesar el archivo.';
+      setOperationCache(prev => ({
+        ...prev,
+        [operationKey]: { file, result: null, error: message },
       }));
     } finally {
       setIsLoading(false);
-      
     }
-  }, []);
+  }, [operationMap]);
 
   const getOperacionDescripcion = (op) => {
-    if (!op || op.length === 0) return 'Operación desconocida';
+    if (!Array.isArray(op) || op.length === 0) {
+      return { name: 'Operación desconocida', detail: '' };
+    }
 
     const tipo = op[0];
-    switch (tipo) {
-      case 1:
-        if (op.length >= 3) return `Intercambio de filas F${op[1]} ↔ F${op[2]}`;
-        return 'Intercambio de filas';
-      case 2:
-        if (op.length >= 2) return `La fila pivote se multiplicó por ${op[1]}`;
-        return 'Escalamiento de fila';
-      case 3:
-        return 'Se hicieron ceros debajo del pivote';
-      case 4:
-        return 'Se hicieron ceros arriba del pivote';
-      default:
-        return 'Operación desconocida';
+
+    if (tipo === 1) {
+      const origen = op[1], destino = op[2];
+      return {
+        name: `Intercambio de filas F${origen} ↔ F${destino}`,
+        detail: <InlineMath math={`F_{${origen}} \\leftrightarrow F_{${destino}}`} />,
+      };
     }
+
+    if (tipo === 2) {
+      const factor = toFrac(op[1]);
+      return {
+        name: "Multiplicación de fila",
+        detail: <InlineMath math={`\\frac{1}{${factor}} \\cdot F_p \\rightarrow F_p`} />,
+      };
+    }
+
+    if (tipo === 3 || tipo === 4) {
+      const fila = op[1], col = op[2];
+      return {
+        name: tipo === 3 ? 'Ceros debajo del pivote' : 'Ceros arriba del pivote',
+        detail: <InlineMath math={`F_{${fila + 1}}, C_{${col + 1}}`} />,
+      };
+    }
+
+    return { name: `Operación desconocida (tipo ${tipo})`, detail: <InlineMath math={JSON.stringify(op)} /> };
   };
 
-  const handleFileSelect = (file) => {
-    runOperation(selectedOperation, file);
-  };
-
-  const renderMatrix = (mat) => (
-    <table className="matrix">
-      <tbody>
-        {mat.map((row, i) => (
-          <tr key={i}>
-            {row.map((value, j) => (
-              <td key={j}>{value}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+  const handleFileSelect = (file) => runOperation(selectedOperation, file);
 
   const formatComentario = (comentario) => {
-    if (typeof comentario === 'string') return comentario;
-
-    if (typeof comentario === 'object' && comentario !== null) {
-      return Object.entries(comentario)
-        .map(([key, value]) => {
-          if (typeof value === 'string' && value.includes('ℝ')) {
-            return `${key} ${value}`;
-          }
-          return `${key} = ${value}`;
-        })
+    if (typeof comentario === "string") {
+      return <p className="results-section-result-text">{comentario}</p>;
+    }
+    if (typeof comentario === "object" && comentario !== null) {
+      const latexContent = Object.entries(comentario)
+        .map(([key, value]) => `${key} = ${toFrac(value)}`)
         .join(', ');
+
+      return (
+        <div className="latex-result-box">
+          <InlineMath math={latexContent} />
+        </div>
+      );
     }
 
-    return 'Respuesta no válida.';
+    return <p className="results-section-result-text">Respuesta no válida.</p>;
   };
 
-  const renderSteps = () => {
-    if (!currentResult?.matrices_pasos?.length) {
-      return <p>No hay pasos para mostrar.</p>;
-    }
+  const originalMatrix = currentResult?.matriz_inicial ? matrixToFraction(currentResult.matriz_inicial) : null;
 
-    const pasos = currentResult.matrices_pasos;
-    const operaciones = currentResult.matrices_pasos_id || [];
+  const lastMatrix = currentResult?.matrices_pasos?.length > 0
+    ? matrixToFraction(currentResult.matrices_pasos.slice(-1)[0])
+    : null;
 
-    const combined = pasos.map((matriz, index) => ({
-      stepNumber: index + 1,
-      operationName: currentResult.operacion || 'Operación',
-      operationDetail: getOperacionDescripcion(operaciones[index] || []),
-      matrix: matriz,
-    }));
+  const explanationSteps =
+    (currentResult?.matrices_pasos_id || []).map(op => getOperacionDescripcion(op).name) || [];
 
-    const stepsToDisplay = showAllSteps ? combined : combined.slice(0, 1);
-
-    return (
-      <>
-        {stepsToDisplay.map((s) => (
-          <StepCard
-            key={s.stepNumber}
-            stepNumber={s.stepNumber}
-            operationName={s.operationName}
-            operationDetail={s.operationDetail}
-            matrix={s.matrix}
-          />
-        ))}
-
-        {combined.length > 1 && (
-          <button
-            onClick={() => setShowAllSteps(!showAllSteps)}
-            className="show-all-btn"
-          >
-            {showAllSteps ? 'Ocultar pasos' : 'Ver pasos completos'}
-          </button>
-        )}
-      </>
-    );
-  };
+  const fullSteps =
+    (currentResult?.matrices_pasos || []).map((matrix, i) => {
+      const desc = getOperacionDescripcion((currentResult?.matrices_pasos_id || [])[i]);
+      return { operationName: desc.name, operationDetail: desc.detail, matrix: matrixToFraction(matrix) };
+    }) || [];
 
   const handleReset = () => {
-    const operationKey = selectedOperation === 'S.E.L.' ? 'SEL' : selectedOperation;
-    setOperationCache((prevCache) => ({
-      ...prevCache,
-      [operationKey]: { file: null, result: null, error: null },
-    }));
-    setShowAllSteps(false);
-    setContador(contador + 1);
-    if (contador % 3 === 2) {
-      setModalOpen(true);
-    }
+    setOperationCache(prev => ({ ...prev, [opKey]: { file: null, result: null, error: null } }));
+    setContador(c => c + 1);
+    if ((contador + 1) % 3 === 0) setRestModalOpen(true);
   };
 
   return (
+    // ... el resto del JSX se mantiene igual ...
     <div className="home-root">
       <div className="home-container">
-        <Header
-          selectedOperation={selectedOperation}
-          onOperationChange={setSelectedOperation}
-          onResetClick={handleReset}
-        />
+        <Header selectedOperation={selectedOperation} onOperationChange={setSelectedOperation} onResetClick={handleReset} />
+
+        {!isLoading && !currentError && !currentResult && (
+          <>
+            <div className="flow-indicator-wrapper">
+              <div className="flow-step"><div className="flow-step-number-box"><span className="flow-step-number">1</span></div><span className="flow-step-text">Seleccionar operación</span></div>
+              <div className="flow-separator"></div>
+              <div className="flow-step"><div className="flow-step-number-box"><span className="flow-step-number">2</span></div><span className="flow-step-text">Subir archivo .txt</span></div>
+              <div className="flow-separator"></div>
+              <div className="flow-step"><div className="flow-step-number-box"><span className="flow-step-number">3</span></div><span className="flow-step-text">Ver resultado</span></div>
+            </div>
+
+            <div className="flow-indicator-wrapper instructions-button" onClick={() => setInstructionsModalOpen(true)}>
+              <div className="flow-step"><div className="flow-step-number-box"><span className="flow-step-number">?</span></div><span className="flow-step-text">¿Cómo debe ser el archivo TXT?</span></div>
+            </div>
+          </>
+        )}
 
         <div className="home-content-area">
-          {!isLoading && !currentError && !currentResult && (
-            <FileUploadArea onFileSelect={handleFileSelect} />
-          )}
-
-          {isLoading && (
-            <div className="loading-indicator">Procesando matriz...</div>
-          )}
-
+          {!isLoading && !currentError && !currentResult && (<FileUploadArea onFileSelect={handleFileSelect} />)}
+          {isLoading && <div className="loading-indicator">Procesando matriz...</div>}
           {currentError && (
             <div className="error-message">
               <strong>Error:</strong> {currentError}
-              <button onClick={handleReset} className="reset-btn-error">
-                Intentar de nuevo
-              </button>
+              <button onClick={handleReset} className="reset-btn-error">Intentar de nuevo</button>
             </div>
           )}
 
           {currentResult && (
-            <>
-              <div className="matriz-inicial-display">
-                <span className="resultado-titulo">Matriz Original:</span>
-                <div className="matrix-container">
-                  {renderMatrix(currentResult.matriz_inicial)}
-                </div>
-              </div>
-
-              <div className="results-animation-wrapper">
-                <div className="resultado-final math-result">
-                  <span className="resultado-titulo">Resultado:</span>
-                  <p className="resultado-texto">
-                    {formatComentario(currentResult.comentario)}
-                  </p>
-                </div>
-
-                <div className="reset-button-wrapper">
-                  <button onClick={handleReset} className="reset-btn">
-                    Realizar otra operación
-                  </button>
-                </div>
-
-                <div className="steps-wrapper">{renderSteps()}</div>
-              </div>
-              
-            </>
+            <ResultsSection
+              result={formatComentario(currentResult.comentario)}
+              explanation={explanationSteps}
+              originalMatrix={originalMatrix}
+              lastMatrix={lastMatrix}
+              fullSteps={fullSteps}
+              operationType={opKey}
+            />
           )}
         </div>
-        <Modal open={modalOpen} onOpenChange={setModalOpen}/>
 
-        {!isLoading && !currentError && !currentResult && (
-          <div className="flow-indicator-wrapper">
-            <div className="flow-step">
-              <div className="flow-step-number-box">
-                <span className="flow-step-number">1</span>
-              </div>
-              <span className="flow-step-text">Seleccionar operación</span>
-            </div>
-            <div className="flow-separator"></div>
-            <div className="flow-step">
-              <div className="flow-step-number-box">
-                <span className="flow-step-number">2</span>
-              </div>
-              <span className="flow-step-text">Subir archivo .txt</span>
-            </div>
-            <div className="flow-separator"></div>
-            <div className="flow-step">
-              <div className="flow-step-number-box">
-                <span className="flow-step-number">3</span>
-              </div>
-              <span className="flow-step-text">Ver resultado</span>
-            </div>
-          </div>
-        )}
+        <Modal open={restModalOpen} onOpenChange={setRestModalOpen} type="rest" />
+        <InstructionsModal open={instructionsModalOpen} onOpenChange={setInstructionsModalOpen} />
       </div>
     </div>
   );
