@@ -26,6 +26,7 @@
     padding: 1.5rem;
   }
 }
+
 @media (min-width: 1024px) {
   .results-section-root {
     padding: 2rem;
@@ -34,11 +35,12 @@
 
 
 /* * RESULT WRAPPER
- * Clases: mb-6 md:mb-8
- */
+ * Clases: mb-6 md:mb-8
+ */
 .results-section-result-wrapper {
   margin-bottom: 1.5rem;
 }
+
 @media (min-width: 768px) {
   .results-section-result-wrapper {
     margin-bottom: 2rem;
@@ -46,13 +48,14 @@
 }
 
 /* * TITLES (H3)
- * Clases: text-gray-800 mb-3 md:mb-4
- */
+ * Clases: text-gray-800 mb-3 md:mb-4
+ */
 .results-section-title {
-  color: var(--gray-800);
-  margin-bottom: 0.75rem;
-  font-size: 1.25rem; /* Ajuste asumido para H3 */
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
+
 @media (min-width: 768px) {
   .results-section-title {
     margin-bottom: 1rem;
@@ -60,14 +63,15 @@
 }
 
 /* * RESULT BOX
- * Clases: bg-gray-50 rounded-xl p-4 md:p-6 border border-gray-200
- */
+ * Clases: bg-gray-50 rounded-xl p-4 md:p-6 border border-gray-200
+ */
 .results-section-result-box {
-  background-color: var(--gray-50);
+  -color: var(--gray-50);
   border-radius: 0.75rem;
   padding: 1rem;
-  border: 1px solid var(--gray-200);
+
 }
+
 @media (min-width: 768px) {
   .results-section-result-box {
     padding: 1.5rem;
@@ -75,14 +79,13 @@
 }
 
 /* * RESULT TEXT (P)
- * Clases: text-gray-700 font-mono whitespace-pre-wrap text-sm md:text-base
- */
+ * Clases: text-gray-700 font-mono whitespace-pre-wrap text-sm md:text-base
+ */
 .results-section-result-text {
-  color: var(--gray-700);
-  font-family: monospace;
+  color: black;
   white-space: pre-wrap;
-  font-size: 0.875rem;
 }
+
 @media (min-width: 768px) {
   .results-section-result-text {
     font-size: 1rem;
@@ -90,14 +93,15 @@
 }
 
 /* * EXPLANATION BOX
- * Clases: bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 md:p-6 border border-indigo-100
- */
+ * Clases: bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 md:p-6 border border-indigo-100
+ */
 .results-section-explanation-box {
   background: linear-gradient(to bottom right, var(--indigo-50), var(--purple-50));
   border-radius: 0.75rem;
   padding: 1rem;
   border: 1px solid var(--indigo-100);
 }
+
 @media (min-width: 768px) {
   .results-section-explanation-box {
     padding: 1.5rem;
@@ -105,69 +109,85 @@
 }
 
 /* * EXPLANATION LIST (OL)
- * Clases: space-y-3 md:space-y-4
- */
+ * Clases: space-y-3 md:space-y-4
+ */
 .results-section-explanation-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* space-y-3 */
+  gap: 0.75rem;
+  /* space-y-3 */
 }
+
 @media (min-width: 768px) {
   .results-section-explanation-list {
-    gap: 1rem; /* md:space-y-4 */
+    gap: 1rem;
+    /* md:space-y-4 */
   }
 }
 
 /* * STEP ITEM (LI)
- * Clases: flex gap-3 md:gap-4
- */
+ * Clases: flex gap-3 md:gap-4
+ */
 .results-section-step-item {
   display: flex;
-  gap: 0.75rem; /* gap-3 */
+  gap: 0.75rem;
+  /* gap-3 */
 }
+
 @media (min-width: 768px) {
   .results-section-step-item {
-    gap: 1rem; /* md:gap-4 */
+    gap: 1rem;
+    /* md:gap-4 */
   }
 }
 
 /* * STEP NUMBER (SPAN)
- * Clases: flex-shrink-0 w-7 h-7 md:w-8 md:h-8 bg-indigo-600 text-white rounded-full 
- * flex items-center justify-center text-sm md:text-base
- */
+ * Clases: flex-shrink-0 w-7 h-7 md:w-8 md:h-8 bg-indigo-600 text-white rounded-full 
+ * flex items-center justify-center text-sm md:text-base
+ */
 .results-section-step-number {
   flex-shrink: 0;
-  width: 1.75rem; /* w-7 */
-  height: 1.75rem; /* h-7 */
+  width: 1.75rem;
+  /* w-7 */
+  height: 1.75rem;
+  /* h-7 */
   background-color: var(--indigo-600);
   color: var(--white);
-  border-radius: 9999px; /* rounded-full */
+  border-radius: 9999px;
+  /* rounded-full */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
 }
+
 @media (min-width: 768px) {
   .results-section-step-number {
-    width: 2rem; /* md:w-8 */
-    height: 2rem; /* md:h-8 */
-    font-size: 1rem; /* md:text-base */
+    width: 2rem;
+    /* md:w-8 */
+    height: 2rem;
+    /* md:h-8 */
+    font-size: 1rem;
+    /* md:text-base */
   }
 }
 
 /* * STEP TEXT (P)
- * Clases: text-gray-700 pt-1 text-sm md:text-base
- */
+ * Clases: text-gray-700 pt-1 text-sm md:text-base
+ */
 .results-section-step-text {
   color: var(--gray-700);
-  padding-top: 0.25rem; /* pt-1 */
+  padding-top: 0.25rem;
+  /* pt-1 */
   font-size: 0.875rem;
 }
+
 @media (min-width: 768px) {
   .results-section-step-text {
-    font-size: 1rem; /* md:text-base */
+    font-size: 1rem;
+    /* md:text-base */
   }
 }

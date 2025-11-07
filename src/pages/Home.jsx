@@ -91,17 +91,29 @@ export default function Home() {
   const handleFileSelect = (file) => runOperation(selectedOperation, file);
 
   const formatComentario = (comentario) => {
-    if (typeof comentario === "string") return comentario;
+    if (typeof comentario === "string") {
+      return <p className="results-section-result-text">{comentario}</p>;
+    }
     if (typeof comentario === "object" && comentario !== null) {
-      return Object.entries(comentario)
+      const latexContent = Object.entries(comentario)
         .map(([key, value]) => `${key} = ${toFrac(value)}`)
         .join(', ');
+
+      return (
+        <div className="latex-result-box">
+          <InlineMath math={latexContent} />
+        </div>
+      );
     }
-    return "Respuesta no válida.";
+
+    return <p className="results-section-result-text">Respuesta no válida.</p>;
   };
 
   const originalMatrix = currentResult?.matriz_inicial ? matrixToFraction(currentResult.matriz_inicial) : null;
-  const lastMatrix = currentResult ? matrixToFraction(currentResult.matrices_pasos.slice(-1)[0]) : null;
+
+  const lastMatrix = currentResult?.matrices_pasos?.length > 0
+    ? matrixToFraction(currentResult.matrices_pasos.slice(-1)[0])
+    : null;
 
   const explanationSteps =
     (currentResult?.matrices_pasos_id || []).map(op => getOperacionDescripcion(op).name) || [];
@@ -119,6 +131,7 @@ export default function Home() {
   };
 
   return (
+    // ... el resto del JSX se mantiene igual ...
     <div className="home-root">
       <div className="home-container">
         <Header selectedOperation={selectedOperation} onOperationChange={setSelectedOperation} onResetClick={handleReset} />
@@ -161,7 +174,6 @@ export default function Home() {
           )}
         </div>
 
-        <Modal open={instructionsModalOpen} onOpenChange={setInstructionsModalOpen} type="instructions" />
         <Modal open={restModalOpen} onOpenChange={setRestModalOpen} type="rest" />
         <InstructionsModal open={instructionsModalOpen} onOpenChange={setInstructionsModalOpen} />
       </div>

@@ -1,77 +1,93 @@
-import React from 'react';
+
 import * as Dialog from '@radix-ui/react-dialog';
-import '../../styles/modaltxt.css'; 
 import { InlineMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+import '../../styles/modaltxt.css'; 
 
 export default function InstructionsModal({ open, onOpenChange }) {
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
-                <Dialog.Overlay className="dialog-overlay" /> 
-                <Dialog.Content className="dialog-content txt-modal-content">
+                {/* 1. Fondo (Overlay) */}
+                <Dialog.Overlay className="info-modal__overlay" />
+                
+                {/* 2. Contenido del Modal */}
+                <Dialog.Content className="info-modal__content">
                     
-                    <Dialog.Title className="txt-title">Formato Requerido del Archivo TXT</Dialog.Title>
+                    {/* Encabezado */}
+                    <header className="info-modal__header">
+                        <Dialog.Title className="info-modal__title">
+                            Especificaciones del Archivo de Entrada (.txt)
+                        </Dialog.Title>
+                    </header>
                     
-                    <div className="txt-scroll-container"> 
-                        <Dialog.Description className="txt-description">
-                            
-                            <p>Para procesar la matriz correctamente, el archivo TXT debe seguir las siguientes reglas:</p>
-                            
-                            <h4 className="txt-subtitle">Reglas de Estructura:</h4>
-                            <ul className="txt-list">
-                                <li>Cada fila de la matriz debe ocupar una línea, separada en el archivo.</li>
-                                <li>Los elementos de la fila deben estar separados por comas (,).</li>
-                                <li>Solo se permiten valores numéricos (enteros, decimales o negativos).</li>
-                                <li>Utilice el **punto (`.`)** como separador decimal.</li>
-                            </ul>
+                    {/* Cuerpo (con scroll) */}
+                    <div className="info-modal__body">
+                        <Dialog.Description asChild>
+                            <div className="info-modal__description-wrapper">
+                                <p>Para el correcto procesamiento de la matriz, el archivo de texto debe adherirse al siguiente formato:</p>
+                                
+                                <h3 className="info-modal__subtitle">Reglas de Formato</h3>
+                                <ul className="info-modal__list">
+                                    <li>Cada fila de la matriz debe corresponder a una nueva línea en el archivo.</li>
+                                    <li>Los elementos numéricos de cada fila deben estar separados por comas (<code>,</code>).</li>
+                                    <li>Solo se admiten valores numéricos (enteros, decimales y negativos).</li>
+                                    <li>El separador decimal debe ser un punto (<code>.</code>).</li>
+                                </ul>
 
-                            <div className="txt-horizontal-layout">
-
-                                <div className="txt-example-section">
-                                    <h4 className="txt-subtitle txt-example-title">Ejemplo 1: Matriz Cuadrada (Inversa / Determinante)</h4>
+                                <h3 className="info-modal__subtitle">Ejemplos de Estructura</h3>
+                                
+                                {/* Layout de Ejemplos */}
+                                <div className="info-modal__example-grid">
                                     
-                                    <pre className="txt-format-example">
+                                    {/* Ejemplo 1 */}
+                                    <div className="info-modal__example-card">
+                                        <h4 className="info-modal__example-title">Caso 1: Matriz Cuadrada</h4>
+                                        <p className="info-modal__example-context">
+                                            (Para Inversa, Determinante, etc.)
+                                        </p>
+                                        <pre className="info-modal__code-block">
 {`3, 2, -1
 1, -1, 4
 2, 1, 3`}
-                                    </pre>
+                                        </pre>
+                                    </div>
                                     
-        
+                                    {/* Ejemplo 2 */}
+                                    <div className="info-modal__example-card">
+                                        <h4 className="info-modal__example-title">Caso 2: Matriz Aumentada (SEL)</h4>
+                                        <p className="info-modal__example-context">
+                                            Sistema: <InlineMath math="x + 2y = 5" />, <InlineMath math="3x - y = 1" />
+                                        </p>
+                                        <pre className="info-modal__code-block">
+{`1, 2, 5
+3, -1, 1`}
+                                        </pre>
+                                    </div>
                                 </div>
 
-                                {/* --- Ejemplo 2: Sistema de Ecuaciones Lineales (SEL) --- */}
-                                <div className="txt-example-section">
-                                    <h4 className="txt-subtitle txt-example-title">Ejemplo 2: Sistema de Ecuaciones (SEL)</h4>
-                                    
-                                    <p>La última columna** de la matriz corresponde a los coeficientes de los términos independientes</p>
-
-                                    <p style={{marginBottom: '5px'}}>
-                                        Sistema: <InlineMath math="x + 2y = 5" /> y <InlineMath math="3x - y = 1" />
-                                    </p>
-                                    
-                                    <pre className="txt-format-example">
-{`1 2 5
-3 -1 1`}
-                                    </pre>
-                                    
+                                {/* Nota de Alerta */}
+                                <div className="info-modal__alert info-modal__alert--critical">
+                                    <strong>Importante:</strong> El archivo no debe contener corchetes (<code>[ ]</code>), 
+                                    variables (<code>x, y</code>), ni la barra de separación (<code>|</code>). 
+                                    Únicamente los coeficientes numéricos.
                                 </div>
 
-                            </div> 
-                            
-                            <p className="txt-example-note" style={{marginTop: '25px', color: '#cc0000', fontWeight: 600}}>
-                                ¡Importante! No incluir variables (x, y, z), corchetes ([ ]), ni la barra de matriz aumentada (|) en el archivo de texto. Solo los números.
-                            </p>
-                            
+                            </div>
                         </Dialog.Description>
-                    </div> 
-                    <Dialog.Close asChild>
-                        <button 
-                            className="txt-close-button txt-primary-action" 
-                            onClick={() => onOpenChange(false)}
-                        >
-                            Entendido, ¡Iniciar Cálculo!
-                        </button>
-                    </Dialog.Close>
+                    </div>
+
+                    {/* Pie de Página (Footer) */}
+                    <footer className="info-modal__footer">
+                        <Dialog.Close asChild>
+                            <button 
+                                className="info-modal__primary-btn"
+                                onClick={() => onOpenChange(false)}
+                            >
+                                Entendido
+                            </button>
+                        </Dialog.Close>
+                    </footer>
                     
                 </Dialog.Content>
             </Dialog.Portal>

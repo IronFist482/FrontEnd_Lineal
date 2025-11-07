@@ -4,10 +4,20 @@ export function toFrac(value) {
   if (typeof value === "string" && !isNaN(value)) {
     value = Number(value);
   }
-
+  if (typeof value === "string" && value.includes("\\frac")) {
+    return value;
+  }
   if (typeof value === "number") {
+    value = Number(value.toFixed(10));
+
+    if (Number.isInteger(value)) {
+      return `${value}`;
+    }
     const frac = new Fraction(value);
-    return frac.toFraction(true); 
+    if (frac.d === 1) {
+      return `${frac.n}`;
+    }
+    return `\\frac{${frac.n}}{${frac.d}}`;
   }
 
   return value;
