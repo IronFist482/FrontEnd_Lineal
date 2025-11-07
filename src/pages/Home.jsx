@@ -78,10 +78,10 @@ export default function Home() {
     }
 
     if (tipo === 3 || tipo === 4) {
-      const fila = op[1], col = op[2];
+      const fila = op[1];
       return {
         name: tipo === 3 ? 'Ceros debajo del pivote' : 'Ceros arriba del pivote',
-        detail: <InlineMath math={`F_{${fila + 1}}, C_{${col + 1}}`} />,
+        detail: <InlineMath math={`F_{${fila + 1}}, C_{${fila + 1}}`} />,
       };
     }
 
