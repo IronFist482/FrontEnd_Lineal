@@ -5,14 +5,14 @@ import { ResultsSection } from '../components/ResultsSection';
 import { procesarMatriz } from '../api/api';
 import { toFrac, matrixToFraction } from "../utils/formatFraction";
 import { InlineMath } from 'react-katex';
-import Modal from '../components/ui/modal';
+//import Modal from '../components/ui/modal';
 import InstructionsModal from '../components/ui/InstructionsModal';
 import '../styles/Home.css';
 import 'katex/dist/katex.min.css';
 
-export default function Home() {
+export default function Home() {  
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
-  const [restModalOpen, setRestModalOpen] = useState(false);
+  //const [restModalOpen, setRestModalOpen] = useState(false);
   const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
   const [contador, setContador] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,6 +88,8 @@ export default function Home() {
     return { name: `Operación desconocida (tipo ${tipo})`, detail: <InlineMath math={JSON.stringify(op)} /> };
   };
 
+
+  
   const handleFileSelect = (file) => runOperation(selectedOperation, file);
 
   const formatComentario = (comentario) => {
@@ -131,7 +133,6 @@ export default function Home() {
   };
 
   return (
-    // ... el resto del JSX se mantiene igual ...
     <div className="home-root">
       <div className="home-container">
         <Header selectedOperation={selectedOperation} onOperationChange={setSelectedOperation} onResetClick={handleReset} />
@@ -163,6 +164,7 @@ export default function Home() {
           )}
 
           {currentResult && (
+            
             <ResultsSection
               result={formatComentario(currentResult.comentario)}
               explanation={explanationSteps}
@@ -174,7 +176,8 @@ export default function Home() {
           )}
         </div>
 
-        <Modal open={restModalOpen} onOpenChange={setRestModalOpen} type="rest" />
+
+
         <InstructionsModal open={instructionsModalOpen} onOpenChange={setInstructionsModalOpen} />
       </div>
     </div>

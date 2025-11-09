@@ -88,133 +88,146 @@
   animation: fade-in 500ms ease-out, slide-in-from-bottom 500ms ease-out;
 }
 
+.reset-button-wrapper {
+  text-align: center;
+  margin: 2rem;
+  margin-bottom: 3rem;
+}
 
-/* ========================================
-   FLOW INDICATOR WRAPPER
-   ======================================== */
+.reset-btn{
+  background-color: #2563eb; 
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
 .flow-indicator-wrapper {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  color: #1f2937;
+  gap: 1.2rem;
   width: 100%;
-  margin: 0 auto;
+  padding: 0.6rem 0;
 }
 
 @media (min-width: 768px) {
   .flow-indicator-wrapper {
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 2rem;
   }
 }
 
-/* ========================================
-   FLOW STEP (Número + texto)
-   ======================================== */
 .flow-step {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.7rem;
   text-align: center;
+  transition: 0.25s ease;
 }
 
-@media (min-width: 768px) {
-  .flow-step {
-    gap: 1rem;
-  }
-}
-
-/* ========================================
-   FLOW STEP NUMBER BOX
-   ======================================== */
 .flow-step-number-box {
-  width: 2rem;
-  height: 2rem;
-  background-color: #ffffff;
-  border-radius: 9999px;
+  position: relative;
+  z-index: 2;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: #ffffff;
+  border-radius: 40%;
+  border: 2px solid #d0d0d0;
   display: flex;
-  align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
+  align-items: center;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
   flex-shrink: 0;
+  transition: 0.25s ease;
 }
 
-@media (min-width: 768px) {
-  .flow-step-number-box {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-}
-
-/* Número dentro del box */
 .flow-step-number {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #353535;
 }
 
-@media (min-width: 768px) {
-  .flow-step-number {
-    font-size: 1rem;
-  }
-}
-
-/* Texto del paso */
 .flow-step-text {
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 450;
+  color: #2b2b2b;
 }
 
-@media (min-width: 768px) {
-  .flow-step-text {
-    font-size: 0.875rem;
-  }
-}
-
-/* ========================================
-   FLOW SEPARATOR
-   ======================================== */
 .flow-separator {
-  background-color: black;
-  width: 2px;
-  /* vertical separator en mobile */
-  height: 1rem;
-
-  /* En desktop cambiar a horizontal */
+  display: none;
 }
 
 @media (min-width: 768px) {
   .flow-separator {
-    width: 1.5rem;
-    /* horizontal */
-    height: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 60px;
+    height: 3px;
+    background: black; 
+    border-radius: 3px;
+    opacity: 0.85;
+    transition: 0.25s ease;
   }
 }
 
-/* ========================================
-   FLOW INDICATOR WRAPPER INSTRUCTIONS BUTTON
-   ======================================== */
+@media (max-width: 767.98px) {
+  .flow-step:not(:last-child) .flow-step-number-box::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 1.2rem;
+    background: black; 
+    z-index: 1;
+    transition: 0.25s ease;
+  }
+
+  .flow-step.highlighted .flow-step-number-box::after {
+    opacity: 1; 
+    background: linear-gradient(180deg, #4a4ff5 0%, #6a6aff 100%);
+  }
+}
+
+.flow-step.highlighted .flow-step-number-box {
+  background: linear-gradient(135deg, #6a6aff 0%, #4a4ff5 100%);
+  border-color: #4a4ff5;
+  color: white;
+  box-shadow: 0px 0px 12px rgba(74, 79, 245, 0.55);
+  transform: scale(1.2);
+}
+
+.flow-step.highlighted .flow-step-text {
+  font-weight: 600;
+  color: #1b1b1b;
+}
+
+.flow-step.highlighted + .flow-separator {
+  background: linear-gradient(90deg, #4a4ff5 0%, #6a6aff 100%);
+  opacity: 1;
+  box-shadow: 0px 0px 8px rgba(74, 79, 245, 0.4);
+}
+
 .flow-indicator-wrapper.instructions-button {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  margin-top: 1rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: #1f2937;
   cursor: pointer;
-  width: 100%;
+  opacity: 0.9;
+  transition: 0.25s;
 }
 
-@media (min-width: 768px) {
-  .flow-indicator-wrapper.instructions-button {
-    flex-direction: row;
-    gap: 1rem;
-  }
+.flow-indicator-wrapper.instructions-button:hover {
+  opacity: 1;
+  transform: translateY(-2px);
 }
+
+
 
 
 /* * Resultado */
