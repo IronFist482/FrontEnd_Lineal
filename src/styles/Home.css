@@ -1,13 +1,9 @@
 :root {
-  /* Color de fondo: bg-[#8ED6E8] (celeste claro IPN) */
-  --ipn-light-blue: #8ed6e8;
+  /* --ipn-light-blue: #eef6ff;  */
+  --ipn-light-blue: #dce8f5; 
   --white: #ffffff;
-
 }
 
-/* * HOME ROOT
- * Clases: min-h-screen bg-[#8ED6E8] p-4 md:p-6 lg:p-8
- */
 .home-root {
   min-height: 100vh;
   background-color: var(--ipn-light-blue);
