@@ -7,7 +7,6 @@ import { toFrac, matrixToFraction } from "../utils/formatFraction";
 import { InlineMath } from 'react-katex';
 import InstructionsModal from '../components/ui/InstructionsModal';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
-
 import '../styles/Home.css';
 import 'katex/dist/katex.min.css';
 
@@ -16,6 +15,17 @@ export default function Home() {
   const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
   const [contador, setContador] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const ERROR_MESSAGES = {
+    FETCH_FAILED: "No se pudo recuperar la información. Problema del servidor.",
+    INVALID_MATRIX: "La matriz proporcionada no es válida. Revisa el archivo TXT.",
+    FILE_TOO_LARGE: "El archivo es demasiado grande. Intenta con uno más pequeño.",
+    UNSUPPORTED_FORMAT: "Formato de archivo no soportado. Debe ser .txt.",
+    SERVER_ERROR: "Ocurrió un error en el servidor. Intenta más tarde.",
+    UNKNOWN: "Ocurrió un error desconocido. Intenta nuevamente."
+  };
+
+
 
   const [operationCache, setOperationCache] = useState({
     Determinante: { file: null, result: null, error: null },
@@ -57,13 +67,28 @@ export default function Home() {
     const operationKey = operationMap[operation] || operation;
     try {
       const data = await procesarMatriz(operationKey, file);
+      setErrorMessage(null);
       setOperationCache(prev => ({
         ...prev,
         [operationKey]: { file, result: data, error: null },
       }));
     } catch (err) {
-      const message = err?.message || 'Ocurrió un error al procesar el archivo.';
+      let message;
+      if (err.message?.includes("Failed to fetch")) {
+        message = ERROR_MESSAGES.FETCH_FAILED;
+      } else if (err.message?.includes("Invalid matrix")) {
+        message = ERROR_MESSAGES.INVALID_MATRIX;
+      } else if (err.message?.includes("File too large")) {
+        message = ERROR_MESSAGES.FILE_TOO_LARGE;
+      } else if (err.message?.includes("Unsupported format")) {
+        message = ERROR_MESSAGES.UNSUPPORTED_FORMAT;
+      } else if (err.message?.includes("500")) {
+        message = ERROR_MESSAGES.SERVER_ERROR;
+      } else {
+        message = ERROR_MESSAGES.UNKNOWN;
+      } setErrorMessage(message);
       setOperationCache(prev => ({
+
         ...prev,
         [operationKey]: { file, result: null, error: message },
       }));
@@ -71,6 +96,11 @@ export default function Home() {
     setTimeout(() => setIsLoading(false), 900);
   }, [operationMap]);
 
+  const handleProcessEditedMatrix = (matrix) => {
+    const content = generateTxtContent(matrix);
+    const file = new File([content], 'matriz_editada.txt', { type: 'text/plain' });
+    runOperation(selectedOperation, file);
+  };
 
   const getOperacionDescripcion = (op) => {
     if (!Array.isArray(op) || op.length === 0) return { name: 'Operación desconocida', detail: '' };
@@ -94,6 +124,7 @@ export default function Home() {
     const opKey = operationMap[selectedOperation] || selectedOperation;
     setOperationCache(prev => ({ ...prev, [opKey]: { file: null, result: null, error: null } }));
     setContador(c => c + 1);
+    setErrorMessage(null);
   };
 
   const opKey = operationMap[selectedOperation] || selectedOperation;
@@ -116,15 +147,20 @@ export default function Home() {
     : null;
 
   const explanationSteps = (currentResult?.matrices_pasos_id || []).map(op => getOperacionDescripcion(op).name) || [];
-  const fullSteps = (currentResult?.matrices_pasos || []).map((matrix, i) => {
+  const fullSteps = (currentResult?.matrices_pasos || [])
+  .map((matrix, i) => {
     const desc = getOperacionDescripcion((currentResult?.matrices_pasos_id || [])[i]);
+    if (desc.name.startsWith('Operación desconocida')) return null;
     return { operationName: desc.name, operationDetail: desc.detail, matrix: matrixToFraction(matrix) };
-  }) || [];
+  })
+  .filter(Boolean) || [];
+
 
   return (
     <div className="home-root">
       <div className="home-container">
-        <Header selectedOperation={selectedOperation} onOperationChange={setSelectedOperation} onResetClick={handleReset} />
+        <Header selectedOperation={selectedOperation} onOperationChange={(op) => { setSelectedOperation(op); setErrorMessage(null); }}
+          onResetClick={handleReset} />
 
         {!isLoading && !currentError && !currentResult && (
           <>
@@ -143,22 +179,28 @@ export default function Home() {
         )}
 
         <div className="home-content-area">
-          {!isLoading && !currentError && !currentResult && (
+          {errorMessage && (
+            <div className="error-banner">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+               10-4.48 10-10S17.52 2 12 2zm0 18
+               c-4.41 0-8-3.59-8-8s3.59-8 8-8
+               8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+              </svg>
+              {errorMessage}
+            </div>
+          )}
+
+
+          {!isLoading && !currentResult && (
             <FileUploadArea
-              onFileSelect={handleFileUpload} 
+              onFileSelect={handleFileUpload}
               onMatrixChange={handleMatrixChange}
               operationtype={opKey}
             />
           )}
 
           <LoadingOverlay visible={isLoading} />
-
-          {currentError && (
-            <div className="error-message">
-              <strong>Error:</strong> {currentError}
-              <button onClick={handleReset} className="reset-btn-error">Intentar de nuevo</button>
-            </div>
-          )}
 
           {currentResult && (
             <ResultsSection
@@ -168,8 +210,10 @@ export default function Home() {
               lastMatrix={lastMatrix}
               fullSteps={fullSteps}
               operationType={opKey}
+              onProcessAgain={handleProcessEditedMatrix} 
             />
           )}
+
         </div>
 
         <InstructionsModal open={instructionsModalOpen} onOpenChange={setInstructionsModalOpen} />

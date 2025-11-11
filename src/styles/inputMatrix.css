@@ -1,3 +1,20 @@
+:root {
+  /* Colores base */
+  --gray-700: #374151;
+  --gray-300: #d1d5db;
+  --gray-50: #f9fafb;
+  --indigo-500: #6366f1;
+  --indigo-300: #a5b4fc;
+  --indigo-50: #eef2ff;
+  --indigo-100: #e0e7ff;
+  --indigo-200: #c7d2fe;
+  --indigo-25: #f4f6ff; /* Asumido para hover:bg-indigo-25 */
+  --indigo-200-border: #a5b4fc; /* Asumido para border-indigo-200 */
+  --indigo-400-hover: #818cf8; /* Asumido para hover:border-indigo-400 */
+  --green-600: #16a34a;
+  --white: #ffffff;
+}
+
 .matrix-container {
   display: flex;
   flex-direction: column;
@@ -43,6 +60,8 @@
   z-index: 2;
   transform: translate(-50%, -50%);
 }
+
+
 
 .matrix-input-overlay.default-style {
   transform: translate(-50%, -50%);
@@ -207,4 +226,53 @@
     margin-top: 10px;
   }
 }
+}
+
+.matrix-title-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.matrix-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--indigo-500);
+  text-align: center;
+  margin: 0;
+}
+
+.button {
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+  border: 2px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Botón reset (nuevo) */
+.button-reset {
+  background-color: var(--indigo-500);
+  border-color: var(--red-400);
+  color: #fff;
+}
+
+.button-reset:hover {
+  background-color: var(--indigo-400-hover);
+  border-color: var(--red-500);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .button {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
 }

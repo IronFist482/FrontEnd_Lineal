@@ -3,33 +3,45 @@ import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
 import '../../styles/inputMatrix.css';
 
+const OPERATION_TITLES = {
+  Determinante: 'Ingrese su matriz',
+  Inversa: 'Ingrese su matriz',
+  SEL: 'Ingrese su sistema de ecuaciones lineales',
+};
+
+const getDefaultMatrices = () => ({
+  SEL: Array.from({ length: 2 }, () => Array(3).fill('')),
+  Determinante: Array.from({ length: 2 }, () => Array(2).fill('')),
+  Inversa: Array.from({ length: 2 }, () => Array(2).fill('')),
+});
+
 export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
-  const [matrices, setMatrices] = useState({
-    SEL: Array.from({ length: 2 }, () => Array(3).fill('')),
-    Determinante: Array.from({ length: 2 }, () => Array(2).fill('')),
-    Inversa: Array.from({ length: 2 }, () => Array(2).fill('')),
-  });
-
-  const [focusCell, setFocusCell] = useState(null);
+  const [matrices, setMatrices] = useState(getDefaultMatrices());
+  const [focusCell, setFocusCell] = useState({ r: 0, c: 0 });
   const inputRefs = useRef([]);
-  const matrix = matrices[operationtype] || Array.from({ length: 2 }, () => Array(2).fill(''));
+  
+  const matrix = matrices[operationtype] || getDefaultMatrices()[operationtype];
 
+  // Detectar móvil
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+  // Inicializar refs
   useEffect(() => {
     inputRefs.current = matrix.map((row, r) =>
       inputRefs.current[r]?.slice(0, row.length) || Array(row.length).fill(null)
     );
   }, [matrix]);
 
+  // Mantener foco
   useEffect(() => {
     if (focusCell) {
       const { r, c } = focusCell;
       inputRefs.current[r]?.[c]?.focus();
-      setFocusCell(null);
     }
   }, [matrices, focusCell]);
 
   const updateMatrix = (newMatrix) => {
-    setMatrices((prev) => ({
+    setMatrices(prev => ({
       ...prev,
       [operationtype]: newMatrix,
     }));
@@ -38,72 +50,80 @@ export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
   const handleCellChange = (r, c, value) => {
     const isValid = value === '' || /^-?\d*\.?\d*$/.test(value);
     if (!isValid) return;
-    const newMatrix = matrix.map((row) => [...row]);
+    const newMatrix = matrix.map(row => [...row]);
     newMatrix[r][c] = value;
     updateMatrix(newMatrix);
   };
 
-  const handleKeyDown = (e, r, c) => {
-    const key = e.key;
-    let newR = r;
-    let newC = c;
+  // Manejo de teclas y botones
+  const moveFocus = (direction) => {
+    let { r, c } = focusCell;
     let expand = false;
 
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
-      e.preventDefault();
+    if (direction === 'up') r = Math.max(r - 1, 0);
+    if (direction === 'down') {
+      r = r + 1;
+      if (r >= matrix.length) expand = true;
+    }
+    if (direction === 'left') c = Math.max(c - 1, 0);
+    if (direction === 'right') {
+      c = c + 1;
+      if (c >= matrix[0].length) expand = true;
+    }
 
-      if (key === 'ArrowUp') newR = Math.max(r - 1, 0);
-      if (key === 'ArrowDown') {
-        newR = r + 1;
-        if (newR >= matrix.length) expand = true;
-      }
-      if (key === 'ArrowLeft') newC = Math.max(c - 1, 0);
-      if (key === 'ArrowRight') {
-        newC = c + 1;
-        if (newC >= matrix[0].length) expand = true;
-      }
+    // Expansión de matriz
+    if ((operationtype === 'Determinante' || operationtype === 'Inversa') && expand && matrix.length < maxSize) {
+      const newSize = matrix.length + 1;
+      const expanded = Array.from({ length: newSize }, (_, i) =>
+        Array.from({ length: newSize }, (_, j) => matrix[i]?.[j] ?? '')
+      );
+      updateMatrix(expanded);
+      setFocusCell({ r: newSize - 1, c: newSize - 1 });
+      return;
+    }
 
-      if ((operationtype === 'Determinante' || operationtype === 'Inversa') && expand) {
-        if (matrix.length < maxSize) {
-          const newSize = matrix.length + 1;
-          const expanded = Array.from({ length: newSize }, (_, i) =>
-            Array.from({ length: newSize }, (_, j) => matrix[i]?.[j] ?? '')
-          );
-          updateMatrix(expanded);
-          setFocusCell({ r: newSize - 1, c: newSize - 1 });
-          return;
-        }
+    if (operationtype === 'SEL' && expand) {
+      if (direction === 'down' && matrix.length < maxSize) {
+        updateMatrix([...matrix, Array(matrix[0].length).fill('')]);
+        setFocusCell({ r: matrix.length, c });
+        return;
       }
+      if (direction === 'right' && matrix[0].length < maxSize) {
+        const newMatrix = matrix.map(row => [...row, '']);
+        updateMatrix(newMatrix);
+        setFocusCell({ r, c: matrix[0].length });
+        return;
+      }
+    }
 
-      if (operationtype === 'SEL' && key === 'ArrowDown' && expand) {
-        if (matrix.length < maxSize) {
-          const newRowIndex = matrix.length;
-          updateMatrix([...matrix, Array(matrix[0].length).fill('')]);
-          setFocusCell({ r: newRowIndex, c });
-          return;
-        }
-      }
-      
-      if (operationtype === 'SEL' && key === 'ArrowRight' && expand) {
-        if (matrix[0].length < maxSize) {
-            const newColIndex = matrix[0].length;
-            const newMatrix = matrix.map(row => {
-                const newRow = [...row];
-                newRow.splice(newColIndex - 1, 0, '');
-                return newRow;
-            });
-            updateMatrix(newMatrix);
-            setFocusCell({ r, c: newColIndex - 1 });
-            return;
-        }
-      }
+    setFocusCell({ r, c });
+  };
 
-      if (inputRefs.current[newR]?.[newC]) {
-        inputRefs.current[newR][newC].focus();
+  const handleKeyDown = (e, r, c) => {
+    if (!isMobile) {
+      const keyMap = {
+        ArrowUp: 'up',
+        ArrowDown: 'down',
+        ArrowLeft: 'left',
+        ArrowRight: 'right',
+      };
+      if (keyMap[e.key]) {
+        e.preventDefault();
+        setFocusCell({ r, c }); // actualiza foco
+        moveFocus(keyMap[e.key]);
       }
     }
   };
 
+  const handleReset = () => {
+    setMatrices(prev => ({
+      ...prev,
+      [operationtype]: getDefaultMatrices()[operationtype],
+    }));
+    setFocusCell({ r: 0, c: 0 });
+  };
+
+  // Generar LaTeX
   const getWrapper = () => {
     const cols = matrix[0]?.length || 2;
     let latexBody = '';
@@ -112,34 +132,16 @@ export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
       case 'Determinante':
         latexBody = matrix.map(() => Array(cols).fill('\\phantom{00}').join(' & ')).join('\\\\');
         return `\\displaystyle \\left|\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right|`;
-
       case 'Inversa':
         latexBody = matrix.map(() => Array(cols).fill('\\phantom{00}').join(' & ')).join('\\\\');
-        return `\\displaystyle \\left[\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right]^{-1}`;
-
+        return `\\displaystyle \\left[\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right]`;
       case 'SEL': {
         const coefCols = matrix[0].length - 1;
-        
-        // 1. CREAR PHANTOMS NUEVOS
-        // Creamos phantoms que incluyan el input (00), la variable (x_i) y el signo (+)
-        const phantoms = Array.from({ length: coefCols }, (_, i) => {
-          const varPhantom = `x_{${i + 1}}`;
-          // Añadir phantom para '+' si NO es el último coeficiente
-          const plusPhantom = (i < coefCols - 1) ? `+` : ``; 
-          // `\,` añade un pequeño espacio
-          return `\\phantom{00\\,${varPhantom}\\,${plusPhantom}}`; 
-        });
-
-        const latexRows = matrix
-          .map(() => {
-            const coeficientes = phantoms.join(' & ');
-            const resultado = `\\phantom{00}`; // El resultado es un input normal
-            return `${coeficientes} & \\phantom{=} & ${resultado}`;
-          })
-          .join('\\\\');
-        
-        // 2. ALINEAR A LA IZQUIERDA
-        // Cambiamos 'c' (center) por 'l' (left) para que se vea bien
+        const phantoms = Array.from({ length: coefCols }, (_, i) => `\\phantom{00\\,x_{${i + 1}}\\,+}`);
+        const latexRows = matrix.map(() => {
+          const coeficientes = phantoms.join(' & ');
+          return `${coeficientes} & \\phantom{=} & \\phantom{00}`;
+        }).join('\\\\');
         return `\\displaystyle \\left\\{\\begin{array}{${'l'.repeat(coefCols)}r c}${latexRows}\\end{array}\\right.`;
       }
       default:
@@ -150,88 +152,98 @@ export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
 
   return (
     <div className="matrix-container">
+      <div className="matrix-title-wrapper">
+        <h3 className="matrix-title">{OPERATION_TITLES[operationtype]}</h3>
+      </div>
+
+      <button type="button" className="button button-reset" onClick={handleReset}>
+        Reiniciar
+      </button>
+
+      {isMobile && (
+        <div className="matrix-navigation">
+          <button className="button button-outline" onClick={() => moveFocus('up')}>↑</button>
+          <button className="button button-outline" onClick={() => moveFocus('down')}>↓</button>
+          <button className="button button-outline" onClick={() => moveFocus('left')}>←</button>
+          <button className="button button-outline" onClick={() => moveFocus('right')}>→</button>
+
+          {/* Expansión rápida en móvil */}
+          {(operationtype === 'SEL' || operationtype === 'Determinante' || operationtype === 'Inversa') && (
+            <>
+              <button className="button button-outline" onClick={() => moveFocus('down')}>+ Fila</button>
+              <button className="button button-outline" onClick={() => moveFocus('right')}>+ Columna</button>
+            </>
+          )}
+        </div>
+      )}
+
       <div className="matrix-overlay-wrapper">
         <div className="katex-wrapper">
           <BlockMath math={getWrapper()} />
         </div>
 
         <table className="matrix-input-overlay small-inputs">
-          
-          {/* 3. ELIMINAMOS EL THEAD */}
-          
           <tbody>
             {matrix.map((r, rowIndex) => {
-              let cells;
-
-              // 4. LÓGICA DE CELDAS COMPLETAMENTE NUEVA
+              let cells = [];
               if (operationtype === 'SEL') {
-                const coefficientCells = [];
-                // Iterar solo por los coeficientes (todos menos el último)
+                const coefCells = [];
                 for (let colIndex = 0; colIndex < r.length - 1; colIndex++) {
-                  coefficientCells.push(
+                  coefCells.push(
                     <td key={`cell-${rowIndex}-${colIndex}`} className="matrix-variable-cell">
                       <input
                         type="text"
                         inputMode="decimal"
                         value={r[colIndex]}
-                        ref={(el) => {
+                        ref={el => {
                           if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
                           inputRefs.current[rowIndex][colIndex] = el;
                         }}
-                        onChange={(e) => handleCellChange(rowIndex, colIndex, e.target.value)}
-                        onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
+                        onChange={e => handleCellChange(rowIndex, colIndex, e.target.value)}
+                        onKeyDown={e => handleKeyDown(e, rowIndex, colIndex)}
                       />
                       <span className="matrix-variable-label">
                         <InlineMath math={`x_{${colIndex + 1}}`} />
                       </span>
-                      {/* Añadir el '+' si no es la última variable */}
-                      {colIndex < r.length - 2 && (
-                        <span className="matrix-plus-sign">
-                          <InlineMath math="+" />
-                        </span>
-                      )}
+                      {colIndex < r.length - 2 && <span className="matrix-plus-sign"><InlineMath math="+" /></span>}
                     </td>
                   );
                 }
-                
                 const resultColIndex = r.length - 1;
                 cells = [
-                  ...coefficientCells,
+                  ...coefCells,
                   <td key={`equals-${rowIndex}`} className="matrix-equals-sign">=</td>,
                   <td key={`cell-${rowIndex}-${resultColIndex}`}>
                     <input
                       type="text"
                       inputMode="decimal"
                       value={r[resultColIndex]}
-                      ref={(el) => {
+                      ref={el => {
                         if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
                         inputRefs.current[rowIndex][resultColIndex] = el;
                       }}
-                      onChange={(e) => handleCellChange(rowIndex, resultColIndex, e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, rowIndex, resultColIndex)}
+                      onChange={e => handleCellChange(rowIndex, resultColIndex, e.target.value)}
+                      onKeyDown={e => handleKeyDown(e, rowIndex, resultColIndex)}
                     />
                   </td>
                 ];
-
               } else {
-                // Lógica original para Determinante e Inversa
                 cells = r.map((cell, colIndex) => (
                   <td key={`cell-${rowIndex}-${colIndex}`}>
                     <input
                       type="text"
                       inputMode="decimal"
                       value={cell}
-                      ref={(el) => {
+                      ref={el => {
                         if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
                         inputRefs.current[rowIndex][colIndex] = el;
                       }}
-                      onChange={(e) => handleCellChange(rowIndex, colIndex, e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
+                      onChange={e => handleCellChange(rowIndex, colIndex, e.target.value)}
+                      onKeyDown={e => handleKeyDown(e, rowIndex, colIndex)}
                     />
                   </td>
                 ));
               }
-
               return <tr key={rowIndex}>{cells}</tr>;
             })}
           </tbody>

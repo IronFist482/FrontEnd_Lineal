@@ -49,6 +49,8 @@ export default function StepCard({ stepNumber, operationName, operationDetail, m
                 <p className="operation-name">{operationName}</p>
             </div>
 
+
+
             {operationDetail && (
                 <div className="operation-formula">
                     {operationDetail}
