@@ -1,0 +1,212 @@
+:root {
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --muted: #f4f4f5;
+  --background: #ffffff;
+  --foreground: #09090b;
+}
+
+/* * CHART CONTAINER ROOT
+ * Clases: [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground 
+ * [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 
+ * [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border 
+ * [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border 
+ * [&_.recharts-radial-bar-background-sector]:fill-muted 
+ * [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted 
+ * [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border flex aspect-video 
+ * justify-center text-xs [&_.recharts-dot[stroke='#fff']]:stroke-transparent 
+ * [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden 
+ * [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden
+ */
+.chart-container-root {
+  /* Layout y Tipografía */
+  display: flex;
+  aspect-ratio: 16 / 9;
+  justify-content: center;
+  font-size: 0.75rem;
+  
+  /* Reset y Ocultamiento de Foco */
+  /* Aunque Radix lo maneja, replicamos el concepto para elementos SVG */
+  /* No hay un equivalente directo para [&_.recharts-layer]:outline-hidden, se omiten outlines en SVG */
+}
+
+/* 1. Ejes (Axis) */
+.chart-container-root .recharts-cartesian-axis-tick text {
+  fill: var(--muted-foreground);
+}
+
+/* 2. Líneas de Grid (Grid Lines) */
+.chart-container-root .recharts-cartesian-grid line[stroke="#ccc"],
+.chart-container-root .recharts-polar-grid [stroke="#ccc"],
+.chart-container-root .recharts-reference-line [stroke="#ccc"] {
+  stroke: color-mix(in srgb, var(--border), transparent 50%); /* stroke-border/50 */
+}
+
+/* 3. Cursores de Tooltip */
+.chart-container-root .recharts-curve.recharts-tooltip-cursor {
+  stroke: var(--border);
+}
+.chart-container-root .recharts-rectangle.recharts-tooltip-cursor {
+  fill: var(--muted);
+}
+
+/* 4. Sectores y Barras (Radial/Dots/Sectors) */
+.chart-container-root .recharts-radial-bar-background-sector {
+  fill: var(--muted);
+}
+.chart-container-root .recharts-dot[stroke="#fff"],
+.chart-container-root .recharts-sector[stroke="#fff"] {
+  stroke: transparent;
+}
+
+
+/* * CHART TOOLTIP CONTENT
+ * Clases: border-border/50 bg-background grid min-w-[8rem] items-start gap-1.5 
+ * rounded-lg border px-2.5 py-1.5 text-xs shadow-xl
+ */
+.chart-tooltip-content {
+  background-color: var(--background);
+  border: 1px solid color-mix(in srgb, var(--border), transparent 50%);
+  display: grid;
+  min-width: 8rem;
+  align-items: flex-start;
+  gap: 0.375rem; /* gap-1.5 */
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem; /* px-2.5 py-1.5 */
+  font-size: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.chart-tooltip-payload-list {
+  display: grid;
+  gap: 0.375rem; /* gap-1.5 */
+}
+
+/* * TOOLTIP ITEM */
+.chart-tooltip-payload-item {
+  /* [&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 */
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem; /* gap-2 */
+}
+.chart-tooltip-payload-item svg {
+  color: var(--muted-foreground);
+  height: 0.625rem; /* h-2.5 */
+  width: 0.625rem; /* w-2.5 */
+}
+.chart-tooltip-payload-item.items-center {
+  align-items: center;
+}
+
+/* Indicador de Tooltip (El punto/línea) */
+.chart-tooltip-indicator {
+  /* shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) */
+  flex-shrink: 0;
+  border-radius: 2px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
+.chart-tooltip-indicator[class*="w-1"] {
+  width: 0.25rem; /* w-1 */
+}
+
+.chart-tooltip-indicator[class*="h-2.5"] {
+  height: 0.625rem; /* h-2.5 */
+}
+
+.chart-tooltip-indicator[class*="w-2.5"] {
+  width: 0.625rem; /* w-2.5 */
+}
+
+/* Indicador de línea punteada */
+.chart-tooltip-indicator[class*="border-dashed"] {
+  width: 0;
+  border: 1.5px dashed var(--color-border);
+  background-color: transparent;
+}
+
+
+/* * CHART LEGEND CONTENT
+ * Clases: flex items-center justify-center gap-4
+ */
+.chart-legend-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* gap-4 */
+}
+
+.chart-legend-content.pt-3 {
+  padding-top: 0.75rem;
+}
+.chart-legend-content.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
+/* * LEGEND ITEM */
+.chart-legend-item {
+  /* [&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 */
+  display: flex;
+  align-items: center;
+  gap: 0.375rem; /* gap-1.5 */
+  color: var(--foreground);
+}
+.chart-legend-item svg {
+  color: var(--muted-foreground);
+  height: 0.75rem; /* h-3 */
+  width: 0.75rem; /* w-3 */
+}
+
+/* Indicador de Leyenda */
+.chart-legend-indicator {
+  /* h-2 w-2 shrink-0 rounded-[2px] */
+  height: 0.5rem; /* h-2 */
+  width: 0.5rem; /* w-2 */
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+/* * CLASES DE TIPOGRAFÍA Y ESPACIADO */
+
+.font-medium {
+  font-weight: 500;
+}
+.text-muted-foreground {
+  color: var(--muted-foreground);
+}
+.text-foreground {
+  color: var(--foreground);
+}
+.font-mono {
+  font-family: monospace;
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+.grid {
+  display: grid;
+}
+.gap-1\.5 {
+  gap: 0.375rem;
+}
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.leading-none {
+  line-height: 1;
+}
+.items-center {
+  align-items: center;
+}
+.items-end {
+  align-items: flex-end;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}

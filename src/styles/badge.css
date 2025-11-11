@@ -1,0 +1,120 @@
+:root {
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e7eb;
+  --secondary-foreground: #1f2937;
+  --destructive: #ef4444;
+  --ring: #3b82f6;
+  --border: #e4e4e7;
+  --foreground: #09090b;
+  --accent: #f3f4f6;
+  --accent-foreground: #09090b;
+}
+
+/* * CLASES BASE (Base de cva)
+ * Clases: inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs 
+ * font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none 
+ * focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] 
+ * aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive 
+ * transition-[color,box-shadow] overflow-hidden
+ */
+.badge-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem; /* rounded-md */
+  border: 1px solid var(--border);
+  padding-left: 0.5rem; /* px-2 */
+  padding-right: 0.5rem; /* px-2 */
+  padding-top: 0.125rem; /* py-0.5 */
+  padding-bottom: 0.125rem; /* py-0.5 */
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500; /* font-medium */
+  width: fit-content; /* w-fit */
+  white-space: nowrap;
+  flex-shrink: 0;
+  gap: 0.25rem; /* gap-1 */
+  overflow: hidden;
+  
+  /* Transiciones */
+  transition-property: color, box-shadow;
+  transition-duration: 200ms;
+}
+
+/* Icono (svg) */
+.badge-base > svg {
+  width: 0.75rem; /* size-3 */
+  height: 0.75rem; /* size-3 */
+  pointer-events: none;
+}
+
+/* Foco */
+.badge-base:focus-visible {
+  outline: none; /* Asegura que el outline nativo no interfiera */
+  border-color: var(--ring); /* focus-visible:border-ring */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* focus-visible:ring-[3px] focus-visible:ring-ring/50 */
+}
+
+/* Estado aria-invalid (Errores de formulario) */
+.badge-base[aria-invalid="true"] {
+  border-color: var(--destructive); /* aria-invalid:border-destructive */
+  /* ring-destructive/20 (usando box-shadow para simular el ring) */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 80%); 
+}
+
+/* Dark mode para aria-invalid (simulado con un selector más específico si es necesario) */
+/* .badge-base[aria-invalid="true"].dark-mode-simulated {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 60%); 
+} */
+
+
+/* * VARIANTES */
+
+/* variant: default */
+.badge-default {
+  border-color: transparent;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.badge-default a:hover {
+  background-color: color-mix(in srgb, var(--primary), black 10%); /* hover:bg-primary/90 */
+}
+
+/* variant: secondary */
+.badge-secondary {
+  border-color: transparent;
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+.badge-secondary a:hover {
+  background-color: color-mix(in srgb, var(--secondary), black 10%); /* hover:bg-secondary/90 */
+}
+
+/* variant: destructive */
+.badge-destructive {
+  border-color: transparent;
+  background-color: var(--destructive);
+  color: #ffffff; /* text-white */
+}
+.badge-destructive a:hover {
+  background-color: color-mix(in srgb, var(--destructive), black 10%); /* hover:bg-destructive/90 */
+}
+.badge-destructive:focus-visible {
+  /* focus-visible:ring-destructive/20 */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive), transparent 80%); 
+}
+/* .badge-destructive.dark-mode-simulated {
+  background-color: color-mix(in srgb, var(--destructive), transparent 40%); 
+} */
+
+
+/* variant: outline */
+.badge-outline {
+  background-color: transparent;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.badge-outline a:hover {
+  background-color: var(--accent); /* hover:bg-accent */
+  color: var(--accent-foreground); /* hover:text-accent-foreground */
+}
