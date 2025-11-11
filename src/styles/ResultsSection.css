@@ -86,12 +86,14 @@
  */
 .results-section-result-text {
   color: black;
+  
   white-space: pre-wrap;
 }
 
 @media (min-width: 768px) {
   .results-section-result-text {
-    font-size: 1rem;
+    font-size: 1.35rem;
+    font-weight: 400;
   }
 }
 
