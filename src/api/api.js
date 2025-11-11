@@ -73,3 +73,17 @@ export const obtenerPruebas = async () => {
 
   return await response.json();
 };
+
+export const mandarFoto = async (formData) => {
+    const response = await fetch(`${API_URL}/foto/procesar`, {
+        method: 'POST',
+        body: formData, 
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Fallo en la subida de foto.');
+    }
+
+    return await response.json();
+};

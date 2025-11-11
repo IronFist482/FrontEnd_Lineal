@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
 import { FileUploadArea } from '../components/FileUploadArea';
 import { ResultsSection } from '../components/ResultsSection';
-import { procesarMatriz } from '../api/api';
+import { procesarMatriz, mandarFoto } from '../api/api';
 import { toFrac, matrixToFraction } from "../utils/formatFraction";
 import { InlineMath } from 'react-katex';
 import InstructionsModal from '../components/ui/InstructionsModal';
@@ -10,6 +10,7 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 import '../styles/Home.css';
 import 'katex/dist/katex.min.css';
+import { toast } from 'sonner';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState('Determinante');
@@ -17,11 +18,12 @@ export default function Home() {
   const [contador, setContador] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
+  const [screenshotData, setScreenshotData] = useState(null);
 
   const [operationCache, setOperationCache] = useState({
-    Determinante: { file: null, result: null, error: null },
-    Inversa: { file: null, result: null, error: null },
-    SEL: { file: null, result: null, error: null },
+    Determinante: { file: null, result: null, error: null, image:null },
+    Inversa: { file: null, result: null, error: null,image:null },
+    SEL: { file: null, result: null, error: null,image:null  },
   });
 
   const operationMap = {
@@ -49,6 +51,85 @@ export default function Home() {
     runOperation(selectedOperation, file);
   };
 
+  // ... (código previo)
+
+  // Función auxiliar para convertir Base64 a File/Blob
+// Puedes poner esta función dentro de tu archivo Home.jsx o en un archivo de utilidades
+const base64ToFile = (base64, filename) => {
+    try {
+        const parts = base64.split(';base64,');
+        const mime = parts[0].split(':')[1];
+        const bstr = atob(parts[1]);
+        let n = bstr.length;
+        const u8arr = new ArrayBuffer(n);
+        const uint8Array = new Uint8Array(u8arr);
+
+        while(n--){
+            uint8Array[n] = bstr.charCodeAt(n);
+        }
+
+        const blob = new Blob([uint8Array], { type: mime });
+        return new File([blob], filename, { type: mime });
+    } catch (e) {
+        console.error("Error converting Base64 to File:", e);
+        return null;
+    }
+};
+
+  const handleScreenshotReady = async(base64Image) => {
+    //Quiero que cambie el estado de operationCache para marcar que ya tiene imagen
+    setOperationCache(prevCache => {
+      const opKey = operationMap[selectedOperation] || selectedOperation;
+      const updatedOperation = {
+        ...prevCache[opKey],
+        image: base64Image,
+      };
+      return {
+        ...prevCache,
+        [opKey]: updatedOperation,
+      };
+    });
+    setScreenshotData(base64Image); // Si quieres mantenerlo en el estado
+    
+    // La matriz para el Form-Field 'matriz'
+    const matriz_data = currentData.result?.matriz_inicial;
+
+    if (!matriz_data) {
+        toast.error('No hay datos de matriz para enviar.');
+        return;
+    }
+    const file = base64ToFile(base64Image, 'matriz_resultado.png');
+
+    if (!file) {
+        toast.error('Error al procesar la imagen.');
+        return;
+    }
+
+    try {
+        // 3. Crear el objeto FormData
+        const formData = new FormData();
+        // El campo 'archivo' debe ser el objeto File/Blob
+        formData.append('archivo', file); 
+        // El campo 'matriz' debe ser la cadena de texto
+        // Si 'matriz_data' es un array, debes serializarlo (ej. a JSON string)
+        const matrizString = JSON.stringify(matriz_data);
+        formData.append('matriz', matrizString); 
+        
+        // 4. Llamar a la función API con el FormData
+        if(!operationCache[selectedOperation].image){
+          const imageUploadResponse = await mandarFoto(formData);
+          const message = imageUploadResponse?.message || 'Imagen subida con éxito.';
+          toast.success(message);
+        }
+        
+    } catch (error) {
+        console.error(error);
+        toast.error('Error al subir la imagen de la matriz.');
+    }
+};
+
+// ... (código posterior)
+
   const handleFileUpload = (file) => {
     runOperation(selectedOperation, file);
   };
@@ -58,6 +139,10 @@ export default function Home() {
     const operationKey = operationMap[operation] || operation;
     try {
       const data = await procesarMatriz(operationKey, file);
+      if (data){
+        console.log("Datos recibidos:", data);
+        
+      }
       setOperationCache(prev => ({
         ...prev,
         [operationKey]: { file, result: data, error: null },
@@ -167,6 +252,7 @@ export default function Home() {
               operationType={opKey}
               setShowSteps={setShowSteps}
               showSteps={showSteps}
+              onScreenshotReady={handleScreenshotReady}
             />
           )}
         </div>

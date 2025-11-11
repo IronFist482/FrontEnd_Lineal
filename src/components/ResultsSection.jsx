@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from './ui/card';
 import StepCard from './StepCard';
 import '../styles/ResultsSection.css';
 import { BlockMath } from 'react-katex'; 
 import { toFrac } from '../utils/formatFraction';
 
+// Importa la función de utilidad creada en el paso 1
+import takeScreenshotAndGetBase64 from '../utils/screenshotUtils'; 
 
+
+// -----------------------------------------------------------
+// MatrixRenderer function (La mantendremos sin cambios)
+// -----------------------------------------------------------
 export function MatrixRenderer({ data, operationType }) {
   if (!data || data.length === 0) {
     return <span>Matriz no disponible</span>;
@@ -53,6 +59,9 @@ export function MatrixRenderer({ data, operationType }) {
 }
 
 
+// -----------------------------------------------------------
+// ResultsSection function (MODIFICADA PARA CAPTURA AUTOMÁTICA)
+// -----------------------------------------------------------
 export function ResultsSection({ 
     result, 
     explanation, 
@@ -61,13 +70,46 @@ export function ResultsSection({
     fullSteps, 
     operationType,
     setShowSteps, 
-    showSteps
+    showSteps,
+    onScreenshotReady // 👈 Nueva prop: función para enviar la imagen a Home
 }) {
   const finalMatrixTitle = operationType === 'Determinante' ? 'Matriz Triangular' : 'Matriz Final';
   
+  // 1. Usar un ID fijo y un estado para evitar la captura múltiple
+  const CAPTURE_ID = "solver-results-card"; 
+  const [hasCaptured, setHasCaptured] = useState(false);
+
+  // 2. Disparar la captura en cuanto el componente reciba los datos y se monte
+  useEffect(() => {
+    // La captura solo se ejecuta si hay un resultado y no ha sido capturado antes
+    if (result && originalMatrix && !hasCaptured) {
+      
+      const captureAndSend = async () => {
+        // Espera un pequeño tiempo para asegurar que KaTeX (BlockMath) se haya renderizado
+        await new Promise(resolve => setTimeout(resolve, 50)); 
+        
+        const imageBase64 = await takeScreenshotAndGetBase64(CAPTURE_ID); 
+
+        if (imageBase64 && onScreenshotReady) {
+          // 3. Enviar la Data URL (imagen) al componente padre (Home.jsx)
+          onScreenshotReady(imageBase64); 
+          setHasCaptured(true); // Marca como capturado
+        }
+      };
+
+      captureAndSend();
+    }
+
+    // Resetear el estado de captura si los resultados cambian o se vacían
+    if (!result) {
+        setHasCaptured(false);
+    }
+
+  }, [result, originalMatrix, hasCaptured, onScreenshotReady]); 
 
   return (
-    <Card className="results-section-root" /*id={cardId}*/>
+    // 4. Asignar el ID al contenedor que deseas capturar
+    <Card className="results-section-root" id={CAPTURE_ID}>
       
       {(originalMatrix || lastMatrix) && (
         <>
@@ -78,8 +120,7 @@ export function ResultsSection({
                 <MatrixRenderer data={originalMatrix} operationType={operationType} />
               </div>
             )}
-
-
+            
             {lastMatrix && (
               <div className="results-section-matrix-box">
                 <h4 className="results-section-title">{finalMatrixTitle}</h4> 
@@ -91,7 +132,7 @@ export function ResultsSection({
           <div className="results-section-result-wrapper">
               <h3 className="results-section-title">Resultado</h3>
               <div className="results-section-result-box">
-                <p className="results-section-result-text">{result}</p> 
+                <h6 className="results-section-result-text">{result}</h6>
               </div>
           </div>
         </>

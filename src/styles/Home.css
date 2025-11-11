@@ -105,7 +105,7 @@
 .flow-indicator-wrapper {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 1.2rem;
@@ -152,7 +152,7 @@
 
 .flow-step-text {
   font-size: 0.9rem;
-  font-weight: 450;
+  font-weight: 550;
   color: #2b2b2b;
 }
 
@@ -175,10 +175,8 @@
 
 @media (max-width: 767.98px) {
   .flow-step:not(:last-child) .flow-step-number-box::after {
-    content: '';
     position: absolute;
     top: 100%;
-    left: 50%;
     transform: translateX(-50%);
     width: 2px;
     height: 1.2rem;
