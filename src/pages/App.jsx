@@ -5,10 +5,12 @@ import EspaciosVectoriales from './EspaciosVectoriales'
 import Test from './Test'
 import Logbook from './Logbook';
 import ProtectedRoute from '../components/ProtectedRoute';
+import { Toaster } from 'sonner';
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/" element={<AppHome />} />
         <Route path="/espacios" element={<EspaciosVectoriales />} />

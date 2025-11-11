@@ -16,6 +16,7 @@ export default function Home() {
   const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
   const [contador, setContador] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
 
   const [operationCache, setOperationCache] = useState({
     Determinante: { file: null, result: null, error: null },
@@ -144,7 +145,7 @@ export default function Home() {
         )}
 
         <div className="home-content-area">
-          {!isLoading && !currentError && !currentResult && (
+          {!isLoading && !currentResult && (
             <FileUploadArea
               onFileSelect={handleFileUpload} 
               onMatrixChange={handleMatrixChange}
@@ -154,12 +155,7 @@ export default function Home() {
 
           <LoadingOverlay visible={isLoading} />
 
-          {currentError && (
-            <div className="error-message">
-              <strong>Error:</strong> {currentError}
-              <button onClick={handleReset} className="reset-btn-error">Intentar de nuevo</button>
-            </div>
-          )}
+          
 
           {currentResult && (
             <ResultsSection
@@ -169,11 +165,21 @@ export default function Home() {
               lastMatrix={lastMatrix}
               fullSteps={fullSteps}
               operationType={opKey}
+              setShowSteps={setShowSteps}
+              showSteps={showSteps}
             />
           )}
         </div>
-
+        {currentResult && (
+        <button
+          className="ver-pasos-btn"
+          onClick={() => setShowSteps(!showSteps)}
+        >
+          {showSteps ? "Ocultar pasos" : "Ver pasos completos"}
+        </button>
+        )}
         <InstructionsModal open={instructionsModalOpen} onOpenChange={setInstructionsModalOpen} />
+
       </div>
     </div>
   );
