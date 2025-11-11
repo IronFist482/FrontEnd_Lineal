@@ -1,6 +1,8 @@
 "use client";
+
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import '../../styles/alert-dialog.css';
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
@@ -54,14 +56,17 @@ function AlertDialogContent({
   ...props
 }) {
   return (
-    <AlertDialogPrimitive.Content
-      data-slot="alert-dialog-content"
-      className={cn(
-        "alert-content",
-        className,
-      )}
-      {...props}
-    />
+    <AlertDialogPortal>
+      <AlertDialogOverlay />
+      <AlertDialogPrimitive.Content
+        data-slot="alert-dialog-content"
+        className={cn(
+          "alert-content",
+          className,
+        )}
+        {...props}
+      />
+    </AlertDialogPortal>
   );
 }
 
