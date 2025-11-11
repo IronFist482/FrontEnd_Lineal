@@ -1,0 +1,99 @@
+/* Login.css */
+
+/* Contenedor principal para centrar */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Asegura que ocupe toda la altura de la ventana */
+    background-color: #f0f2f5; /* Fondo suave */
+    padding: 20px;
+}
+
+/* Tarjeta o 'Card' del formulario */
+.login-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada y suave */
+    width: 100%;
+    max-width: 400px; /* Ancho máximo para el formulario */
+    text-align: center;
+}
+
+.login-card h2 {
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 1.8em;
+}
+
+/* Formulario */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Grupo de campo y etiqueta */
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Campos de entrada (Input) */
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box; /* Importante para el padding */
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #007bff; /* Color primario al enfocar */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* Botón de Ingresar */
+.login-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 700;
+    transition: background-color 0.3s, transform 0.1s;
+    margin-top: 10px;
+}
+
+.login-button:hover {
+    background-color: #0056b3;
+}
+
+.login-button:active {
+    transform: translateY(1px);
+}
+
+/* Enlace de "Olvidaste tu contraseña" */
+.forgot-password {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
