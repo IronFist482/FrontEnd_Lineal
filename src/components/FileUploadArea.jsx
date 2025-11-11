@@ -1,108 +1,73 @@
-import { useRef, useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import '../styles/FileUploadArea.css';
-import { Upload, Plus, FileText } from 'lucide-react';
+  import { useRef, useState } from 'react';
+  import { Card } from './ui/card';
+  import { Upload, Plus } from 'lucide-react';
+  import { InputMatrix } from './ui/InputMatrix';
+  import '../styles/FileUploadArea.css';
 
+  export function FileUploadArea({ onFileSelect, onMatrixChange, operationtype }) {
+    const [isDragging, setIsDragging] = useState(false);
+    const [fileName, setFileName] = useState('');
+    const [mode, setMode] = useState('file'); 
+    const fileInputRef = useRef(null);
 
-export function FileUploadArea({ onFileSelect }) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState('');
-  const fileInputRef = useRef(null);
+    const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
+    const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
+    const handleDrop = (e) => {
+      e.preventDefault();
+      setIsDragging(false);
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].name.endsWith('.txt')) {
+        setFileName(files[0].name);
+        onFileSelect(files[0]);
+      }
+    };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+    const handleFileChange = (e) => {
+      const files = e.target.files;
+      if (files?.length > 0) {
+        setFileName(files[0].name);
+        onFileSelect(files[0]);
+      }
+    };
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
+    const handleButtonClick = () => { fileInputRef.current?.click(); };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0 && files[0].name.endsWith('.txt')) {
-      setFileName(files[0].name);
-      onFileSelect(files[0]);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setFileName(files[0].name);
-      onFileSelect(files[0]);
-    }
-  };
-
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  return (
-    <Card className="file-upload-card-root">
-      <div className="file-type-indicator">
-        <FileText className="file-type-icon" />
-        <span>Archivo .txt</span>
-      </div>
-
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={`
-          file-drop-area
-          ${
-            isDragging
-              ? 'file-drop-area-dragging'
-              : 'file-drop-area-idle'
-          }
-        `}
-        onClick={handleButtonClick}
-      >
-        <div
-          className={`
-            upload-icon-wrapper
-            ${isDragging ? 'upload-icon-wrapper-dragging' : 'upload-icon-wrapper-idle'}
-          `}
-        >
-          <Plus className="upload-icon-plus" strokeWidth={2} />
+    return (
+      <Card className="file-upload-card-root" style={{ position: 'relative' }}>
+        <div className="mode-switch">
+          <button className={mode === 'file' ? 'button button-default' : 'button button-outline'} onClick={() => setMode('file')}>Archivo .txt</button>
+          <button className={mode === 'matrix' ? 'button button-default' : 'button button-outline'} onClick={() => setMode('matrix')}>Ingresar</button>
         </div>
 
-        <div className="file-info-text-wrapper">
-          <p className="file-info-main-text">
-            {fileName || 'Arrastra o pega tu archivo aquí'}
-          </p>
-          {fileName && (
-            <p className="file-info-success-text">✓ Archivo seleccionado</p>
-          )}
-        </div>
+        {mode === 'file' ? (
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`file-drop-area ${isDragging ? 'file-drop-area-dragging' : 'file-drop-area-idle'}`}
+            onClick={handleButtonClick}
+          >
+            <div className={`upload-icon-wrapper ${isDragging ? 'upload-icon-wrapper-dragging' : 'upload-icon-wrapper-idle'}`}>
+              <Plus className="upload-icon-plus" strokeWidth={2} />
+            </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="upload-button-custom-style"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleButtonClick();
-          }}
-        >
-          <Upload className="upload-button-icon" />
-          Elegir archivo
-        </Button>
+            <div className="file-info-text-wrapper">
+              <p className="file-info-main-text">{fileName || 'Arrastra o pega tu archivo aquí'}</p>
+              {fileName && <p className="file-info-success-text">✓ Archivo seleccionado</p>}
+            </div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".txt"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </div>
-    </Card>
-  );
-}
+            <button type="button" className="button button-outline upload-button-custom-style" onClick={(e) => { e.stopPropagation(); handleButtonClick(); }}>
+              <Upload className="upload-button-icon" /> Elegir archivo
+            </button>
+
+            <input ref={fileInputRef} type="file" accept=".txt" onChange={handleFileChange} className="hidden" />
+          </div>
+        ) : (
+          <InputMatrix
+            onMatrixChange={onMatrixChange}
+            operationtype={operationtype}
+          />
+        )}
+      </Card>
+    );
+  }
