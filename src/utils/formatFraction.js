@@ -1,29 +1,45 @@
 import Fraction from "fraction.js";
 
+
 export function toFrac(value) {
-  if (typeof value === "string" && !isNaN(value)) {
-    value = Number(value);
-  }
   if (typeof value === "string" && value.includes("\\frac")) {
     return value;
   }
+
+  if (typeof value === "string" && !isNaN(value.trim())) {
+    value = Number(value.trim());
+  }
+
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+
   if (typeof value === "number") {
     value = Number(value.toFixed(10));
-
     if (Number.isInteger(value)) {
       return `${value}`;
     }
-    const frac = new Fraction(value);
-    if (frac.d === 1) {
-      return `${frac.n}`;
-    }
-    return `\\frac{${frac.n}}{${frac.d}}`;
+
+    const sign = value < 0 ? "-" : "";
+    const absValue = Math.abs(value);
+
+    const frac = new Fraction(absValue);
+
+    const n =
+      typeof frac.n === "bigint" ? frac.n : BigInt(frac.n);
+    const d =
+      typeof frac.d === "bigint" ? frac.d : BigInt(frac.d);
+
+    return `${sign}\\frac{${n.toString()}}{${d.toString()}}`;
   }
 
   return value;
 }
 
-
 export function matrixToFraction(matrix) {
-  return matrix.map(row => row.map(value => toFrac(value)));
+  if (!Array.isArray(matrix)) return matrix;
+
+  return matrix.map((row) =>
+    row.map((value) => toFrac(value))
+  );
 }

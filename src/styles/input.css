@@ -1,67 +1,138 @@
-.input-field {
+:root {
+  --matrix-border: #d0d8e0;
+  --matrix-bg: #ffffff;
+  --matrix-input-bg: #f8faff;
+  --matrix-input-border: #cbd5e1;
+  --matrix-input-focus: #4a4ff5;
+  --matrix-shadow: rgba(74, 79, 245, 0.15);
+  --matrix-title-color: #333;
+}
+
+.matrix-container {
+  background-color: var(--matrix-bg);
+  border-radius: 1rem;
+  padding: 1.6rem;
+  border: 1px solid var(--matrix-border);
+  box-shadow: 0 4px 10px var(--matrix-shadow);
+  animation: matrixFadeIn 0.4s ease forwards;
+}
+
+.matrix-header {
   display: flex;
-  height: 2.25rem; /* h-9 */
-  width: 100%; /* w-full */
-  min-width: 0;
-  border-radius: 0.375rem; /* rounded-md */
-  border: 1px solid var(--input);
-  background-color: var(--input-background);
-  padding: 0.25rem 0.75rem; /* px-3 py-1 */
-  font-size: 1rem; /* text-base */
-  line-height: 1.5rem;
-  transition-property: color, box-shadow;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.matrix-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.button-reset {
+  background-color: #f0f3ff;
+  color: #4a4ff5;
+  border: 1px solid #ccd3ff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-reset:hover {
+  background: #4a4ff5;
+  color: white;
+  border-color: transparent;
+}
+
+/* Display KaTeX */
+.matrix-display {
+  background-color: #f9fbff;
+  border: 1px solid #e0e7ff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  min-height: 120px;
+
+  /* ---- CENTRADO REAL ---- */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 1.2rem;
+  overflow-x: auto;
+}
+
+.matrix-display .katex {
+  font-size: 1.35rem;
+}
+
+/* --- Centrado inteligente para tablas dinámicas --- */
+.matrix-grid-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+
+  display: flex;
+  justify-content: center;
+}
+
+.matrix-grid-wrapper {
+  overflow-x: auto;
+  width: 100%;
+
+  display: block;
+  text-align: center;
+}
+
+.matrix-grid {
+  display: inline-block;
+  min-width: max-content;
+}
+
+
+.matrix-grid input {
+  width: 3.4rem;
+  height: 2.5rem;
+  border: 1px solid var(--matrix-input-border);
+  border-radius: 0.45rem;
+  text-align: center;
+  font-size: 1rem;
+  background: var(--matrix-input-bg);
+}
+
+.matrix-grid input:focus {
   outline: none;
+  border-color: var(--matrix-input-focus);
+  background: white;
+  box-shadow: 0px 0px 6px rgba(74, 79, 245, 0.3);
 }
 
-@media (min-width: 768px) {
-  .input-field {
-    font-size: 0.875rem; /* md:text-sm */
-    line-height: 1.25rem;
+/* Botón procesar */
+.button-process {
+  width: 100%;
+  background: linear-gradient(135deg, #4a4ff5, #6a6aff);
+  color: white;
+  padding: 0.9rem 1.2rem;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  border: none;
+  cursor: pointer;
+}
+
+.button-process:hover {
+  background: linear-gradient(135deg, #3f45f0, #575cff);
+  box-shadow: 0 4px 10px rgba(74, 79, 245, 0.3);
+}
+
+/* Animación */
+@keyframes matrixFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-}
-
-.input-field::file-selector-button {
-  color: var(--foreground);
-  display: inline-flex;
-  height: 1.75rem; /* file:h-7 */
-  border-width: 0;
-  background-color: transparent;
-  font-size: 0.875rem; /* file:text-sm */
-  font-weight: 500; /* file:font-medium */
-}
-
-.input-field::placeholder {
-  color: var(--muted-foreground);
-}
-
-.input-field::selection {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.input-field:focus-visible {
-  border-color: var(--ring);
-  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.5);
-}
-
-.input-field:disabled {
-  pointer-events: none;
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.input-field[aria-invalid="true"] {
-  border-color: var(--destructive);
-  box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.2);
-}
-
-@media (prefers-color-scheme: dark) {
-  .input-field {
-    background-color: hsl(var(--input) / 0.3);
-  }
-  .input-field[aria-invalid="true"] {
-    box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.4);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

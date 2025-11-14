@@ -18,6 +18,7 @@
 
 @media (min-width: 1024px) {
   .home-root {
+
     padding: 2rem;
   }
 }
@@ -434,4 +435,32 @@
   .matrix-container .katex {
     font-size: 1.6rem;
   }
+}
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #ffe5e5, #ffd6d6);
+  border-left: 5px solid #ff4c4c;
+  color: #b00000;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+  animation: fadeSlideIn 0.4s ease forwards;
+}
+
+.error-banner svg {
+  width: 20px;
+  height: 20px;
+  fill: #b00000;
+  flex-shrink: 0;
+}
+
+@keyframes fadeSlideIn {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }

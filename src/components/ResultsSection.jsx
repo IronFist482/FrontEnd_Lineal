@@ -1,159 +1,189 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import StepCard from './StepCard';
 import '../styles/ResultsSection.css';
-import { BlockMath } from 'react-katex'; 
+import { EditableMatrix } from './ui/EditableMatrix';
+import { InlineMath } from 'react-katex';
 import { toFrac } from '../utils/formatFraction';
 
-// Importa la función de utilidad creada en el paso 1
-import takeScreenshotAndGetBase64 from '../utils/screenshotUtils'; 
-
-
-// -----------------------------------------------------------
-// MatrixRenderer function (La mantendremos sin cambios)
-// -----------------------------------------------------------
-export function MatrixRenderer({ data, operationType }) {
-  if (!data || data.length === 0) {
-    return <span>Matriz no disponible</span>;
-  }
-
-  const numCols = data[0].length;
-  const isAugmented = numCols > data.length;
-
-  const rows = data
-    .map((row, i) => {
-      const formattedRow = row.map(value => toFrac(value)).join(' & ');
-      return i < data.length - 1 ? `${formattedRow} \\\\[0.5em]` : formattedRow;
-    })
-    .join(' ');
-
-  let latex;
-  switch (operationType) {
-    case 'Determinante':
-      latex = `\\begin{vmatrix} ${rows} \\end{vmatrix}`;
-      break;
-
-    case 'SEL':
-      const arrayColsSEL = 'c '.repeat(numCols - 1) + '| c';
-      latex = `\\left[\\begin{array}{${arrayColsSEL}} ${rows} \\end{array}\\right]`;
-      break;
-
-    case 'Inversa':
-      if (isAugmented) {
-        const halfCols = numCols / 2;
-        const arrayColsInv = 'c '.repeat(halfCols) + '| ' + 'c '.repeat(halfCols - 1) + 'c';
-        latex = `\\left[\\begin{array}{${arrayColsInv}} ${rows} \\end{array}\\right]`;
-      } else {
-        latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
-      }
-      break;
-
-    default:
-      latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
-  }
-  return (
-    <div className="matrix-display-latex">
-      <BlockMath math={latex} />
-    </div>
-  );
-}
-
-
-// -----------------------------------------------------------
-// ResultsSection function (MODIFICADA PARA CAPTURA AUTOMÁTICA)
-// -----------------------------------------------------------
-export function ResultsSection({ 
-    result, 
-    explanation, 
-    originalMatrix, 
-    lastMatrix, 
-    fullSteps, 
+export function ResultsSection({
+    result,
+    originalMatrix,
+    lastMatrix,
+    fullSteps,
     operationType,
-    setShowSteps, 
-    showSteps,
-    onScreenshotReady // 👈 Nueva prop: función para enviar la imagen a Home
+    onProcessAgain,
 }) {
-  const finalMatrixTitle = operationType === 'Determinante' ? 'Matriz Triangular' : 'Matriz Final';
-  
-  // 1. Usar un ID fijo y un estado para evitar la captura múltiple
-  const CAPTURE_ID = "solver-results-card"; 
-  const [hasCaptured, setHasCaptured] = useState(false);
 
-  // 2. Disparar la captura en cuanto el componente reciba los datos y se monte
-  useEffect(() => {
-    // La captura solo se ejecuta si hay un resultado y no ha sido capturado antes
-    if (result && originalMatrix && !hasCaptured) {
-      
-      const captureAndSend = async () => {
-        // Espera un pequeño tiempo para asegurar que KaTeX (BlockMath) se haya renderizado
-        await new Promise(resolve => setTimeout(resolve, 50)); 
-        
-        const imageBase64 = await takeScreenshotAndGetBase64(CAPTURE_ID); 
+    const [showSteps, setShowSteps] = useState(false);
+    const [isEditingOriginal, setIsEditingOriginal] = useState(false);
+    const [editedMatrix, setEditedMatrix] = useState(originalMatrix);
 
-        if (imageBase64 && onScreenshotReady) {
-          // 3. Enviar la Data URL (imagen) al componente padre (Home.jsx)
-          onScreenshotReady(imageBase64); 
-          setHasCaptured(true); // Marca como capturado
+    useEffect(() => {
+        setEditedMatrix(originalMatrix);
+    }, [originalMatrix]);
+
+    const handleProcessAgain = () => {
+        if (onProcessAgain) {
+            onProcessAgain(editedMatrix);
+            setIsEditingOriginal(false);
         }
-      };
+    };
 
-      captureAndSend();
-    }
+    const finalMatrixTitle = operationType === 'Determinante' ? 'Matriz Triangular' : 'Matriz Final';
+    const showOriginal = originalMatrix != null;
+    const showLast =
+        lastMatrix != null &&
+        operationType !== 'Determinante' &&
+        (operationType === 'SEL' || operationType === 'Inversa');
 
-    // Resetear el estado de captura si los resultados cambian o se vacían
-    if (!result) {
-        setHasCaptured(false);
-    }
+    const renderResult = (res) => {
+        if (res === null || res === undefined) {
+            return <p className="results-section-result-text">Respuesta no válida.</p>;
+        }
 
-  }, [result, originalMatrix, hasCaptured, onScreenshotReady]); 
 
-  return (
-    // 4. Asignar el ID al contenedor que deseas capturar
-    <Card className="results-section-root" id={CAPTURE_ID}>
-      
-      {(originalMatrix || lastMatrix) && (
-        <>
-          <div className="results-section-matrices-container">
-            {originalMatrix && (
-              <div className="results-section-matrix-box">
-                <h4 className="results-section-title">Matriz Original</h4>
-                <MatrixRenderer data={originalMatrix} operationType={operationType} />
-              </div>
+        if (typeof res === 'string') {
+            const match = res.match(/-?\d+(\.\d+)?/);
+            if (match) {
+                const numberStr = match[0];
+                const numValue = Number(numberStr);
+                const latex = toFrac(Math.abs(numValue));
+                const isNegative = numValue < 0;
+
+                const mathToRender = isNegative ? `-${latex}` : latex;
+
+                const index = match.index;
+                const before = res.slice(0, index);
+                const after = res.slice(index + numberStr.length);
+
+                return (
+                    <p className="results-section-result-text">
+                        {before}
+                        <InlineMath math={mathToRender} />
+                        {after}
+                    </p>
+                );
+            }
+        }
+
+        if (typeof res === 'number') {
+            const isNegative = res < 0;
+            const latex = toFrac(Math.abs(res));
+            const mathToRender = isNegative ? `-${latex}` : latex;
+            return <InlineMath math={mathToRender} />;
+        }
+
+        if (typeof res === 'object') {
+            const latexContent = Object.entries(res)
+                .map(([k, v]) => {
+                    const isNegative = v < 0;
+                    const latex = toFrac(Math.abs(v));
+                    const mathToRender = isNegative ? `-${latex}` : latex;
+                    return `${k} = ${mathToRender}`;
+                })
+                .join(', ');
+            return <InlineMath math={latexContent} />;
+        }
+
+            return <p className="results-section-result-text">{res}</p>;
+    };
+
+
+    return (
+        <Card className="results-section-root">
+            {(showOriginal || showLast) && (
+                <div className="results-section-matrices-container">
+
+                    {showOriginal && (
+                        <div className="results-section-matrix-box">
+                            <h4 className="matrix-subtitle">Original</h4>
+                            <EditableMatrix
+                                data={isEditingOriginal ? editedMatrix : originalMatrix}
+                                operationType={operationType}
+                                isEditable={isEditingOriginal}
+                                onMatrixEdit={setEditedMatrix}
+                            />
+
+                            <div className="matrix-edit-controls">
+                                {isEditingOriginal ? (
+                                    <>
+                                        <button
+                                            type="button"
+                                            className="button button-success"
+                                            onClick={handleProcessAgain}
+                                        >
+                                            Procesar matriz editada
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="button button-outline"
+                                            onClick={() => {
+                                                setEditedMatrix(originalMatrix);
+                                                setIsEditingOriginal(false);
+                                            }}
+                                        >
+                                            Cancelar
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="button button-outline"
+                                        onClick={() => setIsEditingOriginal(true)}
+                                    >
+                                        Editar
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {showLast && (
+                        <div className="results-section-matrix-box">
+                            <h4 className="matrix-subtitle">{finalMatrixTitle}</h4>
+                            <EditableMatrix data={lastMatrix} operationType={operationType} />
+                        </div>
+                    )}
+
+                    <div className="results-section-result-wrapper">
+                        <h3 className="results-section-title">Resultado</h3>
+                        <div
+                            className="results-section-result-box"
+                            style={{ fontSize: '1.4rem', lineHeight: '1.6' }}
+                        >
+                            {renderResult(result)}
+                        </div>
+                    </div>
+
+                </div>
             )}
-            
-            {lastMatrix && (
-              <div className="results-section-matrix-box">
-                <h4 className="results-section-title">{finalMatrixTitle}</h4> 
-                <MatrixRenderer data={lastMatrix} operationType={operationType} />
-              </div>
+
+            {fullSteps && fullSteps.length > 0 && (
+                <>
+                    <button
+                        type="button"
+                        className="button button-default"
+                        onClick={() => setShowSteps(!showSteps)}
+                    >
+                        {showSteps ? "Ocultar pasos completos" : "Ver pasos completos"}
+                    </button>
+
+                    {showSteps && (
+                        <div className="full-steps-list">
+                            {fullSteps.map((step, index) => (
+                                <StepCard
+                                    key={index}
+                                    stepNumber={index + 1}
+                                    operationName={step.operationName}
+                                    matrix={step.matrix}
+                                    operationType={operationType}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </>
             )}
-            
-          </div>
-          <div className="results-section-result-wrapper">
-              <h3 className="results-section-title">Resultado</h3>
-              <div className="results-section-result-box">
-                <h6 className="results-section-result-text">{result}</h6>
-              </div>
-          </div>
-        </>
-      )}
-
-      {showSteps && (
-        <div className="full-steps-list">
-          {fullSteps.map((step, index) => (
-            <StepCard
-              key={index}
-              stepNumber={index + 1}
-              operationName={step.operationName}
-              operationDetail={step.operationDetail}
-              matrix={step.matrix} 
-              operationType={operationType} 
-            />
-          ))}
-        </div>
-      )}
-        
-
-    </Card>
-  );
+        </Card>
+    );
 }
