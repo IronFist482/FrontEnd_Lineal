@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="64" height="64" viewBox="0 0 100 100" role="img" aria-label="favicon">
+  <rect x="5" y="5" width="90" height="90" rx="16" ry="16" fill="#FFFFFF"/>
+
+  <defs>
+    <style>
+      .blue { fill: #4a4ff5; } 
+    </style>
+  </defs>
+  <rect class="blue" x="12" y="12" width="44" height="28" rx="8" ry="8"/>
+  <rect class="blue" x="60" y="12" width="28" height="44" rx="8" ry="8"/>
+  <rect class="blue" x="44" y="40" width="12" height="8" rx="3" ry="3"/>
+  <rect class="blue" x="12" y="46" width="28" height="36" rx="8" ry="8"/>
+  <rect class="blue" x="46" y="60" width="42" height="26" rx="8" ry="8"/>
+</svg>

@@ -48,19 +48,14 @@ export default function StepCard({ stepNumber, operationName, operationDetail, m
                 <h3>Paso {stepNumber}</h3>
                 <p className="operation-name">{operationName}</p>
             </div>
-
-
-
             {operationDetail && (
                 <div className="operation-formula">
                     {operationDetail}
                 </div>
             )}
-
             <div className="matrix-container">
                 {matrix ? renderMatrixLatex(matrix, operationType) : null}
             </div>
-
         </div>
     );
 }

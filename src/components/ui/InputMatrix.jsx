@@ -1,12 +1,29 @@
 import { useState, useRef, useEffect } from 'react';
 import 'katex/dist/katex.min.css';
-import { BlockMath, InlineMath } from 'react-katex';
-import '../../styles/inputMatrix.css';
+import { BlockMath } from 'react-katex';
+import styles from '../../styles/inputMatrix.module.css';
 
 const OPERATION_TITLES = {
-  Determinante: 'Ingrese su matriz',
-  Inversa: 'Ingrese su matriz',
-  SEL: 'Ingrese su sistema de ecuaciones lineales',
+  Determinante: 'Ingrese su Determinante',
+  Inversa: 'Ingrese su Matriz',
+  SEL: 'Ingrese su Sistema de Ecuaciones Lineales',
+};
+
+const isValidFractionInput = (value) => {
+  if (value === '') return true;
+  if (/^-?\d*\.?\d*$/.test(value)) return true;
+  if (/^-?\d*\/-?\d*$/.test(value)) return true;
+  return false;
+};
+
+const formatFractionLatex = (value) => {
+  if (!value) return '\\;';
+  if (/^-?\d+(\.\d+)?$/.test(value)) return value;
+  if (/^-?\d+\/-?\d+$/.test(value)) {
+    const [num, den] = value.split('/');
+    return `\\frac{${num}}{${den}}`;
+  }
+  return '\\text{?}';
 };
 
 const getDefaultMatrices = () => ({
@@ -15,63 +32,62 @@ const getDefaultMatrices = () => ({
   Inversa: Array.from({ length: 2 }, () => Array(2).fill('')),
 });
 
-export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
+export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationtype }) {
   const [matrices, setMatrices] = useState(getDefaultMatrices());
   const [focusCell, setFocusCell] = useState({ r: 0, c: 0 });
   const inputRefs = useRef([]);
-  
   const matrix = matrices[operationtype] || getDefaultMatrices()[operationtype];
-
-  // Detectar móvil
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-  // Inicializar refs
   useEffect(() => {
     inputRefs.current = matrix.map((row, r) =>
       inputRefs.current[r]?.slice(0, row.length) || Array(row.length).fill(null)
     );
   }, [matrix]);
 
-  // Mantener foco
   useEffect(() => {
-    if (focusCell) {
-      const { r, c } = focusCell;
-      inputRefs.current[r]?.[c]?.focus();
+    if (!focusCell) return;
+    const { r, c } = focusCell;
+    const el = inputRefs.current?.[r]?.[c];
+    if (el && typeof el.focus === 'function') {
+      requestAnimationFrame(() => {
+        const pos = el.selectionStart ?? el.value.length;
+        el.focus();
+        el.setSelectionRange(pos, pos);
+      });
     }
-  }, [matrices, focusCell]);
+  }, [focusCell, matrix]);
 
   const updateMatrix = (newMatrix) => {
-    setMatrices(prev => ({
+    setMatrices((prev) => ({
       ...prev,
       [operationtype]: newMatrix,
     }));
   };
 
   const handleCellChange = (r, c, value) => {
-    const isValid = value === '' || /^-?\d*\.?\d*$/.test(value);
-    if (!isValid) return;
-    const newMatrix = matrix.map(row => [...row]);
+    if (!isValidFractionInput(value)) return;
+    const newMatrix = matrix.map((row) => [...row]);
     newMatrix[r][c] = value;
     updateMatrix(newMatrix);
+    setTimeout(() => setFocusCell({ r, c }), 0);
   };
 
-  // Manejo de teclas y botones
   const moveFocus = (direction) => {
     let { r, c } = focusCell;
     let expand = false;
 
     if (direction === 'up') r = Math.max(r - 1, 0);
     if (direction === 'down') {
-      r = r + 1;
+      r += 1;
       if (r >= matrix.length) expand = true;
     }
     if (direction === 'left') c = Math.max(c - 1, 0);
     if (direction === 'right') {
-      c = c + 1;
+      c += 1;
       if (c >= matrix[0].length) expand = true;
     }
 
-    // Expansión de matriz
     if ((operationtype === 'Determinante' || operationtype === 'Inversa') && expand && matrix.length < maxSize) {
       const newSize = matrix.length + 1;
       const expanded = Array.from({ length: newSize }, (_, i) =>
@@ -89,7 +105,7 @@ export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
         return;
       }
       if (direction === 'right' && matrix[0].length < maxSize) {
-        const newMatrix = matrix.map(row => [...row, '']);
+        const newMatrix = matrix.map((row) => [...row, '']);
         updateMatrix(newMatrix);
         setFocusCell({ r, c: matrix[0].length });
         return;
@@ -109,152 +125,120 @@ export function InputMatrix({ onMatrixChange, maxSize = 10, operationtype }) {
       };
       if (keyMap[e.key]) {
         e.preventDefault();
-        setFocusCell({ r, c }); // actualiza foco
         moveFocus(keyMap[e.key]);
       }
     }
   };
 
   const handleReset = () => {
-    setMatrices(prev => ({
+    setMatrices((prev) => ({
       ...prev,
       [operationtype]: getDefaultMatrices()[operationtype],
     }));
     setFocusCell({ r: 0, c: 0 });
   };
 
-  // Generar LaTeX
+  const validateMatrixBeforeSend = (matrix) => {
+    for (let r = 0; r < matrix.length; r++) {
+      for (let c = 0; c < matrix[r].length; c++) {
+        const cell = matrix[r][c];
+        if (cell === '') return 'Hay celdas vacías. Complete todos los valores antes de procesar.';
+        if (!isValidFractionInput(cell)) return `El valor "${cell}" no es válido.`;
+      }
+    }
+    return null;
+  };
+
   const getWrapper = () => {
     const cols = matrix[0]?.length || 2;
     let latexBody = '';
 
     switch (operationtype) {
       case 'Determinante':
-        latexBody = matrix.map(() => Array(cols).fill('\\phantom{00}').join(' & ')).join('\\\\');
-        return `\\displaystyle \\left|\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right|`;
+        latexBody = matrix.map((row) => row.map(formatFractionLatex).join(' & ')).join('\\\\');
+        return `\\left|\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right|`;
       case 'Inversa':
-        latexBody = matrix.map(() => Array(cols).fill('\\phantom{00}').join(' & ')).join('\\\\');
-        return `\\displaystyle \\left[\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right]`;
+        latexBody = matrix.map((row) => row.map(formatFractionLatex).join(' & ')).join('\\\\');
+        return `\\left[\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right]`;
       case 'SEL': {
         const coefCols = matrix[0].length - 1;
-        const phantoms = Array.from({ length: coefCols }, (_, i) => `\\phantom{00\\,x_{${i + 1}}\\,+}`);
-        const latexRows = matrix.map(() => {
-          const coeficientes = phantoms.join(' & ');
-          return `${coeficientes} & \\phantom{=} & \\phantom{00}`;
-        }).join('\\\\');
-        return `\\displaystyle \\left\\{\\begin{array}{${'l'.repeat(coefCols)}r c}${latexRows}\\end{array}\\right.`;
+        const latexRows = matrix
+          .map((row) =>
+            row
+              .map((cell, i) => {
+                if (i < coefCols) {
+                  if (cell.trim() === '-') return '-x_{' + (i + 1) + '}';
+                  if (cell.trim().startsWith('-')) return `${formatFractionLatex(cell)}x_{${i + 1}}`;
+                  return `${formatFractionLatex(cell)}x_{${i + 1}}`;
+                }
+                return `${formatFractionLatex(cell)}`;
+              })
+              .slice(0, coefCols + 1)
+              .join(' + ')
+              .replace(/\+ -/g, '- ')
+              .replace(/\+ \+/g, '+ ')
+          )
+          .join('\\\\');
+        return `\\left\\{\\begin{array}{l}${latexRows}\\end{array}\\right.`;
       }
       default:
-        latexBody = matrix.map(() => Array(cols).fill('\\phantom{00}').join(' & ')).join('\\\\');
-        return `\\displaystyle \\left(\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right)`;
+        latexBody = matrix.map((row) => row.map(formatFractionLatex).join(' & ')).join('\\\\');
+        return `\\left(\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right)`;
     }
   };
 
   return (
-    <div className="matrix-container">
-      <div className="matrix-title-wrapper">
-        <h3 className="matrix-title">{OPERATION_TITLES[operationtype]}</h3>
+    <div className={styles.matrixContainer}>
+      <div className={styles.matrixHeader}>
+        <h3 className={styles.matrixTitle}>{OPERATION_TITLES[operationtype]}</h3>
+        <button className={styles.buttonReset} onClick={handleReset}>Reiniciar</button>
       </div>
 
-      <button type="button" className="button button-reset" onClick={handleReset}>
-        Reiniciar
-      </button>
+      <div className={styles.matrixDisplay}>
+        <BlockMath math={getWrapper()} />
+      </div>
 
-      {isMobile && (
-        <div className="matrix-navigation">
-          <button className="button button-outline" onClick={() => moveFocus('up')}>↑</button>
-          <button className="button button-outline" onClick={() => moveFocus('down')}>↓</button>
-          <button className="button button-outline" onClick={() => moveFocus('left')}>←</button>
-          <button className="button button-outline" onClick={() => moveFocus('right')}>→</button>
-
-          {/* Expansión rápida en móvil */}
-          {(operationtype === 'SEL' || operationtype === 'Determinante' || operationtype === 'Inversa') && (
-            <>
-              <button className="button button-outline" onClick={() => moveFocus('down')}>+ Fila</button>
-              <button className="button button-outline" onClick={() => moveFocus('right')}>+ Columna</button>
-            </>
-          )}
-        </div>
-      )}
-
-      <div className="matrix-overlay-wrapper">
-        <div className="katex-wrapper">
-          <BlockMath math={getWrapper()} />
-        </div>
-
-        <table className="matrix-input-overlay small-inputs">
+      <div className={styles.matrixGridWrapper}>
+        <table className={styles.matrixGrid}>
           <tbody>
-            {matrix.map((r, rowIndex) => {
-              let cells = [];
-              if (operationtype === 'SEL') {
-                const coefCells = [];
-                for (let colIndex = 0; colIndex < r.length - 1; colIndex++) {
-                  coefCells.push(
-                    <td key={`cell-${rowIndex}-${colIndex}`} className="matrix-variable-cell">
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        value={r[colIndex]}
-                        ref={el => {
-                          if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
-                          inputRefs.current[rowIndex][colIndex] = el;
-                        }}
-                        onChange={e => handleCellChange(rowIndex, colIndex, e.target.value)}
-                        onKeyDown={e => handleKeyDown(e, rowIndex, colIndex)}
-                      />
-                      <span className="matrix-variable-label">
-                        <InlineMath math={`x_{${colIndex + 1}}`} />
-                      </span>
-                      {colIndex < r.length - 2 && <span className="matrix-plus-sign"><InlineMath math="+" /></span>}
-                    </td>
-                  );
-                }
-                const resultColIndex = r.length - 1;
-                cells = [
-                  ...coefCells,
-                  <td key={`equals-${rowIndex}`} className="matrix-equals-sign">=</td>,
-                  <td key={`cell-${rowIndex}-${resultColIndex}`}>
+            {matrix.map((row, r) => (
+              <tr key={r}>
+                {row.map((cell, c) => (
+                  <td key={`cell-${r}-${c}`}>
                     <input
                       type="text"
-                      inputMode="decimal"
-                      value={r[resultColIndex]}
-                      ref={el => {
-                        if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
-                        inputRefs.current[rowIndex][resultColIndex] = el;
-                      }}
-                      onChange={e => handleCellChange(rowIndex, resultColIndex, e.target.value)}
-                      onKeyDown={e => handleKeyDown(e, rowIndex, resultColIndex)}
-                    />
-                  </td>
-                ];
-              } else {
-                cells = r.map((cell, colIndex) => (
-                  <td key={`cell-${rowIndex}-${colIndex}`}>
-                    <input
-                      type="text"
-                      inputMode="decimal"
                       value={cell}
-                      ref={el => {
-                        if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
-                        inputRefs.current[rowIndex][colIndex] = el;
+                      ref={(el) => {
+                        if (!inputRefs.current[r]) inputRefs.current[r] = [];
+                        inputRefs.current[r][c] = el;
                       }}
-                      onChange={e => handleCellChange(rowIndex, colIndex, e.target.value)}
-                      onKeyDown={e => handleKeyDown(e, rowIndex, colIndex)}
+                      onFocus={() => setFocusCell({ r, c })}
+                      onChange={(e) => handleCellChange(r, c, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, r, c)}
+                      className={styles.matrixInput}
                     />
                   </td>
-                ));
-              }
-              return <tr key={rowIndex}>{cells}</tr>;
-            })}
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
-      <div className="matrix-process-btn-wrapper">
-        <button type="button" className="button button-default" onClick={() => onMatrixChange(matrix)}>
-          Procesar matriz
-        </button>
-      </div>
+      <button
+        className={styles.buttonProcess}
+        onClick={() => {
+          const error = validateMatrixBeforeSend(matrix);
+          if (error) {
+            console.error("❌ Error en matriz:", error);
+            if (onError) onError(error);
+            return;
+          }
+          onMatrixChange(matrix);
+        }}
+      >
+        Procesar matriz
+      </button>
     </div>
   );
 }

@@ -13,8 +13,7 @@ export default defineConfig({
   server: {
     host: true, // 
     allowedHosts: [
-      'mia-tips-intention-differential.trycloudflare.com',
-      'comic-south-intention-chronicles.trycloudflare.com'
+      '',
     ]
   }
 })
