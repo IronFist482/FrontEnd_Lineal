@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast';
 import '../styles/App.css'
 import AppHome from './Home'
 import EspaciosVectoriales from './EspaciosVectoriales'

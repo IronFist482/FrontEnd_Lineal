@@ -134,6 +134,20 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
   const addColumn = () => {
     if (matrix[0].length < maxSize) updateMatrix(matrix.map(row => [...row, '']));
   };
+  const deleteRow = () => {
+    if (matrix.length > 2) {
+      const newMatrix = matrix.slice(0, -1);
+      updateMatrix(newMatrix);
+      setFocusCell({ r: Math.min(focusCell.r, newMatrix.length - 1), c: focusCell.c });
+    }
+  };
+  const deleteColumn = () => {
+    if (matrix[0].length > 2) {
+      const newMatrix = matrix.map(row => row.slice(0, -1));
+      updateMatrix(newMatrix);
+      setFocusCell({ r: focusCell.r, c: Math.min(focusCell.c, newMatrix[0].length - 1) });
+    }
+  };
 
   const handleKeyDown = (e, r, c) => {
     if (!isMobile) {
@@ -248,8 +262,8 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
             <button onClick={() => moveFocus('right')}>→</button>
           </div>
           <div className={styles.addButtons}>
-            <button onClick={addRow}>+Fila</button>
-            <button onClick={addColumn}>+Columna</button>
+            <button onClick={deleteRow}>-</button>Fila<button onClick={addRow}>+</button>
+            <button onClick={deleteColumn}>-</button>Columna<button onClick={addColumn}>+</button>
           </div>
         </div>
       )}

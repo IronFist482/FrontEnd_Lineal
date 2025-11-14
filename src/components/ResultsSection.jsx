@@ -13,7 +13,6 @@ export function ResultsSection({
     fullSteps,
     operationType,
     onProcessAgain,
-    hasValidationError
 }) {
 
     const [showSteps, setShowSteps] = useState(false);

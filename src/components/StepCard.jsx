@@ -26,15 +26,17 @@ export default function StepCard({
       case 'Determinante':
         latex = `\\begin{vmatrix} ${rows} \\end{vmatrix}`;
         break;
-      case 'SEL':
+      case 'SEL': {
         const arrayColsSEL = 'c '.repeat(numCols - 1) + '| c';
         latex = `\\left[\\begin{array}{${arrayColsSEL}} ${rows} \\end{array}\\right]`;
         break;
-      case 'Inversa':
+      }
+      case 'Inversa': {
         const halfColsInv = numCols / 2;
         const arrayColsInv = 'c '.repeat(halfColsInv) + '| ' + 'c '.repeat(halfColsInv - 1) + 'c';
         latex = `\\left[\\begin{array}{${arrayColsInv}} ${rows} \\end{array}\\right]`;
         break;
+      }
       default:
         latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
     }

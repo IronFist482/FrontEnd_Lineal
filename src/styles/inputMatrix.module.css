@@ -86,7 +86,7 @@
 }
 
 .matrixInput {
-  width: 3.4rem;
+  width: 3.6rem;
   height: 2.5rem;
   border: 1px solid var(--matrix-input-border);
   border-radius: 0.45rem;
@@ -94,6 +94,7 @@
   font-size: 1rem;
   background: var(--matrix-input-bg);
   transition: all 0.2s ease;
+  margin: 0.1rem;
 }
 
 .matrixInput:focus {
@@ -183,6 +184,8 @@
 .addButtons {
   display: flex;
   gap: 0.6rem;
+  text-align: center;
+  align-items: center;
 }
 
 .addButtons button {
