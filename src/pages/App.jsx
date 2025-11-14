@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast';
 import '../styles/App.css'
 import AppHome from './Home'
 import EspaciosVectoriales from './EspaciosVectoriales'
@@ -15,13 +16,13 @@ function App() {
         <Route path="/" element={<AppHome />} />
         <Route path="/espacios" element={<EspaciosVectoriales />} />
         <Route path="/test" element={<Test />} />
- <Route 
-          path="/logbook" 
+        <Route
+          path="/logbook"
           element={
             <ProtectedRoute>
               <Logbook />
             </ProtectedRoute>
-          } 
+          }
         />
       </Routes>
     </BrowserRouter>

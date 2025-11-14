@@ -8,7 +8,7 @@
   --matrix-title-color: #333;
 }
 
-.matrix-container {
+.matrixContainer {
   background-color: var(--matrix-bg);
   border-radius: 1rem;
   padding: 1.6rem;
@@ -17,19 +17,22 @@
   animation: matrixFadeIn 0.4s ease forwards;
 }
 
-.matrix-header {
+.matrixHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 1rem;
 }
 
-.matrix-title {
+.matrixTitle {
   font-size: 1.25rem;
   font-weight: 600;
+  color: var(--matrix-title-color);
+  flex: 1; 
 }
 
-.button-reset {
+.buttonReset {
   background-color: #f0f3ff;
   color: #4a4ff5;
   border: 1px solid #ccd3ff;
@@ -37,61 +40,52 @@
   border-radius: 0.5rem;
   font-weight: 600;
   cursor: pointer;
+  flex-shrink: 0; 
+  margin-top: 0.5rem; 
+  width: 100%; 
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
-.button-reset:hover {
+.buttonReset:hover {
   background: #4a4ff5;
   color: white;
   border-color: transparent;
 }
 
-/* Display KaTeX */
-.matrix-display {
+.matrixDisplay {
   background-color: #f9fbff;
   border: 1px solid #e0e7ff;
   border-radius: 0.75rem;
   padding: 1.5rem;
   min-height: 120px;
-
-  /* ---- CENTRADO REAL ---- */
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-bottom: 1.2rem;
   overflow-x: auto;
 }
 
-.matrix-display .katex {
+.matrixDisplay .katex {
   font-size: 1.35rem;
 }
 
-/* --- Centrado inteligente para tablas dinámicas --- */
-.matrix-grid-wrapper {
+/* Grid de inputs */
+.matrixGridWrapper {
   width: 100%;
   overflow-x: auto;
-  padding: 0.5rem 0;
-  margin-bottom: 1.5rem;
-
   display: flex;
   justify-content: center;
+  margin-bottom: 1.5rem;
 }
 
-.matrix-grid-wrapper {
-  overflow-x: auto;
-  width: 100%;
-
-  display: block;
+.matrixGrid {
+  display: inline-block;
+  min-width: max-content;
   text-align: center;
 }
 
-.matrix-grid {
-  display: inline-block;
-  min-width: max-content;
-}
-
-
-.matrix-grid input {
+.matrixInput {
   width: 3.4rem;
   height: 2.5rem;
   border: 1px solid var(--matrix-input-border);
@@ -99,18 +93,18 @@
   text-align: center;
   font-size: 1rem;
   background: var(--matrix-input-bg);
+  transition: all 0.2s ease;
 }
 
-.matrix-grid input:focus {
+.matrixInput:focus {
   outline: none;
   border-color: var(--matrix-input-focus);
   background: white;
   box-shadow: 0px 0px 6px rgba(74, 79, 245, 0.3);
 }
 
-/* Botón procesar */
-.button-process {
-  width: 100%;
+.buttonProcess {
+  width: 100%; 
   background: linear-gradient(135deg, #4a4ff5, #6a6aff);
   color: white;
   padding: 0.9rem 1.2rem;
@@ -118,14 +112,102 @@
   border-radius: 0.6rem;
   border: none;
   cursor: pointer;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  transition: all 0.2s ease;
 }
 
-.button-process:hover {
+.buttonProcess:hover {
   background: linear-gradient(135deg, #3f45f0, #575cff);
   box-shadow: 0 4px 10px rgba(74, 79, 245, 0.3);
 }
 
-/* Animación */
+@keyframes matrixFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .buttonReset {
+    width: auto;
+    margin-top: 0;
+  }
+
+  .buttonProcess {
+    width: auto; 
+    margin-top: 1rem;
+  }
+}
+
+
+.mobileControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 0.8rem;
+}
+
+.arrowButtons {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.arrowButtons button {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  background-color: #f0f3ff;
+  color: #4a4ff5;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arrowButtons button:hover {
+  background-color: #4a4ff5;
+  color: white;
+  border-color: transparent;
+}
+
+.addButtons {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.addButtons button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccd3ff;
+  background-color: #f0f3ff;
+  color: #4a4ff5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addButtons button:hover {
+  background-color: #4a4ff5;
+  color: white;
+  border-color: transparent;
+}
+
+@media (min-width: 768px) {
+  .mobileControls {
+    display: none;
+  }
+}
+
 @keyframes matrixFadeIn {
   from {
     opacity: 0;

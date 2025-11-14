@@ -1,5 +1,4 @@
 :root {
-  /* Colores base para Tailwind */
   --gray-800: #1f2937;
   --gray-700: #374151;
   --gray-50: #f9fafb;
@@ -9,190 +8,264 @@
   --indigo-100: #e0e7ff;
   --purple-50: #f5f3ff;
   --white: #ffffff;
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  --shadow-md: 0 5px 15px rgba(0,0,0,0.08);
 }
 
-/* * CARD ROOT (Clases aplicadas a la Card wrapper, que se asume maneja las clases de Tailwind) */
+/* ------------------ CARD ROOT ------------------ */
 .results-section-root {
-  /* rounded-2xl shadow-lg border-0 bg-white p-4 md:p-6 lg:p-8 */
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  border: 0;
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-lg);
   background-color: var(--white);
-  padding: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.results-section-root:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
 }
 
 @media (min-width: 768px) {
-  .results-section-root {
-    padding: 1.5rem;
-  }
+  .results-section-root { padding: 2rem; gap: 2.5rem; }
 }
 
 @media (min-width: 1024px) {
-  .results-section-root {
-    padding: 2rem;
-  }
+  .results-section-root { padding: 2.5rem; gap: 3rem; }
 }
 
+/* ------------------ MATRICES CONTAINER ------------------ */
+.results-section-matrices-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+}
 
-/* * RESULT WRAPPER
- * Clases: mb-6 md:mb-8
- */
+/* ------------------ MATRIX BOX ------------------ */
+.results-section-matrix-box {
+  flex: 1 1 250px;
+  max-width: 400px;
+  background-color: var(--gray-50);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.results-section-matrix-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* SUBTITLE */
+.matrix-subtitle {
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) { .matrix-subtitle { font-size: 1.25rem; } }
+
+/* ------------------ RESULT ------------------ */
 .results-section-result-wrapper {
-  margin-bottom: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media (min-width: 768px) {
-  .results-section-result-wrapper {
-    margin-bottom: 2rem;
-  }
-}
-
-/* * TITLES (H3)
- * Clases: text-gray-800 mb-3 md:mb-4
- */
 .results-section-title {
   text-align: center;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--indigo-600);
+  font-size: 1.25rem;
 }
 
-@media (min-width: 768px) {
-  .results-section-title {
-    margin-bottom: 1rem;
-  }
-}
+@media (min-width: 768px) { .results-section-title { font-size: 1.5rem; } }
 
-/*Quiero que los resultados estén uno sobre otro con un espacio entre ellos y que ocupen todo el ancho del contenedor padre.
-*/
-
-/* * RESULT BOX
- * Clases: bg-gray-50 rounded-xl p-4 md:p-6 border border-gray-200
- */
 .results-section-result-box {
-  -color: var(--gray-50);
-  border-radius: 0.75rem;
-  padding: 1rem;
-
-}
-
-@media (min-width: 768px) {
-  .results-section-result-box {
-    padding: 1.5rem;
-  }
-}
-
-/* * RESULT TEXT (P)
- * Clases: text-gray-700 font-mono whitespace-pre-wrap text-sm md:text-base
- */
-.results-section-result-text {
-  color: black;
-  
-  white-space: pre-wrap;
-}
-
-@media (min-width: 768px) {
-  .results-section-result-text {
-    font-size: 1.35rem;
-    font-weight: 400;
-  }
-}
-
-/* * EXPLANATION BOX
- * Clases: bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 md:p-6 border border-indigo-100
- */
-.results-section-explanation-box {
-  background: linear-gradient(to bottom right, var(--indigo-50), var(--purple-50));
-  border-radius: 0.75rem;
-  padding: 1rem;
+  background-color: var(--indigo-50);
+  border-radius: 1rem;
   border: 1px solid var(--indigo-100);
+  padding: 1.25rem;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: var(--gray-800);
 }
 
-@media (min-width: 768px) {
-  .results-section-explanation-box {
-    padding: 1.5rem;
-  }
+@media (min-width: 768px) { .results-section-result-box { padding: 1.5rem; font-size: 1.125rem; } }
+
+/* ------------------ MATRICES LATEX ------------------ */
+.matrix-display-latex {
+  overflow-x: auto;
+  max-width: 100%;
+  text-align: center;
+  margin: 0.5rem 0;
 }
 
-/* * EXPLANATION LIST (OL)
- * Clases: space-y-3 md:space-y-4
- */
-.results-section-explanation-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.matrix-display-latex .katex {
+  font-size: 1.35rem;
+}
+
+@media (min-width: 768px) { .matrix-display-latex .katex { font-size: 1.6rem; } }
+@media (min-width: 1024px) { .matrix-display-latex .katex { font-size: 1.85rem; } }
+
+.full-steps-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  /* space-y-3 */
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-@media (min-width: 768px) {
-  .results-section-explanation-list {
-    gap: 1rem;
-    /* md:space-y-4 */
-  }
-}
 
-/* * STEP ITEM (LI)
- * Clases: flex gap-3 md:gap-4
- */
-.results-section-step-item {
+.editable-matrix-container {
   display: flex;
-  gap: 0.75rem;
-  /* gap-3 */
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-@media (min-width: 768px) {
-  .results-section-step-item {
-    gap: 1rem;
-    /* md:gap-4 */
-  }
+.matrix-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  gap: 0.3rem;
+  margin-top: 0.5rem;
 }
 
-/* * STEP NUMBER (SPAN)
- * Clases: flex-shrink-0 w-7 h-7 md:w-8 md:h-8 bg-indigo-600 text-white rounded-full 
- * flex items-center justify-center text-sm md:text-base
- */
-.results-section-step-number {
-  flex-shrink: 0;
-  width: 1.75rem;
-  /* w-7 */
-  height: 1.75rem;
-  /* h-7 */
-  background-color: var(--indigo-600);
-  color: var(--white);
-  border-radius: 9999px;
-  /* rounded-full */
-  display: flex;
+.matrix-cell-input {
+  text-align: center;
+  padding: 0.25rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button {
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  border: 2px solid transparent;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
 }
 
-@media (min-width: 768px) {
-  .results-section-step-number {
+.button-default {
+  background-color: #4a4ff5;
+  color: var(--white);
+  border-color: var(--indigo-600);
+}
+
+.button-default:hover {
+  background-color: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.button-outline {
+  background-color: transparent;
+  border-color: var(--indigo-600);
+  color: var(--indigo-600);
+}
+
+.button-outline:hover {
+  background-color: var(--indigo-50);
+  border-color: var(--indigo-600);
+  transform: translateY(-1px);
+}
+
+.button-reset {
+  background-color: transparent;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.button-reset:hover {
+  background-color: #fef2f2;
+  border-color: #dc2626;
+  color: #dc2626;
+  transform: translateY(-1px);
+}
+
+
+/* Contenedor general */
+.editable-result-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+/* KaTeX de arriba */
+.katex-wrapper {
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Tabla de inputs debajo */
+.matrix-input-below {
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.matrix-input-below td {
+  padding: 0.1rem;
+}
+
+.matrix-input-below input {
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
+}
+
+.matrix-input-below input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
+  background-color: #fff;
+}
+
+.matrix-variable-cell input {
+  background-color: #fffacd; /* Amarillo suave para variables */
+}
+
+@media (max-width: 600px) {
+  .matrix-input-below input {
     width: 2rem;
-    /* md:w-8 */
     height: 2rem;
-    /* md:h-8 */
-    font-size: 1rem;
-    /* md:text-base */
+    font-size: 0.8rem;
   }
 }
 
-/* * STEP TEXT (P)
- * Clases: text-gray-700 pt-1 text-sm md:text-base
- */
-.results-section-step-text {
-  color: var(--gray-700);
-  padding-top: 0.25rem;
-  /* pt-1 */
-  font-size: 0.875rem;
+.operation-formula {
+    font-size: 1.2rem;   
+    line-height: 2;      
+    margin-top: 0.5rem;  
+    word-break: break-word; 
 }
 
-@media (min-width: 768px) {
-  .results-section-step-text {
-    font-size: 1rem;
-    /* md:text-base */
-  }
-}
+

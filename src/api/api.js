@@ -9,10 +9,8 @@ export const procesarMatriz = async (operacion, archivo) => {
   const formData = new FormData();
   formData.append('operacion', operacion);
   formData.append('archivo', archivo);
-
-
   try {
-    const response = await fetch(`${API_URL}/matrices/procesar`, {
+    const response = await fetch(`${API_URL}/matrices/procesar`, {  
       method: 'POST',
       body: formData,
     });
