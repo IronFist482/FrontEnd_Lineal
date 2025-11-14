@@ -4,26 +4,22 @@ import { FileUploadArea } from "../components/FileUploadArea";
 import { ResultsSection } from "../components/ResultsSection";
 import { procesarMatriz } from "../api/api";
 import { validateMatrixForSubmit } from "../components/ui/EditableMatrix";
-import { toFrac, matrixToFraction } from "../utils/formatFraction";
-import { InlineMath } from "react-katex";
+import { matrixToFraction } from "../utils/formatFraction";
+import { analyzeOperation } from "../utils/matrixAnalyzer";
 import InstructionsModal from "../components/ui/InstructionsModal";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import "../styles/Home.css";
-import "katex/dist/katex.min.css";
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState("Determinante");
   const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
-  const [contador, setContador] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const ERROR_MESSAGES = {
     FETCH_FAILED: "No se pudo recuperar la información. Problema del servidor.",
-    INVALID_MATRIX:
-      "La matriz proporcionada no es válida. Revisa el archivo TXT.",
-    FILE_TOO_LARGE:
-      "El archivo es demasiado grande. Intenta con uno más pequeño.",
+    INVALID_MATRIX: "La matriz proporcionada no es válida. Revisa el archivo TXT.",
+    FILE_TOO_LARGE: "El archivo es demasiado grande. Intenta con uno más pequeño.",
     UNSUPPORTED_FORMAT: "Formato de archivo no soportado. Debe ser .txt.",
     SERVER_ERROR: "Ocurrió un error en el servidor. Intenta más tarde.",
     UNKNOWN: "Ocurrió un error desconocido. Intenta nuevamente.",
@@ -41,40 +37,23 @@ export default function Home() {
     "S.E.L.": "SEL",
   };
 
-  const handleMatrixError = (message) => {
-    setErrorMessage(message);
-  };
+  const handleMatrixError = (message) => setErrorMessage(message);
 
-
-  const generateTxtContent = (matrix) => {
-    return matrix
+  const generateTxtContent = (matrix) =>
+    matrix
       .map((row) =>
-        row
-          .map((cell) => {
-            if (!cell) return "";
-            if (/^-?\d+\/-?\d+$/.test(cell.trim())) {
-              return cell.trim();
-            }
-            if (/^-?\d*\.?\d+$/.test(cell.trim())) {
-              return parseFloat(cell.trim());
-            }
-            return "";
-          })
-          .join(",")
+        row.map((cell) => (cell !== undefined && cell !== null ? cell : "")).join(",")
       )
       .join("\n");
-  };
-
 
   const handleMatrixChange = (matrix) => {
-    const content = generateTxtContent(matrix);
-    const file = new File([content], "matriz.txt", { type: "text/plain" });
+    const file = new File([generateTxtContent(matrix)], "matriz.txt", {
+      type: "text/plain",
+    });
     runOperation(selectedOperation, file);
   };
 
-  const handleFileUpload = (file) => {
-    runOperation(selectedOperation, file);
-  };
+  const handleFileUpload = (file) => runOperation(selectedOperation, file);
 
   const runOperation = useCallback(
     async (operation, file) => {
@@ -89,19 +68,14 @@ export default function Home() {
         }));
       } catch (err) {
         let message;
-        if (err.message?.includes("Failed to fetch")) {
-          message = ERROR_MESSAGES.FETCH_FAILED;
-        } else if (err.message?.includes("Invalid matrix")) {
-          message = ERROR_MESSAGES.INVALID_MATRIX;
-        } else if (err.message?.includes("File too large")) {
-          message = ERROR_MESSAGES.FILE_TOO_LARGE;
-        } else if (err.message?.includes("Unsupported format")) {
-          message = ERROR_MESSAGES.UNSUPPORTED_FORMAT;
-        } else if (err.message?.includes("500")) {
-          message = ERROR_MESSAGES.SERVER_ERROR;
-        } else {
-          message = ERROR_MESSAGES.UNKNOWN;
-        }
+        if (err.message?.includes("Failed to fetch")) message = ERROR_MESSAGES.FETCH_FAILED;
+        else if (err.message?.includes("Invalid matrix")) message = ERROR_MESSAGES.INVALID_MATRIX;
+        else if (err.message?.includes("File too large")) message = ERROR_MESSAGES.FILE_TOO_LARGE;
+        else if (err.message?.includes("Unsupported format")) message = ERROR_MESSAGES.UNSUPPORTED_FORMAT;
+        else if (err.message?.includes("500")) message = ERROR_MESSAGES.SERVER_ERROR;
+        else if (err.message?.includes("Error!, Recuerda que solo se aceptan matrices con numeros y con el formato correcto")) message = ERROR_MESSAGES.INVALID_MATRIX;
+        else message = ERROR_MESSAGES.UNKNOWN;
+
         setErrorMessage(message);
         setOperationCache((prev) => ({
           ...prev,
@@ -115,55 +89,14 @@ export default function Home() {
 
   const handleProcessEditedMatrix = (matrix) => {
     const validationError = validateMatrixForSubmit(matrix);
-
     if (validationError) {
       setErrorMessage(validationError);
       return;
     }
-    const content = generateTxtContent(matrix);
-    const file = new File([content], "matriz_editada.txt", {
+    const file = new File([generateTxtContent(matrix)], "matriz_editada.txt", {
       type: "text/plain",
     });
     runOperation(selectedOperation, file);
-  };
-
-  const getOperacionDescripcion = (op) => {
-    if (!Array.isArray(op) || op.length === 0)
-      return { name: "Operación desconocida", detail: "" };
-    const tipo = op[0];
-    if (tipo === 1) {
-      const origen = op[1],
-        destino = op[2];
-      return {
-        name: `Intercambio de filas F${origen} ↔ F${destino}`,
-        detail: (
-          <InlineMath math={`F_{${origen}} \\leftrightarrow F_{${destino}}`} />
-        ),
-      };
-    }
-    if (tipo === 2) {
-      const factor = toFrac(op[1]);
-      return {
-        name: "Multiplicación de fila",
-        detail: (
-          <InlineMath
-            math={`\\frac{1}{${factor}} \\cdot F_p \\rightarrow F_p`}
-          />
-        ),
-      };
-    }
-    if (tipo === 3 || tipo === 4) {
-      const fila = op[1];
-      return {
-        name:
-          tipo === 3 ? "Ceros debajo del pivote" : "Ceros arriba del pivote",
-        detail: <InlineMath math={`F_{${fila + 1}}, C_{${fila + 1}}`} />,
-      };
-    }
-    return {
-      name: `Operación desconocida (tipo ${tipo})`,
-      detail: <InlineMath math={JSON.stringify(op)} />,
-    };
   };
 
   const handleReset = () => {
@@ -172,16 +105,11 @@ export default function Home() {
       ...prev,
       [opKey]: { file: null, result: null, error: null },
     }));
-    setContador((c) => c + 1);
     setErrorMessage(null);
   };
 
   const opKey = operationMap[selectedOperation] || selectedOperation;
-  const currentData = operationCache[opKey] || {
-    file: null,
-    result: null,
-    error: null,
-  };
+  const currentData = operationCache[opKey] || { file: null, result: null, error: null };
   const currentResult = currentData.result;
   const currentError = currentData.error;
 
@@ -193,24 +121,42 @@ export default function Home() {
       ? matrixToFraction(currentResult.matrices_pasos.slice(-1)[0])
       : null;
 
-  const explanationSteps =
-    (currentResult?.matrices_pasos_id || []).map(
-      (op) => getOperacionDescripcion(op).name
-    ) || [];
+  // Generar pasos con análisis detallado de operaciones
   const fullSteps =
-    (currentResult?.matrices_pasos || [])
-      .map((matrix, i) => {
-        const desc = getOperacionDescripcion(
-          (currentResult?.matrices_pasos_id || [])[i]
-        );
-        if (desc.name.startsWith("Operación desconocida")) return null;
-        return {
-          operationName: desc.name,
-          operationDetail: desc.detail,
-          matrix: matrixToFraction(matrix),
-        };
-      })
-      .filter(Boolean) || [];
+    (currentResult?.matrices_pasos || []).map((matrix, index) => {
+      let operationName = `Paso ${index + 1}`;
+      let operationDetail = null;
+      
+      const pasoId = currentResult?.matrices_pasos_id?.[index];
+      
+      // Obtener las matrices antes y después para análisis
+      const matrixBefore = index === 0 
+        ? currentResult.matriz_inicial 
+        : currentResult.matrices_pasos[index - 1];
+      const matrixAfter = matrix;
+      
+      // Generar nombre de operación basado en pasoId
+      if (pasoId?.[0] === 1) {
+        operationName = `Intercambio de filas`;
+      } else if (pasoId?.[0] === 2) {
+        operationName = `Multiplicar fila por escalar`;
+      } else if (pasoId?.[0] === 3) {
+        operationName = `Hacer ceros debajo del pivote`;
+      } else if (pasoId?.[0] === 4) {
+        operationName = `Hacer ceros arriba del pivote`;
+      }
+      
+      // Analizar la operación para obtener detalles
+      if (pasoId && matrixBefore && matrixAfter) {
+        operationDetail = analyzeOperation(matrixBefore, matrixAfter, pasoId);
+      }
+      
+      return {
+        operationName,
+        operationDetail,
+        matrix: matrixToFraction(matrix),
+      };
+    }) || [];
 
   return (
     <div className="home-root">
@@ -271,9 +217,9 @@ export default function Home() {
               <svg viewBox="0 0 24 24">
                 <path
                   d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
-               10-4.48 10-10S17.52 2 12 2zm0 18
-               c-4.41 0-8-3.59-8-8s3.59-8 8-8
-               8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                   10-4.48 10-10S17.52 2 12 2zm0 18
+                   c-4.41 0-8-3.59-8-8s3.59-8 8-8
+                   8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
                 />
               </svg>
               {errorMessage}
@@ -287,7 +233,6 @@ export default function Home() {
               onError={handleMatrixError}
               operationtype={opKey}
             />
-
           )}
 
           <LoadingOverlay visible={isLoading} />
@@ -295,7 +240,6 @@ export default function Home() {
           {currentResult && (
             <ResultsSection
               result={currentResult.comentario}
-              explanation={explanationSteps}
               originalMatrix={originalMatrix}
               lastMatrix={lastMatrix}
               fullSteps={fullSteps}
@@ -303,12 +247,12 @@ export default function Home() {
               onProcessAgain={handleProcessEditedMatrix}
             />
           )}
-        </div>
 
-        <InstructionsModal
-          open={instructionsModalOpen}
-          onOpenChange={setInstructionsModalOpen}
-        />
+          <InstructionsModal
+            open={instructionsModalOpen}
+            onOpenChange={setInstructionsModalOpen}
+          />
+        </div>
       </div>
     </div>
   );

@@ -4,18 +4,18 @@ import StepCard from './StepCard';
 import '../styles/ResultsSection.css';
 import { EditableMatrix } from './ui/EditableMatrix';
 import { InlineMath } from 'react-katex';
-import { toFrac, matrixToFraction } from '../utils/formatFraction';
+import { toFrac } from '../utils/formatFraction';
 
 export function ResultsSection({
     result,
-    explanation,
     originalMatrix,
     lastMatrix,
     fullSteps,
     operationType,
     onProcessAgain,
-    hasValidationError   
+    hasValidationError
 }) {
+
     const [showSteps, setShowSteps] = useState(false);
     const [isEditingOriginal, setIsEditingOriginal] = useState(false);
     const [editedMatrix, setEditedMatrix] = useState(originalMatrix);
@@ -38,56 +38,57 @@ export function ResultsSection({
         operationType !== 'Determinante' &&
         (operationType === 'SEL' || operationType === 'Inversa');
 
-   const renderResult = (res) => {
-  if (res === null || res === undefined) {
-    return <p className="results-section-result-text">Respuesta no válida.</p>;
-  }
+    const renderResult = (res) => {
+        if (res === null || res === undefined) {
+            return <p className="results-section-result-text">Respuesta no válida.</p>;
+        }
 
-  if (typeof res === 'string') {
-    const match = res.match(/-?\d+(\.\d+)?/);
-    if (match) {
-      const numberStr = match[0];
-      const numValue = Number(numberStr);
-      const latex = toFrac(Math.abs(numValue));
-      const isNegative = numValue < 0;
 
-      const mathToRender = isNegative ? `-${latex}` : latex;
+        if (typeof res === 'string') {
+            const match = res.match(/-?\d+(\.\d+)?/);
+            if (match) {
+                const numberStr = match[0];
+                const numValue = Number(numberStr);
+                const latex = toFrac(Math.abs(numValue));
+                const isNegative = numValue < 0;
 
-      const index = match.index;
-      const before = res.slice(0, index);
-      const after = res.slice(index + numberStr.length);
+                const mathToRender = isNegative ? `-${latex}` : latex;
 
-      return (
-        <p className="results-section-result-text">
-          {before}
-          <InlineMath math={mathToRender} />
-          {after}
-        </p>
-      );
-    }
-  }
+                const index = match.index;
+                const before = res.slice(0, index);
+                const after = res.slice(index + numberStr.length);
 
-  if (typeof res === 'number') {
-    const isNegative = res < 0;
-    const latex = toFrac(Math.abs(res));
-    const mathToRender = isNegative ? `-${latex}` : latex;
-    return <InlineMath math={mathToRender} />;
-  }
+                return (
+                    <p className="results-section-result-text">
+                        {before}
+                        <InlineMath math={mathToRender} />
+                        {after}
+                    </p>
+                );
+            }
+        }
 
-  if (typeof res === 'object') {
-    const latexContent = Object.entries(res)
-      .map(([k, v]) => {
-        const isNegative = v < 0;
-        const latex = toFrac(Math.abs(v));
-        const mathToRender = isNegative ? `-${latex}` : latex;
-        return `${k} = ${mathToRender}`;
-      })
-      .join(', ');
-    return <InlineMath math={latexContent} />;
-  }
+        if (typeof res === 'number') {
+            const isNegative = res < 0;
+            const latex = toFrac(Math.abs(res));
+            const mathToRender = isNegative ? `-${latex}` : latex;
+            return <InlineMath math={mathToRender} />;
+        }
 
-  return <p className="results-section-result-text">Respuesta no válida.</p>;
-};
+        if (typeof res === 'object') {
+            const latexContent = Object.entries(res)
+                .map(([k, v]) => {
+                    const isNegative = v < 0;
+                    const latex = toFrac(Math.abs(v));
+                    const mathToRender = isNegative ? `-${latex}` : latex;
+                    return `${k} = ${mathToRender}`;
+                })
+                .join(', ');
+            return <InlineMath math={latexContent} />;
+        }
+
+            return <p className="results-section-result-text">{res}</p>;
+    };
 
 
     return (
@@ -176,7 +177,6 @@ export function ResultsSection({
                                     key={index}
                                     stepNumber={index + 1}
                                     operationName={step.operationName}
-                                    operationDetail={step.operationDetail}
                                     matrix={step.matrix}
                                     operationType={operationType}
                                 />

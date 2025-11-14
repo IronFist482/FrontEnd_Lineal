@@ -37,7 +37,7 @@ export default function InstructionsModal({ open, onOpenChange }) {
                     }`}
                     onClick={() => setViewMode("manual")}
                   >
-                    ✍️ Ingreso Manual
+                    Ingreso Manual
                   </span>
                   <span
                     className={`dual-option ${
@@ -45,7 +45,7 @@ export default function InstructionsModal({ open, onOpenChange }) {
                     }`}
                     onClick={() => setViewMode("archivo")}
                   >
-                    🗂️ Archivo .txt
+                    Archivo .txt
                   </span>
                 </div>
 

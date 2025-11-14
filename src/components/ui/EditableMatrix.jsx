@@ -86,19 +86,25 @@ export function EditableMatrix({
     if (onMatrixEdit) onMatrixEdit(updated);
   };
 
-  // Fuente: editable o no editable
   const source = isEditable ? editableMatrix : data;
 
-  // Convertir cada valor para render en KaTeX
-  const rows = source
+ const rows = source
     .map((row) => {
       const formatted = row
         .map((value) => {
-          /* REGLA: vacío → 0 */
           if (value === "") return "0";
 
-          /* REGLA: fracción incompleta → ? */
           if (isIncompleteFraction(value)) return "?";
+
+          if (typeof value === 'string' && /^-?\d+\/\d+$/.test(value)) {
+            const match = value.match(/^(-?)(\d+)\/(\d+)$/);
+            if (match) {
+              const sign = match[1];
+              const num = match[2];
+              const den = match[3];
+              return `${sign}\\frac{${num}}{${den}}`;
+            }
+          }
 
           return toFrac(value);
         })

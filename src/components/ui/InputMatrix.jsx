@@ -9,10 +9,19 @@ const OPERATION_TITLES = {
   SEL: 'Ingrese su Sistema de Ecuaciones Lineales',
 };
 
-const isValidFractionInput = (value) => {
+// Validación mientras el usuario escribe
+const isPartialFractionInput = (value) => {
   if (value === '') return true;
-  if (/^-?\d*\.?\d*$/.test(value)) return true;
-  if (/^-?\d*\/-?\d*$/.test(value)) return true;
+  if (/^-?\d*\.?\d*$/.test(value)) return true;           // Enteros y decimales parciales
+  if (/^-?\d*\/?-?\d*$/.test(value)) return true;         // Fracciones parciales
+  return false;
+};
+
+// Validación final antes de procesar
+const isValidFractionInput = (value) => {
+  if (value === '') return false;                           // No se permiten vacíos al enviar
+  if (/^-?\d+(\.\d+)?$/.test(value)) return true;         // Enteros y decimales
+  if (/^-?\d+\/-?\d+$/.test(value)) return true;          // Fracciones válidas
   return false;
 };
 
@@ -36,8 +45,9 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
   const [matrices, setMatrices] = useState(getDefaultMatrices());
   const [focusCell, setFocusCell] = useState({ r: 0, c: 0 });
   const inputRefs = useRef([]);
-  const matrix = matrices[operationtype] || getDefaultMatrices()[operationtype];
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+  const matrix = matrices[operationtype] || getDefaultMatrices()[operationtype];
 
   useEffect(() => {
     inputRefs.current = matrix.map((row, r) =>
@@ -66,13 +76,16 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
   };
 
   const handleCellChange = (r, c, value) => {
-    if (!isValidFractionInput(value)) return;
+    // Bloquea caracteres inválidos mientras se escribe
+    if (!isPartialFractionInput(value)) return;
+
     const newMatrix = matrix.map((row) => [...row]);
     newMatrix[r][c] = value;
     updateMatrix(newMatrix);
     setTimeout(() => setFocusCell({ r, c }), 0);
   };
 
+  // Navegación de celdas
   const moveFocus = (direction) => {
     let { r, c } = focusCell;
     let expand = false;
@@ -115,14 +128,16 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
     setFocusCell({ r, c });
   };
 
+  const addRow = () => {
+    if (matrix.length < maxSize) updateMatrix([...matrix, Array(matrix[0].length).fill('')]);
+  };
+  const addColumn = () => {
+    if (matrix[0].length < maxSize) updateMatrix(matrix.map(row => [...row, '']));
+  };
+
   const handleKeyDown = (e, r, c) => {
     if (!isMobile) {
-      const keyMap = {
-        ArrowUp: 'up',
-        ArrowDown: 'down',
-        ArrowLeft: 'left',
-        ArrowRight: 'right',
-      };
+      const keyMap = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
       if (keyMap[e.key]) {
         e.preventDefault();
         moveFocus(keyMap[e.key]);
@@ -131,19 +146,16 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
   };
 
   const handleReset = () => {
-    setMatrices((prev) => ({
-      ...prev,
-      [operationtype]: getDefaultMatrices()[operationtype],
-    }));
+    setMatrices(prev => ({ ...prev, [operationtype]: getDefaultMatrices()[operationtype] }));
     setFocusCell({ r: 0, c: 0 });
   };
 
   const validateMatrixBeforeSend = (matrix) => {
     for (let r = 0; r < matrix.length; r++) {
       for (let c = 0; c < matrix[r].length; c++) {
-        const cell = matrix[r][c];
-        if (cell === '') return 'Hay celdas vacías. Complete todos los valores antes de procesar.';
-        if (!isValidFractionInput(cell)) return `El valor "${cell}" no es válido.`;
+        const cell = matrix[r][c].trim();
+        if (!isValidFractionInput(cell)) 
+          return `El valor "${cell}" no es válido o está vacío. Complete todos los valores antes de procesar.`;
       }
     }
     return null;
@@ -152,37 +164,39 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
   const getWrapper = () => {
     const cols = matrix[0]?.length || 2;
     let latexBody = '';
-
     switch (operationtype) {
       case 'Determinante':
-        latexBody = matrix.map((row) => row.map(formatFractionLatex).join(' & ')).join('\\\\');
+        latexBody = matrix.map(row => row.map(formatFractionLatex).join(' & ')).join('\\\\');
         return `\\left|\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right|`;
       case 'Inversa':
-        latexBody = matrix.map((row) => row.map(formatFractionLatex).join(' & ')).join('\\\\');
+        latexBody = matrix.map(row => row.map(formatFractionLatex).join(' & ')).join('\\\\');
         return `\\left[\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right]`;
       case 'SEL': {
         const coefCols = matrix[0].length - 1;
         const latexRows = matrix
-          .map((row) =>
-            row
+          .map(row => {
+            const leftSide = row
+              .slice(0, coefCols)
               .map((cell, i) => {
-                if (i < coefCols) {
-                  if (cell.trim() === '-') return '-x_{' + (i + 1) + '}';
-                  if (cell.trim().startsWith('-')) return `${formatFractionLatex(cell)}x_{${i + 1}}`;
-                  return `${formatFractionLatex(cell)}x_{${i + 1}}`;
-                }
-                return `${formatFractionLatex(cell)}`;
+                if (cell.trim() === '-') return `-x_{${i + 1}}`;
+                if (cell.trim().startsWith('-')) return `${formatFractionLatex(cell)}x_{${i + 1}}`;
+                return `${formatFractionLatex(cell)}x_{${i + 1}}`;
               })
-              .slice(0, coefCols + 1)
               .join(' + ')
               .replace(/\+ -/g, '- ')
-              .replace(/\+ \+/g, '+ ')
-          )
+              .replace(/\+ \+/g, '+ ');
+
+            const rightSide = formatFractionLatex(row[coefCols] || '');
+
+            return `${leftSide} = ${rightSide}`;
+          })
           .join('\\\\');
+
         return `\\left\\{\\begin{array}{l}${latexRows}\\end{array}\\right.`;
       }
+
       default:
-        latexBody = matrix.map((row) => row.map(formatFractionLatex).join(' & ')).join('\\\\');
+        latexBody = matrix.map(row => row.map(formatFractionLatex).join(' & ')).join('\\\\');
         return `\\left(\\begin{array}{${'c'.repeat(cols)}}${latexBody}\\end{array}\\right)`;
     }
   };
@@ -225,12 +239,26 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
         </table>
       </div>
 
+      {isMobile && (
+        <div className={styles.mobileControls}>
+          <div className={styles.arrowButtons}>
+            <button onClick={() => moveFocus('up')}>↑</button>
+            <button onClick={() => moveFocus('down')}>↓</button>
+            <button onClick={() => moveFocus('left')}>←</button>
+            <button onClick={() => moveFocus('right')}>→</button>
+          </div>
+          <div className={styles.addButtons}>
+            <button onClick={addRow}>+Fila</button>
+            <button onClick={addColumn}>+Columna</button>
+          </div>
+        </div>
+      )}
+
       <button
         className={styles.buttonProcess}
         onClick={() => {
           const error = validateMatrixBeforeSend(matrix);
           if (error) {
-            console.error("❌ Error en matriz:", error);
             if (onError) onError(error);
             return;
           }
