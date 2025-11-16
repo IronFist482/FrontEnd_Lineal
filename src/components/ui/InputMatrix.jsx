@@ -149,7 +149,7 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
     }
   };
 
-  const handleKeyDown = (e, r, c) => {
+  const handleKeyDown = (e) => {
     if (!isMobile) {
       const keyMap = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
       if (keyMap[e.key]) {
@@ -227,7 +227,16 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
       </div>
 
       <div className={styles.matrixGridWrapper}>
-        <table className={styles.matrixGrid}>
+        <div className={styles.addButtonsColumns}>
+          <button onClick={deleteColumn}>-</button>Columna<button onClick={addColumn}>+</button>
+        </div>
+        <div className={styles.matrixGridTable}>
+          <div className={styles.addButtonsRow}>
+            <button onClick={deleteRow}>-</button>Fila<button onClick={addRow}>+</button>
+          </div>
+          
+          <table className={styles.matrixGrid}>
+          
           <tbody>
             {matrix.map((row, r) => (
               <tr key={r}>
@@ -251,6 +260,8 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
             ))}
           </tbody>
         </table>
+        </div>
+        
       </div>
 
       {isMobile && (
@@ -262,8 +273,8 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
             <button onClick={() => moveFocus('right')}>→</button>
           </div>
           <div className={styles.addButtons}>
-            <button onClick={deleteRow}>-</button>Fila<button onClick={addRow}>+</button>
-            <button onClick={deleteColumn}>-</button>Columna<button onClick={addColumn}>+</button>
+            
+            
           </div>
         </div>
       )}

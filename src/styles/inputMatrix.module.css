@@ -75,15 +75,30 @@
   width: 100%;
   overflow-x: auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.matrixGridTable{
+  display: flex;
+  gap: 0.6rem;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  margin-bottom: 0.8rem;
 }
 
 .matrixGrid {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   min-width: max-content;
   text-align: center;
+  margin-right: 4rem;
 }
+
 
 .matrixInput {
   width: 3.6rem;
@@ -181,14 +196,25 @@
   border-color: transparent;
 }
 
-.addButtons {
+.addButtonsRow {
   display: flex;
   gap: 0.6rem;
   text-align: center;
   align-items: center;
+  flex-direction: column;
+  margin-right: 1rem;
 }
 
-.addButtons button {
+.addButtonsColumns {
+  display: flex;
+  gap: 0.6rem;
+  text-align: center;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 1rem;
+}
+
+.addButtonsColumns button {
   padding: 0.4rem 0.8rem;
   border-radius: 0.5rem;
   border: 1px solid #ccd3ff;
@@ -199,7 +225,24 @@
   transition: all 0.2s;
 }
 
-.addButtons button:hover {
+.addButtonsColumns button:hover {
+  background-color: #4a4ff5;
+  color: white;
+  border-color: transparent;
+}
+
+.addButtonsRow button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccd3ff;
+  background-color: #f0f3ff;
+  color: #4a4ff5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addButtonsRow button:hover {
   background-color: #4a4ff5;
   color: white;
   border-color: transparent;
