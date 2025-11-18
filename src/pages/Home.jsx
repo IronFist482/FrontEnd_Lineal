@@ -1,20 +1,22 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Header } from "../components/Header";
 import { FileUploadArea } from "../components/FileUploadArea";
 import { ResultsSection } from "../components/ResultsSection";
-import { procesarMatriz } from "../api/api";
+import { procesarMatriz, mandarFoto } from "../api/api";
 import { validateMatrixForSubmit } from "../components/ui/EditableMatrix";
 import { matrixToFraction } from "../utils/formatFraction";
 import { analyzeOperation } from "../utils/matrixAnalyzer";
 import InstructionsModal from "../components/ui/InstructionsModal";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import "../styles/Home.css";
+import { toast } from 'sonner';
 
 export default function Home() {
   const [selectedOperation, setSelectedOperation] = useState("Determinante");
   const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [screenshotData, setScreenshotData] = useState(null);
 
   const ERROR_MESSAGES = {
     FETCH_FAILED: "No se pudo recuperar la información. Problema del servidor.",
@@ -31,11 +33,11 @@ export default function Home() {
     SEL: { file: null, result: null, error: null,image:null  },
   });
 
-  const operationMap = {
+  const operationMap = useMemo(() => ({
     Determinante: "Determinante",
     Inversa: "Inversa",
     "S.E.L.": "SEL",
-  };
+  }), []);
 
   const handleMatrixError = (message) => setErrorMessage(message);
 
@@ -108,6 +110,27 @@ export default function Home() {
     setErrorMessage(null);
   };
 
+  const base64ToFile = (base64, filename) => {
+    try {
+        const parts = base64.split(';base64,');
+        const mime = parts[0].split(':')[1];
+        const bstr = atob(parts[1]);
+        let n = bstr.length;
+        const u8arr = new ArrayBuffer(n);
+        const uint8Array = new Uint8Array(u8arr);
+
+        while(n--){
+            uint8Array[n] = bstr.charCodeAt(n);
+        }
+
+        const blob = new Blob([uint8Array], { type: mime });
+        return new File([blob], filename, { type: mime });
+    } catch (e) {
+        console.error("Error converting Base64 to File:", e);
+        return null;
+    }
+};
+
   const opKey = operationMap[selectedOperation] || selectedOperation;
   const currentData = operationCache[opKey] || { file: null, result: null, error: null };
   const currentResult = currentData.result;
@@ -157,6 +180,58 @@ export default function Home() {
         matrix: matrixToFraction(matrix),
       };
     }) || [];
+
+  const handleScreenshotReady = useCallback(async(base64Image) => {
+    //Quiero que cambie el estado de operationCache para marcar que ya tiene imagen
+    setOperationCache(prevCache => {
+      const opKey = operationMap[selectedOperation] || selectedOperation;
+      const updatedOperation = {
+        ...prevCache[opKey],
+        image: base64Image,
+      };
+      return {
+        ...prevCache,
+        [opKey]: updatedOperation,
+      };
+    });
+    setScreenshotData(base64Image); // Si quieres mantenerlo en el estado
+    
+    // La matriz para el Form-Field 'matriz'
+    const matriz_data = currentData.result?.matriz_inicial;
+
+    if (!matriz_data) {
+        toast.error('No hay datos de matriz para enviar.');
+        return;
+    }
+    const file = base64ToFile(base64Image, 'matriz_resultado.png');
+
+    if (!file) {
+        toast.error('Error al procesar la imagen.');
+        return;
+    }
+
+    try {
+        // 3. Crear el objeto FormData
+        const formData = new FormData();
+        // El campo 'archivo' debe ser el objeto File/Blob
+        formData.append('archivo', file); 
+        // El campo 'matriz' debe ser la cadena de texto
+        // Si 'matriz_data' es un array, debes serializarlo (ej. a JSON string)
+        const matrizString = JSON.stringify(matriz_data);
+        formData.append('matriz', matrizString); 
+        
+        // 4. Llamar a la función API con el FormData
+        if(!operationCache[selectedOperation].image){
+          const imageUploadResponse = await mandarFoto(formData);
+          const message = imageUploadResponse?.message || 'Imagen subida con éxito.';
+          toast.success(message);
+        }
+        
+    } catch (error) {
+        console.error(error);
+        toast.error('Error al subir la imagen de la matriz.');
+    }
+},[currentData.result, operationCache, operationMap, selectedOperation]);
 
   return (
     <div className="home-root">
@@ -245,6 +320,7 @@ export default function Home() {
               fullSteps={fullSteps}
               operationType={opKey}
               onProcessAgain={handleProcessEditedMatrix}
+              onScreenshotReady={handleScreenshotReady}
             />
           )}
 
