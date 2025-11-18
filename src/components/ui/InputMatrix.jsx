@@ -9,19 +9,17 @@ const OPERATION_TITLES = {
   SEL: 'Ingrese su Sistema de Ecuaciones Lineales',
 };
 
-// Validación mientras el usuario escribe
 const isPartialFractionInput = (value) => {
   if (value === '') return true;
-  if (/^-?\d*\.?\d*$/.test(value)) return true;           // Enteros y decimales parciales
-  if (/^-?\d*\/?-?\d*$/.test(value)) return true;         // Fracciones parciales
+  if (/^-?\d*\.?\d*$/.test(value)) return true;
+  if (/^-?\d*\/?-?\d*$/.test(value)) return true;
   return false;
 };
 
-// Validación final antes de procesar
 const isValidFractionInput = (value) => {
-  if (value === '') return false;                           // No se permiten vacíos al enviar
-  if (/^-?\d+(\.\d+)?$/.test(value)) return true;         // Enteros y decimales
-  if (/^-?\d+\/-?\d+$/.test(value)) return true;          // Fracciones válidas
+  if (value === '') return false;
+  if (/^-?\d+(\.\d+)?$/.test(value)) return true;
+  if (/^-?\d+\/-?\d+$/.test(value)) return true;
   return false;
 };
 
@@ -41,14 +39,16 @@ const getDefaultMatrices = () => ({
   Inversa: Array.from({ length: 2 }, () => Array(2).fill('')),
 });
 
-export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationtype }) {
+export function InputMatrix({ onMatrixChange, onError, maxSize = 6, operationtype }) {
   const [matrices, setMatrices] = useState(getDefaultMatrices());
   const [focusCell, setFocusCell] = useState({ r: 0, c: 0 });
   const inputRefs = useRef([]);
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
   const matrix = matrices[operationtype] || getDefaultMatrices()[operationtype];
-
+  const numRows = matrix.length;
+  const numCols = matrix[0]?.length || 0;
+  
   useEffect(() => {
     inputRefs.current = matrix.map((row, r) =>
       inputRefs.current[r]?.slice(0, row.length) || Array(row.length).fill(null)
@@ -76,7 +76,6 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
   };
 
   const handleCellChange = (r, c, value) => {
-    // Bloquea caracteres inválidos mientras se escribe
     if (!isPartialFractionInput(value)) return;
 
     const newMatrix = matrix.map((row) => [...row]);
@@ -85,7 +84,6 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
     setTimeout(() => setFocusCell({ r, c }), 0);
   };
 
-  // Navegación de celdas
   const moveFocus = (direction) => {
     let { r, c } = focusCell;
     let expand = false;
@@ -125,24 +123,26 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
       }
     }
 
-    setFocusCell({ r, c });
+    setFocusCell({ r: Math.min(r, matrix.length - 1), c: Math.min(c, matrix[0].length - 1) });
   };
 
   const addRow = () => {
-    if (matrix.length < maxSize) updateMatrix([...matrix, Array(matrix[0].length).fill('')]);
+    if (numRows >= maxSize) return;
+    updateMatrix([...matrix, Array(numCols).fill('')]);
   };
   const addColumn = () => {
-    if (matrix[0].length < maxSize) updateMatrix(matrix.map(row => [...row, '']));
+    if (numCols >= maxSize) return;
+    updateMatrix(matrix.map(row => [...row, '']));
   };
   const deleteRow = () => {
-    if (matrix.length > 2) {
+    if (numRows > 2) {
       const newMatrix = matrix.slice(0, -1);
       updateMatrix(newMatrix);
       setFocusCell({ r: Math.min(focusCell.r, newMatrix.length - 1), c: focusCell.c });
     }
   };
   const deleteColumn = () => {
-    if (matrix[0].length > 2) {
+    if (numCols > 2) {
       const newMatrix = matrix.map(row => row.slice(0, -1));
       updateMatrix(newMatrix);
       setFocusCell({ r: focusCell.r, c: Math.min(focusCell.c, newMatrix[0].length - 1) });
@@ -228,11 +228,11 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
 
       <div className={styles.matrixGridWrapper}>
         <div className={styles.addButtonsColumns}>
-          <button onClick={deleteColumn}>-</button>Columna<button onClick={addColumn}>+</button>
+          <button onClick={deleteColumn} disabled={numCols <= 2}>-</button>Columna<button onClick={addColumn} disabled={numCols >= maxSize}>+</button>
         </div>
         <div className={styles.matrixGridTable}>
           <div className={styles.addButtonsRow}>
-            <button onClick={deleteRow}>-</button>Fila<button onClick={addRow}>+</button>
+            <button onClick={deleteRow} disabled={numRows <= 2}>-</button>Fila<button onClick={addRow} disabled={numRows >= maxSize}>+</button>
           </div>
           
           <table className={styles.matrixGrid}>
@@ -259,7 +259,7 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
         </div>
         
       </div>
