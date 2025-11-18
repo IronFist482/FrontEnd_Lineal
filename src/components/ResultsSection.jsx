@@ -3,8 +3,60 @@ import { Card } from './ui/card';
 import StepCard from './StepCard';
 import '../styles/ResultsSection.css';
 import { EditableMatrix } from './ui/EditableMatrix';
-import { InlineMath } from 'react-katex';
+import { InlineMath, BlockMath } from 'react-katex';
 import { toFrac } from '../utils/formatFraction';
+import takeScreenshotAndGetBase64 from '../utils/screenshotUtils';
+
+export function MatrixRenderer({ data, operationType }) {
+  if (!data || data.length === 0) {
+    return <span>Matriz no disponible</span>;
+  }
+
+  const numCols = data[0].length;
+  const isAugmented = numCols > data.length;
+
+  const rows = data
+    .map((row, i) => {
+      const formattedRow = row.map(value => toFrac(value)).join(' & ');
+      return i < data.length - 1 ? `${formattedRow} \\\\[0.5em]` : formattedRow;
+    })
+    .join(' ');
+
+  let latex;
+  switch (operationType) {
+    case 'Determinante': {
+      latex = `\\begin{vmatrix} ${rows} \\end{vmatrix}`;
+      break;
+    }
+
+    case 'SEL': {
+      const arrayColsSEL = 'c '.repeat(numCols - 1) + '| c';
+      latex = `\\left[\\begin{array}{${arrayColsSEL}} ${rows} \\end{array}\\right]`;
+      break;
+    }
+
+    case 'Inversa': {
+      if (isAugmented) {
+        const halfCols = numCols / 2;
+        const arrayColsInv = 'c '.repeat(halfCols) + '| ' + 'c '.repeat(halfCols - 1) + 'c';
+        latex = `\\left[\\begin{array}{${arrayColsInv}} ${rows} \\end{array}\\right]`;
+      } else {
+        latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
+      }
+      break;
+    }
+
+    default: {
+      latex = `\\begin{bmatrix} ${rows} \\end{bmatrix}`;
+    }
+  }
+  return (
+    <div className="matrix-display-latex">
+      <BlockMath math={latex} />
+    </div>
+  );
+}
+
 
 export function ResultsSection({
     result,
@@ -13,11 +65,40 @@ export function ResultsSection({
     fullSteps,
     operationType,
     onProcessAgain,
+    onScreenshotReady
 }) {
 
     const [showSteps, setShowSteps] = useState(false);
     const [isEditingOriginal, setIsEditingOriginal] = useState(false);
     const [editedMatrix, setEditedMatrix] = useState(originalMatrix);
+    const [hasCaptured, setHasCaptured] = useState(false);
+    const CAPTURE_ID = "solver-results-card"; 
+
+    useEffect(() => {
+        if (!originalMatrix || !result || hasCaptured) {
+            return;
+        }
+
+        const captureAndSend = async () => {
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            const imageBase64 = await takeScreenshotAndGetBase64(CAPTURE_ID);
+            console.log("Captured screenshot for ResultsSection.");
+            
+            if (imageBase64 && onScreenshotReady) {
+                onScreenshotReady(imageBase64);
+                setHasCaptured(true);
+            }
+        };
+
+        captureAndSend();
+    }, [result, originalMatrix, hasCaptured, onScreenshotReady]);
+
+    useEffect(() => {
+        if (!originalMatrix) {
+            setHasCaptured(false);
+        }
+    }, [originalMatrix]);
 
     useEffect(() => {
         setEditedMatrix(originalMatrix);
@@ -91,7 +172,7 @@ export function ResultsSection({
 
 
     return (
-        <Card className="results-section-root">
+        <Card className="results-section-root" id={CAPTURE_ID}>
             {(showOriginal || showLast) && (
                 <div className="results-section-matrices-container">
 

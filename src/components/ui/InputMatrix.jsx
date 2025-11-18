@@ -264,21 +264,6 @@ export function InputMatrix({ onMatrixChange, onError, maxSize = 10, operationty
         
       </div>
 
-      {isMobile && (
-        <div className={styles.mobileControls}>
-          <div className={styles.arrowButtons}>
-            <button onClick={() => moveFocus('up')}>↑</button>
-            <button onClick={() => moveFocus('down')}>↓</button>
-            <button onClick={() => moveFocus('left')}>←</button>
-            <button onClick={() => moveFocus('right')}>→</button>
-          </div>
-          <div className={styles.addButtons}>
-            
-            
-          </div>
-        </div>
-      )}
-
       <button
         className={styles.buttonProcess}
         onClick={() => {
